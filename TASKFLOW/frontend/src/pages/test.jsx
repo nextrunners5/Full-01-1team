@@ -10,7 +10,7 @@ const Login = () => {
     e.preventDefault();
     // 로그인 로직 (예: API 호출)
     // 여기서는 예시로 실패를 가정
-    const isLoginSuccessful = false; // 실제 로그인 성공 여부에 따라 변경
+    const isLoginSuccessful = true; // 실제 로그인 성공 여부에 따라 변경
 
     if (!isLoginSuccessful) {
       setError("로그인에 실패했습니다. 이메일과 비밀번호를 확인하세요.");
