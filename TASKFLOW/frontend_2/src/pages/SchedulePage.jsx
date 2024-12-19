@@ -1,7 +1,7 @@
 import React from "react";
-import TopBar from "../components/common/TopBar";
-import MiddleBar from "../components/common/MiddleBar";
-import BottomBar from "../components/common/BottomBar";
+import TopBar from "../components/common/Header";
+import MiddleBar from "../components/common/Sidebar";
+import BottomBar from "../components/common/Footer";
 import ScheduleModal from "../components/modals/ScheduleModal";
 
 const SchedulePage = () => {
