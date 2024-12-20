@@ -7,10 +7,6 @@ import getDay from 'date-fns/getDay';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import '../styles/HomePage.css'; // 경로 수정
 
-import Header from '../components/common/Header'; // 경로 수정
-import Footer from '../components/common/Footer'; // 경로 수정
-import Sidebar from '../components/common/Sidebar'; // 경로 수정
-
 const locales = {
   "en-US": require("date-fns/locale/en-US"),
 };
