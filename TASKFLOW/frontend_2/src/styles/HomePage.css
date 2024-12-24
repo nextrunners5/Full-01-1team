@@ -100,7 +100,7 @@
   font-size: 18px;
   position: relative; /* 상대 위치 조정을 위해 추가 */
   left: 10px; /* 오른쪽으로 10px 이동 */
-  top: 5px; /* 아래로 5px 이동 */
+  top: 20px; /* 아래로 5px 이동 */
 }
 
 .toolbar-container {

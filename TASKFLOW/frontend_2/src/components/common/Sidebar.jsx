@@ -19,7 +19,7 @@ const Sidebar = () => {
         <a href="/home" className="menu-item">
           <img src={HomeIcon} alt="Home" className="icon" /> HOME
         </a>
-        <div className="menu-item dropdown" onClick={() => setIsScheduleOpen(!isScheduleOpen)}>
+        <div className="menu-item dropdown1" onClick={() => setIsScheduleOpen(!isScheduleOpen)}>
           <img src={ScheduleIcon} alt="Schedule Management" className="icon" /> SCHEDULE MANAGEMENT
         </div>
         {isScheduleOpen && (
