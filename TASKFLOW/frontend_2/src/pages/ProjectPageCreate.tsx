@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // react-router-dom import
+import { useNavigate } from 'react-router-dom';
 import completeIcon from '../assets/complete.png';
 
-const ProjectCreationPage = () => {
+const ProjectPageCreate: React.FC = () => {
     const [projectName, setProjectName] = useState('');
     const [projectDescription, setProjectDescription] = useState('');
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const navigate = useNavigate(); // useNavigate 훅 호출
+    const navigate = useNavigate();
 
     const handleProjectCreation = () => {
         console.log({
@@ -26,15 +26,14 @@ const ProjectCreationPage = () => {
     };
 
     const handleComplete = () => {
-        // 완료 버튼 클릭 시 ProjectPage.jsx로 이동
-        navigate('/project'); // '/projects'는 ProjectPage.jsx 경로
+        navigate('/project');
     };
 
     return (
         <div style={styles.contentContainer}>
             <div style={styles.headerContainer}>
                 <h2 style={styles.title}>새 프로젝트 생성</h2>
-                <p style={styles.subtitle}>프로젝트에 대한 기본 정보를 입력해주세요.</p>
+                <p style={styles.subtitle}>프로젝트에 대한 기본 정보를 입력해주��요.</p>
             </div>
             <div className="project-creation-container" style={styles.container}>
                 <div style={styles.formGroup}>
@@ -111,7 +110,7 @@ const ProjectCreationPage = () => {
                             </div>
                         </div>
                         <div style={styles.modalFooterCompact}>
-                            <button style={styles.completeButton} onClick={handleComplete}>완료</button> {/* 완료 버튼 수정 */}
+                            <button style={styles.completeButton} onClick={handleComplete}>완료</button>
                             <button style={styles.closeButton} onClick={closeModal}>닫기</button>
                         </div>
                     </div>
@@ -309,4 +308,4 @@ const styles = {
     },
 };
 
-export default ProjectCreationPage;
+export default ProjectPageCreate; 

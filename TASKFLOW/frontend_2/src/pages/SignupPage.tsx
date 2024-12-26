@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const Signup = () => {
+const SignupPage: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -239,4 +239,4 @@ const Signup = () => {
   );
 };
 
-export default Signup;
+export default SignupPage; 

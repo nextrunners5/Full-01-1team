@@ -1,9 +1,9 @@
 import React from 'react';
-import BellIcon from '../../assets/bell-icon.png'; // 경로 수정
-import UserIcon from '../../assets/user-icon.png'; // 경로 수정
-import '../../styles/Header.css'; // CSS 경로 수정
+import BellIcon from '../../assets/bell-icon.png';
+import UserIcon from '../../assets/user-icon.png';
+import '../../styles/Header.css';
 
-const Header = () => {
+const Header: React.FC = () => {
   return (
     <header className="header">
       <h2></h2>
@@ -19,5 +19,4 @@ const Header = () => {
   );
 };
 
-export default Header;
-
+export default Header; 

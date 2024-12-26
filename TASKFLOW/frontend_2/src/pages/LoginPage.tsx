@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const Login = () => {
+const LoginPage: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
 
   const togglePasswordVisibility = () => {
@@ -154,4 +154,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default LoginPage; 

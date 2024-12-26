@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-const ProjectContent = () => {
+const ProjectPage: React.FC = () => {
   const navigate = useNavigate(); // 페이지 이동을 위한 useNavigate 훅
 
   const handleAddProject = () => {
@@ -256,4 +256,4 @@ const ProjectContent = () => {
   );
 };
 
-export default ProjectContent;
+export default ProjectPage; 

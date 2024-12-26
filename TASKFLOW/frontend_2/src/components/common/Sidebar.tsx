@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
-import LogoImage from '../../assets/logo.png'; // 경로 수정
-import HomeIcon from '../../assets/home-icon.png'; // 경로 수정
-import ScheduleIcon from '../../assets/schedule-icon.png'; // 경로 수정
-import ProjectIcon from '../../assets/project-icon.png'; // 경로 수정
-import ChatIcon from '../../assets/chat-icon.png'; // 경로 수정
-import UserIcon from '../../assets/user-icon.png'; // 경로 수정
-import '../../styles/Sidebar.css'; // CSS 경로 수정
+import LogoImage from '../../assets/logo.png';
+import HomeIcon from '../../assets/home-icon.png';
+import ScheduleIcon from '../../assets/schedule-icon.png';
+import ProjectIcon from '../../assets/project-icon.png';
+import ChatIcon from '../../assets/chat-icon.png';
+import UserIcon from '../../assets/user-icon.png';
+import '../../styles/Sidebar.css';
 
-const Sidebar = () => {
+const Sidebar: React.FC = () => {
   const [isScheduleOpen, setIsScheduleOpen] = useState(false);
 
   return (
@@ -43,5 +43,4 @@ const Sidebar = () => {
   );
 };
 
-export default Sidebar;
-
+export default Sidebar; 
