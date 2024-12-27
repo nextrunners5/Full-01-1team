@@ -1,53 +1,94 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, ChangeEvent } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import completeIcon from '../assets/complete.png'; // 아이콘 이미지 가져오기
-import "../styles/ProjectPageEdit.css"; // CSS 파일 임포트
+import completeIcon from "../assets/complete.png"; // 아이콘 이미지 가져오기
+import "../styles/ProjectPageEdit.css"; // CSS 분리 파일 임포트
+import Header from "../components/common/Header.tsx";
+import Sidebar from "../components/common/Sidebar.tsx";
+import Footer from "../components/common/Footer.tsx";
 
-interface ProjectParams {
-  id: string;
+
+interface PopupConfig {
+  message: string;
+  onClose: () => void;
+}
+
+interface RouteParams {
+  projectId: string;
 }
 
 const ProjectEditPage: React.FC = () => {
-  const { id } = useParams<ProjectParams>();
+  const { projectId } = useParams<RouteParams>(); // URL에서 projectId를 가져옴
   const navigate = useNavigate();
 
-  const [projectName, setProjectName] = useState<string>('');
-  const [projectDescription, setProjectDescription] = useState<string>('');
-  const [startDate, setStartDate] = useState<string>('');
-  const [endDate, setEndDate] = useState<string>('');
-  const [projectStatus, setProjectStatus] = useState<string>('신규');
-  const [showPopup, setShowPopup] = useState<boolean>(false);
+  // 초기값 설정 (기본값)
+  const [projectName, setProjectName] = useState("");
+  const [projectDescription, setProjectDescription] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [projectStatus, setProjectStatus] = useState("신규");
+  const [popupConfig, setPopupConfig] = useState<PopupConfig | null>(null);
 
+  // 데이터 로드 (예제)
   useEffect(() => {
-    // 프로젝트 데이터를 가져오는 로직
-    // 예: fetchProjectData(id);
-  }, [id]);
+    const fetchProjectData = async () => {
+      // 실제 API 연동 시 데이터를 받아와서 설정해 주세요.
+      const data = {
+        projectName: "AI 기반 프로젝트 관리 시스템",
+        projectDescription: "인공지능을 활용한 효율적인 프로젝트 관리 시스템 개발",
+        startDate: "2024-01-01",
+        endDate: "2024-12-31",
+        projectStatus: "진행중",
+      };
 
-  const handleCancel = () => {
-    navigate('/project');
-  };
+      // 상태 업데이트
+      setProjectName(data.projectName);
+      setProjectDescription(data.projectDescription);
+      setStartDate(data.startDate);
+      setEndDate(data.endDate);
+      setProjectStatus(data.projectStatus);
+    };
+
+    fetchProjectData();
+  }, [projectId]);
 
   const handleSave = () => {
-    // 프로젝트 저장 로직
-    setShowPopup(true);
+    // 저장 로직
+    setPopupConfig({
+      message: "프로젝트 정보가 성공적으로 업데이트되었습니다.",
+      onClose: () => navigate("/project"),
+    });
+  };
+
+  const handleCancel = () => {
+    setPopupConfig({
+      message: "프로젝트 수정이 취소되었습니다.",
+      onClose: () => navigate("/project"),
+    });
   };
 
   const closePopup = () => {
-    setShowPopup(false);
-    navigate('/project');
+    if (popupConfig?.onClose) {
+      popupConfig.onClose();
+    }
+    setPopupConfig(null);
   };
 
   return (
-    <div className="edit-container">
+    <div className="project-edit-container">
+      <div className="breadcrumb" onClick={() => navigate("/project")}>
+        <span>&lt; 뒤로가기</span>
+      </div>
       <h1>프로젝트 수정</h1>
       <div className="form">
         <div className="form-group">
-          <label htmlFor="projectName">프로젝트 이름</label>
+          <label htmlFor="projectName">프로젝트명</label>
           <input
             type="text"
             id="projectName"
             value={projectName}
-            onChange={(e) => setProjectName(e.target.value)}
+            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+              setProjectName(e.target.value)
+            }
           />
         </div>
         <div className="form-group">
@@ -55,8 +96,10 @@ const ProjectEditPage: React.FC = () => {
           <textarea
             id="projectDescription"
             value={projectDescription}
-            onChange={(e) => setProjectDescription(e.target.value)}
-          ></textarea>
+            onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
+              setProjectDescription(e.target.value)
+            }
+          />
         </div>
         <div className="date-group">
           <div className="form-group">
@@ -65,7 +108,9 @@ const ProjectEditPage: React.FC = () => {
               type="date"
               id="startDate"
               value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
+              onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                setStartDate(e.target.value)
+              }
             />
           </div>
           <div className="form-group">
@@ -74,7 +119,9 @@ const ProjectEditPage: React.FC = () => {
               type="date"
               id="endDate"
               value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
+              onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                setEndDate(e.target.value)
+              }
             />
           </div>
         </div>
@@ -83,7 +130,9 @@ const ProjectEditPage: React.FC = () => {
           <select
             id="projectStatus"
             value={projectStatus}
-            onChange={(e) => setProjectStatus(e.target.value)}
+            onChange={(e: ChangeEvent<HTMLSelectElement>) =>
+              setProjectStatus(e.target.value)
+            }
           >
             <option value="신규">신규</option>
             <option value="진행중">진행중</option>
@@ -92,18 +141,29 @@ const ProjectEditPage: React.FC = () => {
         </div>
       </div>
       <div className="buttons">
-        <button className="cancel-btn" onClick={handleCancel}>취소</button>
-        <button className="save-btn" onClick={handleSave}>저장하기</button>
+        <button className="cancel-btn" onClick={handleCancel}>
+          취소
+        </button>
+        <button className="save-btn" onClick={handleSave}>
+          저장하기
+        </button>
       </div>
-      {showPopup && (
+
+      {popupConfig && (
         <div className="popup-overlay">
           <div className="popup-content">
             <div className="popup-icon">
               <img src={completeIcon} alt="완료 아이콘" />
             </div>
-            <h2>수정이 완료되었습니다</h2>
-            <p>프로젝트 정보가 성공적으로 업데이트되었습니다.</p>
-            <button className="popup-button" onClick={closePopup}>확인</button>
+            <h2>
+              {popupConfig.message.includes("취소")
+                ? "취소되었습니다"
+                : "수정이 완료되었습니다"}
+            </h2>
+            <p>{popupConfig.message}</p>
+            <button className="popup-button" onClick={closePopup}>
+              확인
+            </button>
           </div>
         </div>
       )}
@@ -111,4 +171,4 @@ const ProjectEditPage: React.FC = () => {
   );
 };
 
-export default ProjectEditPage; 
+export default ProjectEditPage;

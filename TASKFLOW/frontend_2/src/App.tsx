@@ -6,6 +6,8 @@ import SchedulePage from "./pages/SchedulePage.tsx";
 import HomePage from "./pages/HomePage.tsx";
 import ProjectPage from "./pages/ProjectPage.tsx";
 import ProjectPageCreate from "./pages/ProjectPageCreate.tsx";
+// 여기서 파일명(./pages/ProjectPageEdit.tsx)과 컴포넌트명(ProjectPageEdit)을 통일
+import ProjectPageEdit from "./pages/ProjectPageEdit.tsx";
 import Header from "./components/common/Header.tsx";
 import Sidebar from "./components/common/Sidebar.tsx";
 import Footer from "./components/common/Footer.tsx";
@@ -15,10 +17,29 @@ const App: React.FC = () => (
     <Routes>
       <Route path="/" element={<LoginPage />} />
       <Route path="/signup" element={<SignupPage />} />
-      <Route path="/schedule" element={<Layout><SchedulePage /></Layout>} />
-      <Route path="/home" element={<Layout><HomePage /></Layout>} />
-      <Route path="/project" element={<Layout><ProjectPage /></Layout>} />
-      <Route path="/project/create" element={<Layout><ProjectPageCreate /></Layout>} />
+      <Route 
+        path="/schedule" 
+        element={<Layout><SchedulePage /></Layout>} 
+      />
+      <Route 
+        path="/home" 
+        element={<Layout><HomePage /></Layout>} 
+      />
+      <Route 
+        path="/project" 
+        element={<Layout><ProjectPage /></Layout>} 
+      />
+      <Route 
+        path="/project/create" 
+        element={<Layout><ProjectPageCreate /></Layout>} 
+      />
+      {/* 
+        /project/edit 경로에서 사용할 컴포넌트를 ProjectPageEdit로 통일 
+      */}
+      <Route 
+        path="/project/edit" 
+        element={<Layout><ProjectPageEdit /></Layout>} 
+      />
     </Routes>
   </Router>
 );
@@ -32,4 +53,4 @@ const Layout: React.FC = ({ children }) => (
   </div>
 );
 
-export default App; 
+export default App;

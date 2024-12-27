@@ -1,20 +1,24 @@
-import React from 'react';
-import { Calendar, dateFnsLocalizer, Views, ToolbarProps } from 'react-big-calendar';
+import React, { FC } from 'react';
+import {
+  Calendar,
+  dateFnsLocalizer,
+  Views,
+  ToolbarProps,
+  View
+} from 'react-big-calendar';
 import format from 'date-fns/format';
 import parse from 'date-fns/parse';
 import startOfWeek from 'date-fns/startOfWeek';
 import getDay from 'date-fns/getDay';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
-import '../styles/HomePage.css'; // 경로 수정
-
-type Event = {
-  title: string;
-  start: Date;
-  end: Date;
-};
+import '../styles/HomePage.css'; // 경로에 맞춰 수정하세요.
+import Header from "../components/common/Header.tsx";
+import Sidebar from "../components/common/Sidebar.tsx";
+import Footer from "../components/common/Footer.tsx";
+import "../styles/ProjectPage.css";
 
 const locales = {
-  "en-US": require("date-fns/locale/en-US"),
+  'en-US': require('date-fns/locale/en-US'),
 };
 
 const localizer = dateFnsLocalizer({
@@ -25,38 +29,54 @@ const localizer = dateFnsLocalizer({
   locales,
 });
 
-const events: Event[] = [
-  { title: "주간 회의", start: new Date(2024, 3, 5, 10, 0), end: new Date(2024, 3, 5, 11, 0) },
-  { title: "팀 미팅", start: new Date(2024, 3, 5, 14, 0), end: new Date(2024, 3, 5, 15, 0) },
-  { title: "고객 프레젠테이션", start: new Date(2024, 3, 6, 16, 0), end: new Date(2024, 3, 6, 17, 0) },
+// 이벤트 타입 정의
+interface CalendarEvent {
+  title: string;
+  start: Date;
+  end: Date;
+}
+
+const events: CalendarEvent[] = [
+  { title: '주간 회의', start: new Date(2024, 3, 5, 10, 0), end: new Date(2024, 3, 5, 11, 0) },
+  { title: '팀 미팅', start: new Date(2024, 3, 5, 14, 0), end: new Date(2024, 3, 5, 15, 0) },
+  { title: '고객 프레젠테이션', start: new Date(2024, 3, 6, 16, 0), end: new Date(2024, 3, 6, 17, 0) },
 ];
 
-type CustomToolbarProps = ToolbarProps;
-
-const CustomToolbar: React.FC<CustomToolbarProps> = (toolbar) => {
+// 툴바 커스텀 컴포넌트 - ToolbarProps 타입 적용
+const CustomToolbar: FC<ToolbarProps> = (toolbar) => {
   const goToBack = () => toolbar.onNavigate('PREV');
   const goToNext = () => toolbar.onNavigate('NEXT');
-  const changeView = (view: string) => toolbar.onView(view);
+  const changeView = (view: View) => toolbar.onView(view);
 
   return (
     <div className="toolbar-container">
       <div className="toolbar-center">
-        <button className="navigate-btn" onClick={goToBack}>&lt;</button>
+        <button className="navigate-btn" onClick={goToBack}>
+          &lt;
+        </button>
         <span className="current-month">{toolbar.label}</span>
-        <button className="navigate-btn" onClick={goToNext}>&gt;</button>
+        <button className="navigate-btn" onClick={goToNext}>
+          &gt;
+        </button>
       </div>
       <div className="view-switcher">
-        <button onClick={() => changeView(Views.MONTH)} className="view-btn">Month</button>
-        <button onClick={() => changeView(Views.WEEK)} className="view-btn">Week</button>
-        <button onClick={() => changeView(Views.DAY)} className="view-btn">Today</button>
+        <button onClick={() => changeView(Views.MONTH)} className="view-btn">
+          Month
+        </button>
+        <button onClick={() => changeView(Views.WEEK)} className="view-btn">
+          Week
+        </button>
+        <button onClick={() => changeView(Views.DAY)} className="view-btn">
+          Today
+        </button>
       </div>
     </div>
   );
 };
 
-const HomePage: React.FC = () => {
+const HomePage: FC = () => {
   const currentDate = new Date();
-  const dayOfWeek = currentDate.toLocaleString("default", { weekday: "long" });
+  const dayOfWeek = currentDate.toLocaleString('default', { weekday: 'long' });
 
   return (
     <div className="app-container">
@@ -65,10 +85,26 @@ const HomePage: React.FC = () => {
           <section className="to-do-list" aria-label="To-do list">
             <h3>TO-DO LIST</h3>
             <ul>
-              <li><label><input type="checkbox" /> 프로젝트 제안서 검토</label></li>
-              <li><label><input type="checkbox" /> 오후 2시 팀 미팅</label></li>
-              <li><label><input type="checkbox" /> 주간 보고서 업데이트</label></li>
-              <li><label><input type="checkbox" /> 고객 프레젠테이션 준비</label></li>
+              <li>
+                <label>
+                  <input type="checkbox" /> 프로젝트 제안서 검토
+                </label>
+              </li>
+              <li>
+                <label>
+                  <input type="checkbox" /> 오후 2시 팀 미팅
+                </label>
+              </li>
+              <li>
+                <label>
+                  <input type="checkbox" /> 주간 보고서 업데이트
+                </label>
+              </li>
+              <li>
+                <label>
+                  <input type="checkbox" /> 고객 프레젠테이션 준비
+                </label>
+              </li>
             </ul>
           </section>
 
@@ -85,9 +121,15 @@ const HomePage: React.FC = () => {
           <section className="project-status" aria-label="Project status">
             <h3>PROJECT STATUS</h3>
             <ul>
-              <li>웹사이트 리뉴얼 <span className="status">진행중</span></li>
-              <li>모바일 앱 개발 <span className="status">진행중</span></li>
-              <li>마케팅 캠페인 <span className="status">진행중</span></li>
+              <li>
+                웹사이트 리뉴얼 <span className="status">진행중</span>
+              </li>
+              <li>
+                모바일 앱 개발 <span className="status">진행중</span>
+              </li>
+              <li>
+                마케팅 캠페인 <span className="status">진행중</span>
+              </li>
             </ul>
           </section>
 

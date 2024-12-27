@@ -1,93 +1,102 @@
-.edit-container {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 20px;
-  background-color: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  font-family: 'Arial', sans-serif;
+.project-edit-container {
+  padding: 24px;
+  font-family: Arial, sans-serif;
+  background-color: #f4f5fc;
+}
+
+.breadcrumb {
+  font-size: 14px;
+  margin-bottom: 16px;
+  color: #1100FF;
+  cursor: pointer;
 }
 
 h1 {
   font-size: 24px;
-  color: #333;
-  margin-bottom: 20px;
-  text-align: center;
+  margin-bottom: 24px;
 }
 
 .form {
-  margin-bottom: 20px;
+  background: #fff;
+  padding: 24px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .form-group {
-  margin-bottom: 20px;
+  margin-bottom: 16px;
 }
 
-.form-group label {
+label {
   display: block;
   font-size: 14px;
-  font-weight: bold;
+  margin-bottom: 8px;
   color: #333;
-  margin-bottom: 5px;
 }
 
-.form-group input,
-.form-group textarea,
-.form-group select {
+input,
+textarea,
+select {
   width: 100%;
-  padding: 10px;
+  padding: 8px;
   font-size: 14px;
-  border-radius: 4px;
   border: 1px solid #ccc;
-  transition: border-color 0.3s;
+  border-radius: 4px;
+  box-sizing: border-box;
 }
 
-.form-group input:focus,
-.form-group textarea:focus,
-.form-group select:focus {
-  border-color: #007bff;
-  outline: none;
+textarea {
+  height: 80px;
+  resize: none;
 }
 
 .date-group {
   display: flex;
-  gap: 20px;
+  gap: 16px;
+}
+
+.date-group .form-group {
+  flex: 1;
 }
 
 .buttons {
   display: flex;
   justify-content: flex-end;
-  gap: 10px;
+  gap: 16px;
+  margin-top: 16px;
 }
 
-.cancel-btn,
 .save-btn {
-  padding: 10px 20px;
+  background-color: #1100FF;
+  color: #fff;
   border: none;
+  padding: 8px 16px;
+  font-size: 14px;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 14px;
   transition: background-color 0.3s;
-}
-
-.cancel-btn {
-  background-color: #ccc;
-  color: #333;
-}
-
-.cancel-btn:hover {
-  background-color: #b3b3b3;
-}
-
-.save-btn {
-  background-color: #007bff;
-  color: #fff;
 }
 
 .save-btn:hover {
   background-color: #0056b3;
 }
 
+.cancel-btn {
+  background-color: #f5f5f5;
+  color: #333;
+  border: 1px solid #ccc;
+  padding: 8px 16px;
+  font-size: 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.cancel-btn:hover {
+  background-color: #e6e6e6;
+}
+
+/* Popup Styles */
 .popup-overlay {
   position: fixed;
   top: 0;
@@ -98,37 +107,59 @@ h1 {
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 1000;
 }
 
 .popup-content {
   background: white;
   padding: 20px;
-  border-radius: 8px;
+  border-radius: 10px;
   text-align: center;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  max-width: 350px;
-  width: 100%;
+  width: 300px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  animation: fadeIn 0.3s ease-in-out;
 }
 
 .popup-icon img {
-  width: 50px;
-  height: 50px;
+  width: 100px;
+  height: 80px;
   margin-bottom: 10px;
+}
+
+.popup-content h2 {
+  font-size: 18px;
+  margin: 10px 0;
+  color: #333;
+}
+
+.popup-content p {
+  font-size: 14px;
+  color: #666;
 }
 
 .popup-button {
   margin-top: 20px;
-  padding: 10px 20px;
-  background-color: #007bff;
-  color: #fff;
+  padding: 10px 130px;
+  background-color: #1100FF;
+  color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 5px;
+  font-size: 14px;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: background-color 0.3s ease;
 }
 
 .popup-button:hover {
   background-color: #0056b3;
 }
 
-
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

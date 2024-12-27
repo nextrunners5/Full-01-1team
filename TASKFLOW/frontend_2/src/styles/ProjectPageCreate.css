@@ -1,21 +1,23 @@
-.content-container {
+/* 전체 컨테이너 */
+.contentContainer {
   margin: 0 auto;
   padding: 20px;
   width: 100%;
   max-width: 1200px;
   box-sizing: border-box;
-  background-color: #F4F5FC;
+  background-color: #f4f5fc;
   position: relative;
 }
 
-.header-container {
+.headerContainer {
   text-align: left;
   margin-bottom: 20px;
   max-width: 900px;
   margin: 0 auto;
 }
 
-.project-creation-container {
+/* 프로젝트 생성 섹션 컨테이너 */
+.container {
   background-color: #ffffff;
   border-radius: 8px;
   padding: 40px;
@@ -37,7 +39,8 @@
   margin-bottom: 20px;
 }
 
-.form-group {
+/* 폼 요소들 */
+.formGroup {
   margin-bottom: 20px;
 }
 
@@ -66,13 +69,13 @@
   min-height: 120px;
 }
 
-.form-dates {
+.formDates {
   display: flex;
   gap: 20px;
   flex-wrap: wrap;
 }
 
-.date-input {
+.dateInput {
   width: 100%;
   max-width: 300px;
   padding: 10px;
@@ -81,13 +84,14 @@
   border: 1px solid #ccc;
 }
 
-.form-buttons {
+/* 버튼들 */
+.formButtons {
   display: flex;
   justify-content: flex-end;
   gap: 10px;
 }
 
-.create-button {
+.createButton {
   padding: 10px 20px;
   background-color: #007bff;
   color: #fff;
@@ -96,7 +100,7 @@
   cursor: pointer;
 }
 
-.cancel-button {
+.cancelButton {
   padding: 10px 20px;
   background-color: #ccc;
   color: #333;
@@ -105,7 +109,8 @@
   cursor: pointer;
 }
 
-.modal-overlay {
+/* 모달 관련 */
+.modalOverlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -118,7 +123,7 @@
   z-index: 1000;
 }
 
-.modal-content {
+.modalContent {
   background-color: #fff;
   border-radius: 8px;
   padding: 30px;
@@ -127,86 +132,108 @@
   position: relative;
 }
 
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+.cancelModalContent {
+  background-color: #fff;
+  border-radius: 16px;
+  padding: 40px;
+  width: 400px;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.modalHeader {
   margin-bottom: 20px;
 }
 
-.modal-title {
-  font-size: 22px;
+.modalTitle {
+  font-size: 20px;
   font-weight: bold;
   margin: 0;
 }
 
-.modal-close {
-  font-size: 22px;
-  font-weight: bold;
+.modalClose {
+  position: absolute;
+  top: 10px;
+  right: 20px;
   cursor: pointer;
+  font-size: 24px;
 }
 
-.modal-body-centered {
+.modalBodyCentered {
   text-align: center;
   margin-bottom: 30px;
 }
 
-.complete-icon {
+.completeIcon {
   width: 130px;
   height: 100px;
   margin-bottom: 10px;
 }
 
-.modal-message {
-  font-size: 16px;
+.cancelIcon {
+  width: 130px;
+  height: 100px;
   margin-bottom: 20px;
-  color: #333;
 }
 
-.modal-project-name {
+.cancelTitle {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.cancelMessage {
+  font-size: 16px;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.modalMessage {
+  font-size: 16px;
+  color: #333;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.projectName {
   font-size: 18px;
   font-weight: bold;
-  color: #333;
-  margin-bottom: 20px;
+  color: #007bff;
+  margin-bottom: 10px;
 }
 
-.details-box {
-  background-color: #f9f9f9;
-  padding: 15px;
-  border-radius: 6px;
-  border: 1px solid #e0e0e0;
-  margin-bottom: 20px;
+.detailsBox {
   text-align: left;
+  margin: 0 auto;
+  max-width: 300px;
 }
 
-.modal-details {
-  font-size: 15px;
-  color: #666;
+.modalDetails {
+  font-size: 14px;
   margin-bottom: 5px;
 }
 
-.modal-footer-compact {
+.modalFooterCompact {
   display: flex;
   justify-content: center;
-  gap: 10px;
 }
 
-.close-button {
-  padding: 12px 80px;
-  background-color: #e0e0e0;
-  color: #333;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 16px;
-}
-
-.complete-button {
-  padding: 12px 80px;
+.completeButton {
+  padding: 10px 60px;
   background-color: #007bff;
   color: #fff;
   border: none;
-  border-radius: 6px;
-  cursor: pointer;
+  border-radius: 8px;
   font-size: 16px;
+  cursor: pointer;
+}
+
+.confirmButton {
+  padding: 10px 60px;
+  background-color: #1100ff;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
 }
