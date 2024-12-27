@@ -1,11 +1,12 @@
-/* ProjectContent.css */
-
 .project-container {
   flex-grow: 1;
   display: flex;
   flex-direction: column;
   background-color: #F4F5FC;
   padding: 16px;
+  margin-left: 240px; /* 사이드바로 인한 여백 */
+  padding-bottom: 64px; /* 푸터 높이 */
+  min-height: calc(100vh - 160px); /* 헤더와 푸터 높이를 뺀 최소 높이 */
 }
 
 .overview {
