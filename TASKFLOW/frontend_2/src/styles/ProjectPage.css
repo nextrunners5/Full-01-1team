@@ -169,13 +169,14 @@
 .delete-popup {
   position: fixed;
   top: 0;
-  left: 170px;
-  width: 100%;
+  left: -80px;
+  width: 110%;
   height: 100%;
   background: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
+
 }
 
 .popup-content {
@@ -187,6 +188,7 @@
   max-width: 350px;
   width: 100%;
   position: relative;
+  
 }
 
 .popup-content h3 {

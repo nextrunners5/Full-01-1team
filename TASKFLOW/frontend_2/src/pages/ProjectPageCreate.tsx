@@ -4,7 +4,7 @@ import completeIcon from '../assets/complete.png';
 import Header from "../components/common/Header.tsx";
 import Sidebar from "../components/common/Sidebar.tsx";
 import Footer from "../components/common/Footer.tsx";
-import "../styles/ProjectPageCreate.css"
+import "../styles/ProjectPageCreate.css";
 
 const ProjectCreationPage: React.FC = () => {
   const [projectName, setProjectName] = useState<string>('');
@@ -46,6 +46,8 @@ const ProjectCreationPage: React.FC = () => {
 
   return (
     <div className="contentContainer">
+      <Header />
+      <Sidebar />
       <div className="headerContainer">
         <h2 className="title">새 프로젝트 생성</h2>
         <p className="subtitle">프로젝트에 대한 기본 정보를 입력해주세요.</p>
@@ -118,42 +120,30 @@ const ProjectCreationPage: React.FC = () => {
         </div>
       </div>
 
-      {/* 프로젝트 생성 완료 모달 */}
       {isModalOpen && (
         <div className="modalOverlay">
           <div className="modalContent">
             <div className="modalHeader">
               <h2 className="modalTitle">프로젝트 생성 완료</h2>
-              <span className="modalClose" onClick={closeModal}>
-                ×
-              </span>
+              <span className="modalClose" onClick={closeModal}>×</span>
             </div>
             <div className="modalBodyCentered">
               <img src={completeIcon} alt="Complete" className="completeIcon" />
-              <p className="modalMessage">프로젝트가 성공적으로 생성되었습니다.</p>
-              <p style={{ marginBottom: '20px', fontSize: '16px', color: '#333' }}>
-                아래의 새로운 프로젝트가 생성되었습니다:
-              </p>
-              <p className="projectName">{projectName}</p>
+              <p className="modalMessage">새로운 프로젝트 '{projectName}'이 생성되었습니다.</p>
               <div className="detailsBox">
-                <p className="modalDetails">
-                  <strong>프로젝트 ID:</strong> PRJ-2024-0001
-                </p>
-                <p className="modalDetails">
-                  <strong>생성 일시:</strong> {new Date().toLocaleString()}
-                </p>
+                <p className="modalDetails"><strong>프로젝트 이름:</strong> {projectName}</p>
+                <p className="modalDetails"><strong>프로젝트 ID:</strong> PRJ-2024-0001</p>
+                <p className="modalDetails"><strong>생성 일시:</strong> {new Date().toLocaleString()}</p>
               </div>
             </div>
             <div className="modalFooterCompact">
-              <button className="completeButton" onClick={closeModal}>
-                완료
-              </button>
+              <button className="completeButton" onClick={closeModal}>완료</button>
+              <button className="closeButton" onClick={closeModal}>닫기</button>
             </div>
           </div>
         </div>
       )}
 
-      {/* 프로젝트 생성 취소 모달 */}
       {isCancelModalOpen && (
         <div className="modalOverlay">
           <div className="cancelModalContent">
@@ -163,15 +153,15 @@ const ProjectCreationPage: React.FC = () => {
               <p className="cancelMessage">프로젝트 생성이 취소되었습니다.</p>
             </div>
             <div className="modalFooterCompact">
-              <button className="confirmButton" onClick={confirmCancel}>
-                확인
-              </button>
+              <button className="confirmButton" onClick={confirmCancel}>확인</button>
             </div>
           </div>
         </div>
       )}
+      <Footer />
     </div>
   );
 };
 
 export default ProjectCreationPage;
+
