@@ -11,8 +11,7 @@ import Sidebar from "../components/common/Sidebar.tsx";
 import Footer from "../components/common/Footer.tsx";
 import "../styles/ProjectPage.css";
 
-
-// 프로젝트의 상태 타입 정의 (필요에 따라 확장 가능합니다)
+// 프로젝트의 상태 타입 정의
 type ProjectStatus = "진행 중" | "완료";
 
 // 필터를 위한 상태 타입 정의
@@ -71,13 +70,19 @@ const ProjectContent: React.FC = () => {
     },
   ]);
 
-  // 삭제 팝업 관련 상태
+  // 삭제 관련 상태
+  const [selectedIds, setSelectedIds] = useState<number[]>([]);
   const [showDeletePopup, setShowDeletePopup] = useState(false);
   const [selectedProject, setSelectedProject] = useState<number | null>(null);
 
+  // **여기서 추가되는 부분**: 단일/다중(배치) 삭제 구분
+  const [isBulkDelete, setIsBulkDelete] = useState(false);
+
   // 필터링된 프로젝트 목록
   const filteredProjects = projects
-    .filter((project) => (filter === "모든 상태" ? true : project.status === filter))
+    .filter((project) =>
+      filter === "모든 상태" ? true : project.status === filter
+    )
     .filter((project) =>
       project.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
@@ -92,25 +97,55 @@ const ProjectContent: React.FC = () => {
     navigate(`/project/edit/${projectId}`);
   };
 
-  // 프로젝트 삭제 버튼 클릭
+  // (1) 프로젝트 단일 삭제 버튼 클릭
   const handleDeleteClick = (projectId: number) => {
-    setSelectedProject(projectId);
-    setShowDeletePopup(true);
+    setIsBulkDelete(false);          // 단일 삭제 모드
+    setSelectedProject(projectId);   // 삭제할 프로젝트 ID
+    setShowDeletePopup(true);        // 모달 열기
+  };
+
+  // (2) 선택된 항목(다중) 삭제 버튼 클릭
+  const handleDeleteSelected = () => {
+    if (selectedIds.length === 0) return; // 선택된 항목이 없으면 아무 것도 안 함
+    setIsBulkDelete(true);           // 다중 삭제 모드
+    setSelectedProject(null);        // 단일 프로젝트는 선택X
+    setShowDeletePopup(true);        // 모달 열기
   };
 
   // 삭제 확정
   const handleConfirmDelete = () => {
-    setProjects((prevProjects) =>
-      prevProjects.filter((project) => project.id !== selectedProject)
-    );
+    if (isBulkDelete) {
+      // 다중 삭제 모드라면:
+      setProjects((prevProjects) =>
+        prevProjects.filter((project) => !selectedIds.includes(project.id))
+      );
+      setSelectedIds([]);
+    } else {
+      // 단일 삭제 모드라면:
+      setProjects((prevProjects) =>
+        prevProjects.filter((project) => project.id !== selectedProject)
+      );
+      setSelectedProject(null);
+    }
+
     setShowDeletePopup(false);
-    setSelectedProject(null);
+    setIsBulkDelete(false);
   };
 
   // 삭제 취소
   const handleCancelDelete = () => {
     setShowDeletePopup(false);
+    setIsBulkDelete(false);
     setSelectedProject(null);
+  };
+
+  // 체크박스 변경 이벤트
+  const handleCheckboxChange = (id: number) => {
+    setSelectedIds((prevSelectedIds) =>
+      prevSelectedIds.includes(id)
+        ? prevSelectedIds.filter((selectedId) => selectedId !== id)
+        : [...prevSelectedIds, id]
+    );
   };
 
   // 헤더 제목 반환
@@ -154,9 +189,20 @@ const ProjectContent: React.FC = () => {
       {/* 헤더 섹션 */}
       <div className="header-container">
         <h2 className="header-title">{getHeaderTitle()}</h2>
-        <button className="add-button" onClick={handleAddProject}>
-          새 프로젝트 추가
-        </button>
+
+        {/* 버튼들을 감싸는 새 래퍼 */}
+        <div className="buttons-wrapper">
+          <button
+            className="delete-selected-button"
+            onClick={handleDeleteSelected}
+            disabled={selectedIds.length === 0}
+          >
+            선택 항목 삭제
+          </button>
+          <button className="add-button" onClick={handleAddProject}>
+            새 프로젝트 추가
+          </button>
+        </div>
       </div>
 
       {/* 필터 섹션 */}
@@ -196,7 +242,11 @@ const ProjectContent: React.FC = () => {
           {filteredProjects.map((project) => (
             <tr key={project.id}>
               <td>
-                <input type="checkbox" />
+                <input
+                  type="checkbox"
+                  checked={selectedIds.includes(project.id)}
+                  onChange={() => handleCheckboxChange(project.id)}
+                />
               </td>
               <td>{project.name}</td>
               <td>
@@ -235,8 +285,12 @@ const ProjectContent: React.FC = () => {
       {showDeletePopup && (
         <div className="delete-popup">
           <div className="popup-content">
-            <h3>프로젝트 삭제</h3>
-            <p>이 프로젝트를 정말 삭제하시겠습니까?</p>
+            <h3>{isBulkDelete ? "선택 항목 삭제" : "프로젝트 삭제"}</h3>
+            <p>
+              {isBulkDelete
+                ? "선택한 모든 항목을 삭제하시겠습니까?"
+                : "이 프로젝트를 정말 삭제하시겠습니까?"}
+            </p>
             <p>이 작업은 되돌릴 수 없습니다.</p>
             <div className="popup-actions">
               <button onClick={handleCancelDelete}>취소</button>

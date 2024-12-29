@@ -3,17 +3,25 @@
   margin: 0 auto;
   padding: 20px;
   width: 100%;
-  max-width: 1200px;
+  max-width: 1400px; /* 가로 길이 확대 */
   box-sizing: border-box;
   background-color: #f4f5fc;
-  position: relative;
+  position: fixed; /* 위치 고정 */
+  top: 64px; /* 헤더 높이 반영 */
+  bottom: 40px; /* 푸터 높이 반영 */
+  left: 240px; /* 사이드바 너비 반영 */
+  overflow-y: auto; /* 내용 스크롤 허용 */
 }
 
 .headerContainer {
   text-align: left;
   margin-bottom: 20px;
-  max-width: 900px;
+  max-width: 1200px;
   margin: 0 auto;
+  position: sticky; /* 고정 */
+  top: 0; /* 컨테이너 상단에 고정 */
+  background-color: #f4f5fc; /* 배경색 추가 */
+  z-index: 10; /* 다른 요소 위에 표시 */
 }
 
 /* 프로젝트 생성 섹션 컨테이너 */
@@ -22,7 +30,7 @@
   border-radius: 8px;
   padding: 40px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  max-width: 900px;
+  max-width: 1200px; /* 가로 길이 확대 */
   margin: 0 auto;
 }
 
@@ -31,6 +39,7 @@
   font-weight: bold;
   color: #333;
   margin-bottom: 10px;
+  text-align: center; /* 가운데 정렬 */
 }
 
 .subtitle {
