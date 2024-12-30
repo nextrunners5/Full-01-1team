@@ -1,5 +1,5 @@
- /* 전체 컨테이너 */
- .contentContainer {
+/* 전체 컨테이너 */
+.contentContainer {
   margin: 0; /* 상단 여백 제거 */
   width: 100%; /* 전체 너비 */
   box-sizing: border-box; /* 패딩 포함 크기 계산 */
@@ -7,7 +7,6 @@
   position: relative; /* 위치 고정 */
   margin-top: -300px;
   margin-left: 100px;
-
 }
 
 /* 헤더 컨테이너 */
@@ -15,7 +14,6 @@
   text-align: left; /* 텍스트 왼쪽 정렬 */
   margin-bottom: 20px; /* 아래 여백 */
   margin-left: 200px;
-
 }
 
 /* 프로젝트 생성 섹션 컨테이너 */
@@ -98,7 +96,7 @@
 .formButtons {
   display: flex; /* 플렉스 레이아웃 */
   justify-content: flex-end; /* 오른쪽 정렬 */
-  gap: 10px; /* 버튼 간격 */
+  gap: 20px; /* 버튼 간격 */
 }
 
 .createButton {
@@ -140,8 +138,96 @@
   padding: 30px; /* 내부 여백 */
   width: 480px; /* 고정 너비 */
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* 그림자 */
-  position: relative; 
-  left: 150px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+/* 헤더 스타일 */
+.modalHeader {
+  margin-bottom: 20px;
+  width: 100%;
+  text-align: center;
+}
+
+.modalTitle {
+  font-size: 20px;
+  font-weight: bold;
+  margin: 0;
+  color: #333;
+}
+
+.modalClose {
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  cursor: pointer;
+  font-size: 24px;
+}
+
+/* 본문 스타일 */
+.modalBodyCentered {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.completeIcon {
+  width: 60px; /* 아이콘 크기 */
+  height: 60px;
+  margin-bottom: 20px;
+}
+
+.modalMessage {
+  font-size: 16px;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.detailsBox {
+  text-align: left;
+  margin: 0 auto;
+  max-width: 300px;
+  background-color: #f4f5f6;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+.modalDetails {
+  font-size: 14px;
+  margin-bottom: 5px;
+}
+
+/* 버튼 스타일 */
+.modalFooterCompact {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  gap: 20px;
+}
+
+.completeButton {
+  padding: 10px 60px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  flex: 1;
+}
+
+.closeButton {
+  padding: 10px 60px;
+  background-color: #ccc;
+  color: #333;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  flex: 1;
 }
 
 /* 취소 모달 */
