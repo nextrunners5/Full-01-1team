@@ -1,10 +1,11 @@
 import React, { useState, useEffect, ChangeEvent } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import completeIcon from "../assets/complete.png"; // 아이콘 이미지 가져오기
-import "../styles/ProjectPageEdit.css"; // CSS 분리 파일 임포트
-import Header from "../components/common/Header.tsx";
-import Sidebar from "../components/common/Sidebar.tsx";
-import Footer from "../components/common/Footer.tsx";
+import completeIcon from "../assets/complete.png";
+import "../styles/ProjectPageEdit.css";
+import Header from "../components/common/Header";
+import Sidebar from "../components/common/Sidebar";
+import Footer from "../components/common/Footer";
+import { fetchProjectById, updateProject } from "../services/api";
 
 
 interface PopupConfig {
@@ -17,7 +18,7 @@ interface RouteParams {
 }
 
 const ProjectEditPage: React.FC = () => {
-  const { projectId } = useParams<RouteParams>(); // URL에서 projectId를 가져옴
+  const { projectId } = useParams<Record<string, string | undefined>>(); // URL에서 projectId를 가져옴
   const navigate = useNavigate();
 
   // 초기값 설정 (기본값)

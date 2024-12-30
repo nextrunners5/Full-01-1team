@@ -1,15 +1,15 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import LoginPage from "./pages/LoginPage.tsx";
-import SignupPage from "./pages/SignupPage.tsx";
-import SchedulePage from "./pages/SchedulePage.tsx";
-import HomePage from "./pages/HomePage.tsx";
-import ProjectPage from "./pages/ProjectPage.tsx";
-import ProjectPageCreate from "./pages/ProjectPageCreate.tsx";
-import ProjectPageEdit from "./pages/ProjectPageEdit.tsx"; // 파일명과 컴포넌트명 통일
-import Header from "./components/common/Header.tsx";
-import Sidebar from "./components/common/Sidebar.tsx";
-import Footer from "./components/common/Footer.tsx";
+import LoginPage from "./pages/LoginPage";
+import SignupPage from "./pages/SignupPage";
+import SchedulePage from "./pages/SchedulePage";
+import HomePage from "./pages/HomePage";
+import ProjectPage from "./pages/ProjectPage";
+import ProjectPageCreate from "./pages/ProjectPageCreate";
+import ProjectPageEdit from "./pages/ProjectPageEdit";
+import Header from "./components/common/Header";
+import Sidebar from "./components/common/Sidebar";
+import Footer from "./components/common/Footer";
 
 const App: React.FC = () => (
   <Router>

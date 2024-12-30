@@ -1,20 +1,14 @@
 import React, { FC } from 'react';
-import {
-  Calendar,
-  dateFnsLocalizer,
-  Views,
-  ToolbarProps,
-  View
-} from 'react-big-calendar';
+import { Calendar, dateFnsLocalizer, Views, ToolbarProps, View } from 'react-big-calendar';
 import format from 'date-fns/format';
 import parse from 'date-fns/parse';
 import startOfWeek from 'date-fns/startOfWeek';
 import getDay from 'date-fns/getDay';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
-import '../styles/HomePage.css'; // 경로에 맞춰 수정하세요.
-import Header from "../components/common/Header.tsx";
-import Sidebar from "../components/common/Sidebar.tsx";
-import Footer from "../components/common/Footer.tsx";
+import '../styles/HomePage.css';
+import Header from "../components/common/Header";
+import Sidebar from "../components/common/Sidebar";
+import Footer from "../components/common/Footer";
 import "../styles/ProjectPage.css";
 
 const locales = {

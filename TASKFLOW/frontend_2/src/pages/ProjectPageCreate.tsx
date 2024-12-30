@@ -1,10 +1,11 @@
 import React, { useState, ChangeEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import completeIcon from '../assets/complete.png';
-import Header from "../components/common/Header.tsx";
-import Sidebar from "../components/common/Sidebar.tsx";
-import Footer from "../components/common/Footer.tsx";
+import Header from "../components/common/Header";
+import Sidebar from "../components/common/Sidebar";
+import Footer from "../components/common/Footer";
 import "../styles/ProjectPageCreate.css";
+import { fetchProjects, createProject, updateProject, deleteProject } from "../services/api";
 
 const ProjectCreationPage: React.FC = () => {
   const [projectName, setProjectName] = useState<string>('');
@@ -16,14 +17,19 @@ const ProjectCreationPage: React.FC = () => {
 
   const navigate = useNavigate();
 
-  const handleProjectCreation = (): void => {
-    console.log({
-      projectName,
-      projectDescription,
-      startDate,
-      endDate,
-    });
-    setIsModalOpen(true);
+  const handleProjectCreation = async (): Promise<void> => {
+    try {
+      const newProject = await createProject({
+        name: projectName,
+        description: projectDescription,
+        startDate,
+        endDate,
+      });
+      console.log("Project created:", newProject);
+      setIsModalOpen(true);
+    } catch (error) {
+      console.error("Failed to create project:", error);
+    }
   };
 
   const closeModal = (): void => {

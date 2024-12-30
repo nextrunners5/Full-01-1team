@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import Header from "../components/common/Header.tsx";
-import Sidebar from "../components/common/Sidebar.tsx";
-import Footer from "../components/common/Footer.tsx";
-import ScheduleModal from "../components/modals/ScheduleModal.tsx";
+import Header from "../components/common/Header";
+import Sidebar from "../components/common/Sidebar";
+import Footer from "../components/common/Footer";
+import ScheduleModal from "../components/modals/ScheduleModal";
 
 const SchedulePage: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
