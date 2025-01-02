@@ -1,32 +1,30 @@
 import { useState } from "react";
-import { login, signup } from "../services/authApi";
+import { authApi, LoginCredentials, SignupData } from "../services/authApi";
 
 export const useAuth = () => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
-  const handleLogin = async (email: string, password: string) => {
+  const handleLogin = async (credentials: LoginCredentials) => {
     try {
-      const token = await login(email, password);
-      localStorage.setItem("token", token);
+      const response = await authApi.login(credentials);
+      const token = response.data.token;
+      localStorage.setItem('token', token);
       setIsAuthenticated(true);
+      return token;
     } catch (error) {
-      console.error((error as Error).message);
+      console.error("Login error:", error);
+      throw new Error("로그인 중 오류가 발생했습니다.");
     }
   };
 
-  const handleSignup = async (email: string, password: string) => {
+  const handleSignup = async (data: SignupData) => {
     try {
-      await signup(email, password);
-      await handleLogin(email, password);
+      await authApi.signup(data);
     } catch (error) {
-      console.error((error as Error).message);
+      console.error("Signup error:", error);
+      throw new Error("회원가입 중 오류가 발생했습니다.");
     }
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    setIsAuthenticated(false);
-  };
-
-  return { isAuthenticated, handleLogin, handleSignup, handleLogout };
+  return { isAuthenticated, handleLogin, handleSignup };
 }; 

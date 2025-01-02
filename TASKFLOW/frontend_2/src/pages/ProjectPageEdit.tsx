@@ -5,6 +5,7 @@ import Header from "../components/common/Header";
 import Sidebar from "../components/common/Sidebar";
 import Footer from "../components/common/Footer";
 import "../styles/ProjectPageEdit.css";
+import { fetchProjectById, updateProject, Project } from '../services/projectApi';
 
 interface PopupConfig {
   message: string;
@@ -12,41 +13,55 @@ interface PopupConfig {
 }
 
 const ProjectEditPage: React.FC = () => {
-  const { projectId } = useParams<{ projectId: string }>();
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
   const [projectName, setProjectName] = useState("");
   const [projectDescription, setProjectDescription] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-  const [projectStatus, setProjectStatus] = useState("신규");
+  const [projectStatus, setProjectStatus] = useState<"진행 중" | "완료">("진행 중");
   const [popupConfig, setPopupConfig] = useState<PopupConfig | null>(null);
 
   useEffect(() => {
-    const fetchProjectData = async () => {
-      const data = {
-        projectName: "AI 기반 프로젝트 관리 시스템",
-        projectDescription: "인공지능을 활용한 효율적인 프로젝트 관리 시스템 개발",
-        startDate: "2024-01-01",
-        endDate: "2024-12-31",
-        projectStatus: "진행중",
-      };
+    if (id) {
+      loadProject(id);
+    }
+  }, [id]);
 
-      setProjectName(data.projectName);
-      setProjectDescription(data.projectDescription);
+  const loadProject = async (projectId: string) => {
+    try {
+      const data = await fetchProjectById(projectId);
+      setProjectName(data.name);
+      setProjectDescription(data.description);
       setStartDate(data.startDate);
       setEndDate(data.endDate);
-      setProjectStatus(data.projectStatus);
-    };
+      setProjectStatus(data.status);
+    } catch (error) {
+      console.error('프로젝트 정보 로딩 실패:', error);
+    }
+  };
 
-    fetchProjectData();
-  }, [projectId]);
+  const handleSave = async () => {
+    try {
+      if (!id) return;
+      
+      const projectData = {
+        name: projectName,
+        description: projectDescription,
+        startDate,
+        endDate,
+        status: projectStatus as "진행 중" | "완료"
+      };
 
-  const handleSave = () => {
-    setPopupConfig({
-      message: "프로젝트 정보가 성공적으로 업데이트되었습니다.",
-      onClose: () => navigate("/project"),
-    });
+      await updateProject(id, projectData);
+      setPopupConfig({
+        message: '프로젝트가 성공적으로 수정되었습니다.',
+        onClose: () => navigate('/project')
+      });
+    } catch (error) {
+      console.error('프로젝트 수정 실패:', error);
+    }
   };
 
   const handleCancel = () => {
@@ -125,11 +140,10 @@ const ProjectEditPage: React.FC = () => {
                 id="projectStatus"
                 value={projectStatus}
                 onChange={(e: ChangeEvent<HTMLSelectElement>) =>
-                  setProjectStatus(e.target.value)
+                  setProjectStatus(e.target.value as "진행 중" | "완료")
                 }
               >
-                <option value="신규">신규</option>
-                <option value="진행중">진행중</option>
+                <option value="진행 중">진행 중</option>
                 <option value="완료">완료</option>
               </select>
             </div>

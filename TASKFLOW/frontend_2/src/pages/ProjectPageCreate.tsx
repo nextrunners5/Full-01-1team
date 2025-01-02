@@ -5,6 +5,7 @@ import Header from "../components/common/Header";
 import Sidebar from "../components/common/Sidebar";
 import Footer from "../components/common/Footer";
 import "../styles/ProjectPageCreate.css";
+import { createProject } from '../services/projectApi';
 
 const ProjectCreationPage: React.FC = () => {
   const [projectName, setProjectName] = useState<string>('');
@@ -16,14 +17,23 @@ const ProjectCreationPage: React.FC = () => {
 
   const navigate = useNavigate();
 
-  const handleProjectCreation = (): void => {
-    console.log({
-      projectName,
-      projectDescription,
-      startDate,
-      endDate,
-    });
-    setIsModalOpen(true);
+  const handleProjectCreation = async (): Promise<void> => {
+    try {
+      const projectData = {
+        name: projectName,
+        description: projectDescription,
+        startDate,
+        endDate,
+        status: "진행 중" as const
+      };
+
+      const response = await createProject(projectData);
+      console.log('Created project:', response);
+      setIsModalOpen(true);
+    } catch (error) {
+      console.error('프로젝트 생성 실패:', error);
+      // TODO: 에러 처리 추가
+    }
   };
 
   const closeModal = (): void => {

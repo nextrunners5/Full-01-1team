@@ -4,6 +4,7 @@ import moment from 'moment';
 import axios from 'axios';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import '../styles/Weekly.css';
+import { scheduleApi, Schedule } from '../services/scheduleApi';
 
 const localizer = momentLocalizer(moment);
 
@@ -89,63 +90,84 @@ const WCustomToolbar: React.FC<BigCalendarToolbarProps> = ({ label, onNavigate }
 };
 
 const WeeklyPage: React.FC = () => {
+  const [eventTitle, setEventTitle] = useState("");
+  const [startDate, setStartDate] = useState<Date>(new Date());
+  const [endDate, setEndDate] = useState<Date>(new Date());
+  const [eventDescription, setEventDescription] = useState("");
   const [showModal, setShowModal] = useState<boolean>(false);
-  const [newEvent, setNewEvent] = useState<Event>({ start: new Date(), end: new Date(), title: '' });
-  const [events, setEvents] = useState<Event[]>([]);
+  const [events, setEvents] = useState<Schedule[]>([]);
+  const [selectedEvent, setSelectedEvent] = useState<Schedule | null>(null);
 
   useEffect(() => {
     document.body.classList.add('weekly-page');
-    axios
-      .get<Event[]>('/api/events')
-      .then((response) => {
-        setEvents(response.data);
-      })
-      .catch((error) => {
-        console.error('Error fetching events:', error);
-      });
+    loadSchedules();
 
     return () => {
       document.body.classList.remove('weekly-page');
     };
   }, []);
 
-  const handleAddEvent = (): void => {
-    if (newEvent.start && newEvent.end && newEvent.title) {
-      axios
-        .post<Event>('/api/events', newEvent)
-        .then((response) => {
-          setEvents([...events, response.data]);
-          setShowModal(false);
-          setNewEvent({ start: new Date(), end: new Date(), title: '' });
-        })
-        .catch((error) => {
-          console.error('Error adding event:', error);
-        });
+  const loadSchedules = async () => {
+    try {
+      const response = await scheduleApi.getAllSchedules();
+      setEvents(response.data);
+    } catch (error) {
+      console.error('일정 로딩 실패:', error);
     }
   };
 
-  const handleDeleteEvent = (): void => {
-    if (newEvent.id) {
-      axios
-        .delete(`/api/events/${newEvent.id}`)
-        .then(() => {
-          setEvents(events.filter((event) => event.id !== newEvent.id));
-          setShowModal(false);
-          setNewEvent({ start: new Date(), end: new Date(), title: '' });
-        })
-        .catch((error) => {
-          console.error('Error deleting event:', error);
-        });
+  const handleAddEvent = async () => {
+    try {
+      const newEvent: Schedule = {
+        title: eventTitle,
+        start: startDate,
+        end: endDate,
+        description: eventDescription
+      };
+
+      await scheduleApi.createSchedule(newEvent);
+      await loadSchedules();
+      setShowModal(false);
+      resetForm();
+    } catch (error) {
+      console.error('일정 추가 실패:', error);
     }
   };
 
-  const handleSelectEvent = (event: Event): void => {
-    setNewEvent(event);
+  const handleDeleteEvent = async () => {
+    if (selectedEvent?.id) {
+      try {
+        await scheduleApi.deleteSchedule(selectedEvent.id);
+        await loadSchedules();
+        setShowModal(false);
+        setSelectedEvent(null);
+      } catch (error) {
+        console.error('일정 삭제 실패:', error);
+      }
+    }
+  };
+
+  const resetForm = () => {
+    setEventTitle("");
+    setEventDescription("");
+    setStartDate(new Date());
+    setEndDate(new Date());
+    setSelectedEvent(null);
+  };
+
+  const handleSelectEvent = (event: Schedule) => {
+    setSelectedEvent(event);
+    setEventTitle(event.title);
+    setStartDate(new Date(event.start));
+    setEndDate(new Date(event.end));
+    setEventDescription(event.description || '');
     setShowModal(true);
   };
 
-  const handleSelectSlot = (slotInfo: { start: Date; end: Date }): void => {
-    setNewEvent({ start: slotInfo.start, end: slotInfo.end, title: '' });
+  const handleSelectSlot = (slotInfo: { start: Date; end: Date }) => {
+    resetForm();
+    setStartDate(slotInfo.start);
+    setEndDate(slotInfo.end);
     setShowModal(true);
   };
 
@@ -179,22 +201,22 @@ const WeeklyPage: React.FC = () => {
       {showModal && (
         <div className="modal-overlay">
           <div className="modal-content">
-            <h3>{newEvent.id ? '일정 수정' : '일정 추가'}</h3>
+            <h3>{selectedEvent?.id ? '일정 수정' : '일정 추가'}</h3>
             <div className="modal-row">
               <div>
                 <label>시작 시간</label>
                 <input
                   type="datetime-local"
-                  value={newEvent.start ? newEvent.start.toISOString().slice(0, 16) : ''}
-                  onChange={(e) => setNewEvent({ ...newEvent, start: new Date(e.target.value) })}
+                  value={startDate.toISOString().slice(0, 16)}
+                  onChange={(e) => setStartDate(new Date(e.target.value))}
                 />
               </div>
               <div>
                 <label>종료 시간</label>
                 <input
                   type="datetime-local"
-                  value={newEvent.end ? newEvent.end.toISOString().slice(0, 16) : ''}
-                  onChange={(e) => setNewEvent({ ...newEvent, end: new Date(e.target.value) })}
+                  value={endDate.toISOString().slice(0, 16)}
+                  onChange={(e) => setEndDate(new Date(e.target.value))}
                 />
               </div>
             </div>
@@ -202,34 +224,35 @@ const WeeklyPage: React.FC = () => {
               <label>일정 제목</label>
               <input
                 type="text"
-                value={newEvent.title}
+                value={eventTitle}
                 placeholder="일정 제목을 입력하세요"
-                onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })}
+                onChange={(e) => setEventTitle(e.target.value)}
               />
             </div>
             <div>
               <label>일정 설명</label>
               <textarea
                 rows={4}
-                value={newEvent.description || ''}
+                value={eventDescription}
                 placeholder="일정에 대한 설명을 입력하세요"
-                onChange={(e) => setNewEvent({ ...newEvent, description: e.target.value })}
-              ></textarea>
+                onChange={(e) => setEventDescription(e.target.value)}
+              />
             </div>
             <div className="modal-buttons">
-              {newEvent.id && (
+              {selectedEvent?.id && (
                 <button className="modal-delete-btn" onClick={handleDeleteEvent}>
                   삭제
                 </button>
               )}
-              <div className="modal-actions">
-                <button className="modal-cancel-btn" onClick={() => setShowModal(false)}>
-                  취소
-                </button>
-                <button className="modal-save-btn" onClick={handleAddEvent}>
-                  저장
-                </button>
-              </div>
+              <button className="modal-save-btn" onClick={handleAddEvent}>
+                {selectedEvent?.id ? '수정' : '추가'}
+              </button>
+              <button className="modal-cancel-btn" onClick={() => {
+                setShowModal(false);
+                resetForm();
+              }}>
+                취소
+              </button>
             </div>
           </div>
         </div>
