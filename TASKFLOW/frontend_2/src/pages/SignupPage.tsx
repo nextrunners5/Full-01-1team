@@ -292,4 +292,4 @@ const customStyles = {
   }
 };
 
-export default SignupPage; 
+export default SignupPage;
