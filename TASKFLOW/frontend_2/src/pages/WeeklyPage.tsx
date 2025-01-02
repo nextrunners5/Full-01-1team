@@ -16,12 +16,6 @@ type Event = {
   resource?: { color?: string };
 };
 
-type ToolbarProps = {
-  date: Date;
-  label: string;
-  onNavigate: (action: 'PREV' | 'NEXT') => void;
-};
-
 type EventComponentProps = {
   event: Event;
   onSelectEvent: (event: Event) => void;
@@ -47,7 +41,7 @@ const WEventComponent: React.FC<EventComponentProps> = ({ event, onSelectEvent }
   );
 };
 
-const WCustomToolbar: React.FC<BigCalendarToolbarProps> = ({ date, label, onNavigate }) => {
+const WCustomToolbar: React.FC<BigCalendarToolbarProps> = ({ label, onNavigate }) => {
   const goToBack = () => onNavigate('PREV');
   const goToNext = () => onNavigate('NEXT');
 
@@ -177,8 +171,8 @@ const WeeklyPage: React.FC = () => {
           boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
         }}
         components={{
-          event: (props) => <WEventComponent {...props} onSelectEvent={handleSelectEvent} />,
-          toolbar: (props) => <WCustomToolbar {...props} />,
+          event: (props: any) => <WEventComponent {...props} onSelectEvent={handleSelectEvent} />,
+          toolbar: (props: any) => <WCustomToolbar {...props} />,
         }}
       />
 

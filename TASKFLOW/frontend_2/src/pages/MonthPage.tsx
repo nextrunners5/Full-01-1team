@@ -141,7 +141,7 @@ const MonthPage: React.FC = () => {
         views={['month']}
         className="M-calendar-container"
         components={{
-          toolbar: (props) => <CustomToolbar {...props} onAddEvent={() => setShowModal(true)} />,
+          toolbar: (props: ToolbarProps) => <CustomToolbar {...props} onAddEvent={() => setShowModal(true)} />,
         }}
       />
       {showModal && (
