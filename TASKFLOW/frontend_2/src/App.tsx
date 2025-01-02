@@ -6,6 +6,9 @@ import SignupPage from "./pages/SignupPage";
 import SchedulePage from "./pages/SchedulePage";
 import MonthPage from "./pages/MonthPage";
 import WeeklyPage from "./pages/WeeklyPage";
+import ProjectPage from "./pages/ProjectPage";
+import ProjectPageCreate from "./pages/ProjectPageCreate";
+import ProjectPageEdit from "./pages/ProjectPageEdit";
 
 const App: React.FC = () => {
   return (
@@ -14,9 +17,12 @@ const App: React.FC = () => {
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
-        <Route path="/Schedule" element={<SchedulePage />} />
-        <Route path="/Schedule/Monthly" element={<MonthPage />} />
-        <Route path="/Schedule/Weekly" element={<WeeklyPage />} />
+        <Route path="/schedule" element={<SchedulePage />} />
+        <Route path="/schedule/monthly" element={<MonthPage />} />
+        <Route path="/schedule/weekly" element={<WeeklyPage />} />
+        <Route path="/project" element={<ProjectPage />} />
+        <Route path="/project/create" element={<ProjectPageCreate />} />
+        <Route path="/project/edit/:projectId" element={<ProjectPageEdit />} />
       </Routes>
     </Router>
   );
