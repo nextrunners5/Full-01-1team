@@ -1,84 +1,70 @@
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-const connectDB = require("../config/db");
+import { Request, Response } from "express";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+import sequelize from "../config/db";
+import { QueryTypes } from "sequelize";
 
 // 회원가입
-exports.signup = async (req, res) => {
+export const signup = async (req: Request, res: Response) => {
   const { email, password } = req.body;
 
-  // 입력값 검증
   if (!email || !password) {
     return res.status(400).json({ error: "Email and password are required" });
   }
 
   try {
-    // 데이터베이스 연결
-    const dbConnection = await connectDB();
-
-    // 이메일 중복 확인
-    const [existingUser] = await dbConnection.execute(
+    const [existingUser] = await sequelize.query<any>(
       "SELECT * FROM users WHERE email = ?",
-      [email]
+      { replacements: [email], type: QueryTypes.SELECT }
     );
-    if (existingUser.length > 0) {
+    if (existingUser) {
       return res.status(409).json({ error: "Email already exists" });
     }
 
-    // 비밀번호 해시화
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // 사용자 데이터 삽입
-    await dbConnection.execute(
+    await sequelize.query(
       "INSERT INTO users (email, password) VALUES (?, ?)",
-      [email, hashedPassword]
+      { replacements: [email, hashedPassword], type: QueryTypes.INSERT }
     );
 
     res.status(201).json({ message: "회원가입 성공!" });
   } catch (error) {
-    console.error("회원가입 중 오류 발생:", error.message);
+    console.error("회원가입 중 오류 발생:", (error as Error).message);
     res.status(500).json({ error: "서버 오류" });
   }
 };
 
 // 로그인
-exports.login = async (req, res) => {
+export const login = async (req: Request, res: Response) => {
   const { email, password } = req.body;
 
-  // 입력값 검증
   if (!email || !password) {
     return res.status(400).json({ error: "Email and password are required" });
   }
 
   try {
-    // 데이터베이스 연결
-    const dbConnection = await connectDB();
-
-    // 사용자 검색
-    const [rows] = await dbConnection.execute(
+    const [user] = await sequelize.query<any>(
       "SELECT * FROM users WHERE email = ?",
-      [email]
+      { replacements: [email], type: QueryTypes.SELECT }
     );
 
-    if (rows.length === 0) {
+    if (!user) {
       return res.status(404).json({ error: "사용자를 찾을 수 없습니다." });
     }
 
-    const user = rows[0];
-
-    // 비밀번호 검증
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(400).json({ error: "비밀번호가 일치하지 않습니다." });
     }
 
-    // JWT 토큰 생성
-    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
+    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET as string, {
       expiresIn: "1h"
     });
 
     res.json({ token });
   } catch (error) {
-    console.error("로그인 중 오류 발생:", error.message);
+    console.error("로그인 중 오류 발생:", (error as Error).message);
     res.status(500).json({ error: "서버 오류" });
   }
-};
+}; 
