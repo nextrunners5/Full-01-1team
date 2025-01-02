@@ -1,242 +1,295 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const SignupPage: React.FC = () => {
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const navigate = useNavigate();
 
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
+  // State to manage form data
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+    confirmPassword: "",
+    name: "",
+    birthdate: "",
+    gender: "",
+    idNumber: "",
+    agree1: false,
+    agree2: false
+  });
+
+  // Handles changes to input fields
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value, type, checked } = e.target;
+    // Update state based on input type (checkbox vs text)
+    setFormData({
+      ...formData,
+      [name]: type === "checkbox" ? checked : value
+    });
   };
 
-  const toggleConfirmPasswordVisibility = () => {
-    setShowConfirmPassword(!showConfirmPassword);
+  // Mock function to simulate email duplication check
+  const handleEmailDuplicationCheck = () => {
+    // Simulated API call to check email duplication
+    if (formData.email === "test@example.com") {
+      alert("이미 사용 중인 이메일입니다.");
+    } else {
+      alert("사용 가능한 이메일입니다.");
+    }
+  };
+
+  // Handles form submission
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault(); // Prevents default form submission behavior
+
+    try {
+      const response = await axios.post("http://localhost:3500/api/signup", formData);
+      if (response.status === 201) {
+        alert("회원가입 성공!");
+        navigate('/home'); // 회원가입 후 메인 페이지로 이동
+      }
+    } catch (error) {
+      console.error("회원가입 중 오류 발생:", error);
+      alert("회원가입 중 오류가 발생했습니다.");
+    }
   };
 
   return (
-    <>
-      <style>
-        {`
-          * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: Arial, sans-serif;
-          }
+    <div style={customStyles.container}>
+      <h1 style={customStyles.title}>회원가입</h1>
+      <p style={customStyles.subtitle}>
+        서비스 이용을 위해 회원가입이 필요합니다
+      </p>
 
-          body {
-            background-color: #f4f5fa;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-          }
-
-          .container {
-            background-color: #ffffff;
-            padding: 2rem;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            width: 800px;
-          }
-
-          .logo {
-            font-size: 2rem;
-            font-weight: bold;
-            color: #4169e1;
-            text-align: left;
-            margin-bottom: 1rem;
-          }
-
-          .title {
-            font-size: 1.2rem;
-            font-weight: bold;
-            margin-bottom: 0.5rem;
-            text-align: left;
-          }
-
-          .subtitle {
-            font-size: 0.9rem;
-            color: #777;
-            margin-bottom: 2rem;
-            text-align: left;
-          }
-
-          .input-group {
-            text-align: left;
-            margin-bottom: 1.5rem;
-          }
-
-          .input-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: #333;
-            font-size: 0.9rem;
-          }
-
-          .input-group input {
-            width: 100%;
-            padding: 0.8rem;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 1rem;
-          }
-
-          .input-group input::placeholder {
-            color: #aaa;
-          }
-
-          .password-wrapper {
-            position: relative;
-          }
-
-          .eye-icon {
-            position: absolute;
-            right: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            cursor: pointer;
-            color: #999;
-            font-size: 1.2rem;
-          }
-
-          .gender-group {
-            margin-bottom: 1rem;
-          }
-
-          .gender-group label {
-            margin-right: 1rem;
-            font-size: 0.9rem;
-          }
-
-          .checkbox-group {
-            text-align: left;
-            margin-top: 1rem;
-            margin-bottom: 1rem;
-            font-size: 0.9rem;
-          }
-
-          .checkbox-group input {
-            margin-right: 0.3rem;
-          }
-
-          .submit-btn {
-            background-color: #4169e1;
-            color: white;
-            border: none;
-            padding: 1rem;
-            width: 100%;
-            border-radius: 5px;
-            font-size: 1rem;
-            cursor: pointer;
-            font-weight: bold;
-          }
-
-          .submit-btn:hover {
-            background-color: #3558c8;
-          }
-
-          .footer {
-            margin-top: 2rem;
-            font-size: 0.8rem;
-            color: #999;
-            text-align: center;
-          }
-        `}
-      </style>
-
-      <div className="container">
-        <h1 className="logo">TASKFLOW</h1>
-        <h2 className="title">회원가입</h2>
-        <p className="subtitle">서비스 이용을 위해 회원가입이 필요합니다</p>
-
-        <form>
-          <div className="input-group">
-            <label htmlFor="email">이메일 주소</label>
-            <input type="email" id="email" placeholder="example@email.com" />
-          </div>
-
-          <div className="input-group">
-            <label htmlFor="password">비밀번호</label>
-            <div className="password-wrapper">
-              <input
-                type={showPassword ? "text" : "password"}
-                id="password"
-                placeholder="영문, 숫자, 특수문자 포함 8-20자"
-              />
-              <span
-                className="eye-icon"
-                onClick={togglePasswordVisibility}
-                role="button"
-                aria-label="비밀번호 보기"
-              >
-                {showPassword ? "🙈" : "👁️"}
-              </span>
-            </div>
-          </div>
-
-          <div className="input-group">
-            <label htmlFor="password-confirm">비밀번호 확인</label>
-            <div className="password-wrapper">
-              <input
-                type={showConfirmPassword ? "text" : "password"}
-                id="password-confirm"
-                placeholder="비밀번호를 다시 입력해주세요"
-              />
-              <span
-                className="eye-icon"
-                onClick={toggleConfirmPasswordVisibility}
-                role="button"
-                aria-label="비밀번호 확인 보기"
-              >
-                {showConfirmPassword ? "🙈" : "👁️"}
-              </span>
-            </div>
-          </div>
-
-          <div className="input-group">
-            <label htmlFor="nickname">이름 (닉네임)</label>
-            <input type="text" id="nickname" placeholder="이름 입력" />
-          </div>
-
-          <div className="input-group">
-            <label htmlFor="birthdate">생년월일</label>
-            <input type="date" id="birthdate" />
-          </div>
-
-          <div className="gender-group">
-            <label>
-              <input type="radio" name="gender" value="male" /> 남성
-            </label>
-            <label>
-              <input type="radio" name="gender" value="female" /> 여성
-            </label>
-          </div>
-
-          <div className="input-group">
-            <label htmlFor="id-number">주민등록번호</label>
-            <input type="text" id="id-number" placeholder="주민등록번호 입력" />
-          </div>
-
-          <div className="checkbox-group">
-            <label>
-              <input type="checkbox" required /> 개인정보 수집 및 이용 동의
-              (필수)
-            </label>
-            <label>
-              <input type="checkbox" required /> 제3자 정보제공 동의 (필수)
-            </label>
-          </div>
-
-          <button type="submit" className="submit-btn">
-            회원가입 완료
+      <form onSubmit={handleSubmit}>
+        {/* Email input field with duplication check button */}
+        <label htmlFor="email">이메일 주소</label>
+        <div style={customStyles.emailContainer}>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            placeholder="example@email.com"
+            value={formData.email}
+            onChange={handleChange}
+            required
+            style={customStyles.input}
+          />
+          <button
+            type="button"
+            onClick={handleEmailDuplicationCheck}
+            style={customStyles.verifyButton}
+          >
+            이메일 중복확인
           </button>
-        </form>
-      </div>
+        </div>
 
-      <footer className="footer">ⓒ 2024 TASKFLOW. All rights reserved.</footer>
-    </>
+        {/* Password input fields */}
+        <label htmlFor="password">비밀번호</label>
+        <input
+          type="password"
+          id="password"
+          name="password"
+          placeholder="영문, 숫자, 특수문자 조합 8-20자"
+          value={formData.password}
+          onChange={handleChange}
+          required
+          style={customStyles.input}
+        />
+
+        <label htmlFor="confirmPassword">비밀번호 확인</label>
+        <input
+          type="password"
+          id="confirmPassword"
+          name="confirmPassword"
+          placeholder="비밀번호를 다시 입력해주세요"
+          value={formData.confirmPassword}
+          onChange={handleChange}
+          required
+          style={customStyles.input}
+        />
+
+        {/* Name input field */}
+        <label htmlFor="name">이름 (닉네임)</label>
+        <input
+          type="text"
+          id="name"
+          name="name"
+          placeholder="이름을 입력해주세요"
+          value={formData.name}
+          onChange={handleChange}
+          required
+          style={customStyles.input}
+        />
+
+        {/* Birthdate input field */}
+        <label htmlFor="birthdate">생년월일</label>
+        <input
+          type="date"
+          id="birthdate"
+          name="birthdate"
+          value={formData.birthdate}
+          onChange={handleChange}
+          required
+          style={customStyles.input}
+        />
+
+        {/* Gender selection (radio buttons) */}
+        <label style={customStyles.inlineLabel}>성별</label>
+        <div style={customStyles.inlineRadioGroup}>
+          <input
+            type="radio"
+            id="male"
+            name="gender"
+            value="male"
+            checked={formData.gender === "male"}
+            onChange={handleChange}
+          />
+          <label htmlFor="male">남성</label>
+
+          <input
+            type="radio"
+            id="female"
+            name="gender"
+            value="female"
+            checked={formData.gender === "female"}
+            onChange={handleChange}
+          />
+          <label htmlFor="female">여성</label>
+        </div>
+
+        {/* ID number input field */}
+        <label htmlFor="idNumber">주민등록번호</label>
+        <input
+          type="text"
+          id="idNumber"
+          name="idNumber"
+          placeholder="주민등록번호를 입력해주세요"
+          value={formData.idNumber}
+          onChange={handleChange}
+          style={customStyles.input}
+        />
+
+        {/* Consent checkboxes */}
+        <div style={customStyles.checkboxGroup}>
+          <input
+            type="checkbox"
+            id="agree1"
+            name="agree1"
+            checked={formData.agree1}
+            onChange={handleChange}
+            required
+          />
+          <label htmlFor="agree1">
+            <a
+              href="#"
+              style={customStyles.link}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              개인정보 수집 및 이용 동의 (필수)
+            </a>
+          </label>
+        </div>
+
+        <div style={customStyles.checkboxGroup}>
+          <input
+            type="checkbox"
+            id="agree2"
+            name="agree2"
+            checked={formData.agree2}
+            onChange={handleChange}
+            required
+          />
+          <label htmlFor="agree2">
+            <a
+              href="#"
+              style={customStyles.link}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              제3자 정보제공 동의 (필수)
+            </a>
+          </label>
+        </div>
+
+        {/* Submit button */}
+        <button type="submit" style={customStyles.button}>
+          회원가입 완료
+        </button>
+      </form>
+    </div>
   );
+};
+
+const customStyles = {
+  container: {
+    width: "400px",
+    margin: "auto",
+    backgroundColor: "#fff",
+    padding: "20px",
+    borderRadius: "8px",
+    boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)"
+  },
+  title: {
+    textAlign: "center" as const,
+    marginBottom: "10px"
+  },
+  subtitle: {
+    textAlign: "center" as const,
+    marginBottom: "20px",
+    color: "#555"
+  },
+  input: {
+    width: "100%",
+    padding: "10px",
+    marginBottom: "15px",
+    border: "1px solid #ccc",
+    borderRadius: "4px"
+  },
+  emailContainer: {
+    display: "flex",
+    gap: "10px",
+    alignItems: "center",
+    marginBottom: "15px"
+  },
+  verifyButton: {
+    padding: "10px",
+    backgroundColor: "#4A90E2",
+    color: "#fff",
+    border: "none",
+    borderRadius: "4px",
+    cursor: "pointer"
+  },
+  inlineRadioGroup: {
+    display: "flex",
+    gap: "10px",
+    alignItems: "center",
+    justifyContent: "flex-start",
+    marginBottom: "15px"
+  },
+  inlineLabel: {
+    display: "inline-block",
+    marginBottom: "5px"
+  },
+  checkboxGroup: {
+    display: "flex",
+    alignItems: "center",
+    marginBottom: "15px"
+  },
+  link: {
+    textDecoration: "none",
+    color: "#4A90E2"
+  },
+  button: {
+    width: "100%",
+    padding: "10px",
+    backgroundColor: "#4A90E2",
+    color: "#fff",
+    border: "none",
+    borderRadius: "4px",
+    cursor: "pointer"
+  }
 };
 
 export default SignupPage; 

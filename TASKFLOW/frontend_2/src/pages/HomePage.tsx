@@ -1,5 +1,6 @@
-import React, { FC } from 'react';
-import { Calendar as BigCalendar, dateFnsLocalizer, Views } from 'react-big-calendar';
+import React, { FC, useState, useEffect } from 'react';
+import { Calendar, dateFnsLocalizer, ToolbarProps } from 'react-big-calendar';
+import { useNavigate } from 'react-router-dom';
 import format from 'date-fns/format';
 import parse from 'date-fns/parse';
 import startOfWeek from 'date-fns/startOfWeek';
@@ -10,6 +11,7 @@ import Header from "../components/common/Header";
 import Sidebar from "../components/common/Sidebar";
 import Footer from "../components/common/Footer";
 import "../styles/ProjectPage.css";
+import axios from 'axios';
 
 const locales = {
   'en-US': require('date-fns/locale/en-US'),
@@ -23,21 +25,14 @@ const localizer = dateFnsLocalizer({
   locales,
 });
 
-// 이벤트 타입 정의
 interface CalendarEvent {
   title: string;
   start: Date;
   end: Date;
 }
 
-const events: CalendarEvent[] = [
-  { title: '주간 회의', start: new Date(2024, 3, 5, 10, 0), end: new Date(2024, 3, 5, 11, 0) },
-  { title: '팀 미팅', start: new Date(2024, 3, 5, 14, 0), end: new Date(2024, 3, 5, 15, 0) },
-  { title: '고객 프레젠테이션', start: new Date(2024, 3, 6, 16, 0), end: new Date(2024, 3, 6, 17, 0) },
-];
-
 // 툴바 커스텀 컴포넌트
-const CustomToolbar: FC<any> = (toolbar) => {
+const CustomToolbar: FC<ToolbarProps> = (toolbar) => {
   const goToBack = () => toolbar.onNavigate('PREV');
   const goToNext = () => toolbar.onNavigate('NEXT');
   const changeView = (view: string) => toolbar.onView(view);
@@ -54,13 +49,13 @@ const CustomToolbar: FC<any> = (toolbar) => {
         </button>
       </div>
       <div className="view-switcher">
-        <button onClick={() => changeView(Views.MONTH)} className="view-btn">
+        <button onClick={() => changeView('month')} className="view-btn">
           Month
         </button>
-        <button onClick={() => changeView(Views.WEEK)} className="view-btn">
+        <button onClick={() => changeView('week')} className="view-btn">
           Week
         </button>
-        <button onClick={() => changeView(Views.DAY)} className="view-btn">
+        <button onClick={() => changeView('day')} className="view-btn">
           Today
         </button>
       </div>
@@ -69,11 +64,27 @@ const CustomToolbar: FC<any> = (toolbar) => {
 };
 
 const HomePage: FC = () => {
+  const navigate = useNavigate();
+  const [events, setEvents] = useState<CalendarEvent[]>([]);
   const currentDate = new Date();
   const dayOfWeek = currentDate.toLocaleString('default', { weekday: 'long' });
 
+  useEffect(() => {
+    axios.get('/api/events')
+      .then(response => setEvents(response.data))
+      .catch(error => console.error("이벤트 로드 중 오류 발생:", error));
+  }, []);
+
+  const handleCalendarClick = (event: React.MouseEvent) => {
+    if (!(event.target instanceof HTMLButtonElement)) {
+      navigate('/Schedule/Monthly');
+    }
+  };
+
   return (
     <div className="app-container">
+      <Header />
+      <Sidebar />
       <div className="main-container">
         <main className="content">
           <section className="to-do-list" aria-label="To-do list">
@@ -127,21 +138,22 @@ const HomePage: FC = () => {
             </ul>
           </section>
 
-          <section className="calendar" aria-label="Calendar">
+          <section className="calendar" aria-label="Calendar" onClick={handleCalendarClick}>
             <h3>MONTH</h3>
-            <BigCalendar
+            <Calendar
               localizer={localizer}
               events={events}
               startAccessor="start"
               endAccessor="end"
-              defaultView={Views.MONTH}
-              views={{ month: true, week: true, day: true }}
+              defaultView="month"
+              views={['month', 'week', 'day']}
               className="calendar-container"
               components={{ toolbar: CustomToolbar }}
             />
           </section>
         </main>
       </div>
+      <Footer />
     </div>
   );
 };
