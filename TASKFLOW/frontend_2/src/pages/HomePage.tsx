@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Calendar, dateFnsLocalizer, Views, ToolbarProps, View } from 'react-big-calendar';
+import { Calendar as BigCalendar, dateFnsLocalizer, Views } from 'react-big-calendar';
 import format from 'date-fns/format';
 import parse from 'date-fns/parse';
 import startOfWeek from 'date-fns/startOfWeek';
@@ -36,11 +36,11 @@ const events: CalendarEvent[] = [
   { title: '고객 프레젠테이션', start: new Date(2024, 3, 6, 16, 0), end: new Date(2024, 3, 6, 17, 0) },
 ];
 
-// 툴바 커스텀 컴포넌트 - ToolbarProps 타입 적용
-const CustomToolbar: FC<ToolbarProps> = (toolbar) => {
+// 툴바 커스텀 컴포넌트
+const CustomToolbar: FC<any> = (toolbar) => {
   const goToBack = () => toolbar.onNavigate('PREV');
   const goToNext = () => toolbar.onNavigate('NEXT');
-  const changeView = (view: View) => toolbar.onView(view);
+  const changeView = (view: string) => toolbar.onView(view);
 
   return (
     <div className="toolbar-container">
@@ -129,7 +129,7 @@ const HomePage: FC = () => {
 
           <section className="calendar" aria-label="Calendar">
             <h3>MONTH</h3>
-            <Calendar
+            <BigCalendar
               localizer={localizer}
               events={events}
               startAccessor="start"

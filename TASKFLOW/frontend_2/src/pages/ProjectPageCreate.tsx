@@ -5,7 +5,7 @@ import Header from "../components/common/Header";
 import Sidebar from "../components/common/Sidebar";
 import Footer from "../components/common/Footer";
 import "../styles/ProjectPageCreate.css";
-import { fetchProjects, createProject, updateProject, deleteProject } from "../services/api";
+import { createProject } from "../services/projectApi";
 
 const ProjectCreationPage: React.FC = () => {
   const [projectName, setProjectName] = useState<string>('');
@@ -19,16 +19,16 @@ const ProjectCreationPage: React.FC = () => {
 
   const handleProjectCreation = async (): Promise<void> => {
     try {
-      const newProject = await createProject({
+      const newProject = {
         name: projectName,
         description: projectDescription,
         startDate,
         endDate,
-      });
-      console.log("Project created:", newProject);
+      };
+      await createProject(newProject);
       setIsModalOpen(true);
     } catch (error) {
-      console.error("Failed to create project:", error);
+      console.error((error as Error).message);
     }
   };
 
