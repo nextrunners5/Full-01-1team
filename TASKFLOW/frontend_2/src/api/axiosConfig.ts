@@ -1,18 +1,37 @@
 import axios from 'axios';
 
-const axiosInstance = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || 'http://localhost:3001',
+const API = axios.create({
+  baseURL: process.env.REACT_APP_API_URL || "http://localhost:3500/api",
   headers: {
     'Content-Type': 'application/json',
   },
+  timeout: 5000,
 });
 
-axiosInstance.interceptors.request.use((config) => {
-  const token = localStorage.getItem('token');
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+API.interceptors.request.use(
+  (config) => {
+    console.log('Making request to:', config.url);
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    console.error('Request error:', error);
+    return Promise.reject(error);
   }
-  return config;
-});
+);
 
-export default axiosInstance; 
+API.interceptors.response.use(
+  (response) => {
+    console.log('Received response:', response.status, response.data);
+    return response;
+  },
+  (error) => {
+    console.error('Response error:', error.response || error);
+    return Promise.reject(error);
+  }
+);
+
+export default API; 

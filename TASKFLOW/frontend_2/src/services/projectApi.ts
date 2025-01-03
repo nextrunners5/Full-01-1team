@@ -1,7 +1,12 @@
 import axios from "axios";
 
 // BASEURL, HTTP 통신 프로토콜(application/json 등등..) 옵션 설정 추가
-const API = axios.create({ baseURL: "http://localhost:3500/api" });
+const API = axios.create({ 
+  baseURL: "http://localhost:3500/api",
+  headers: {
+    'Content-Type': 'application/json'
+  }
+});
 
 export interface Project {
   id?: number;
@@ -21,13 +26,14 @@ export interface ProjectResponse {
   status: "진행 중" | "완료";
 }
 
+// 서버 응답 데이터를 프론트엔드 형식으로 변환
 const transformProjectData = (data: any): Project => ({
   id: data.id,
-  name: data.name,
-  description: data.description,
-  startDate: data.start_date || data.startDate,
-  endDate: data.end_date || data.endDate,
-  status: data.status
+  name: data.name || '',
+  description: data.description || '',
+  startDate: data.startDate || '',
+  endDate: data.endDate || '',
+  status: data.status || "진행 중"
 });
 
 export const fetchProjects = async (): Promise<Project[]> => {
@@ -52,8 +58,18 @@ export const createProject = async (projectData: Project): Promise<Project> => {
 
 export const fetchProjectById = async (projectId: string): Promise<Project> => {
   try {
+    console.log('Fetching project with ID:', projectId);
     const response = await API.get(`/projects/${projectId}`);
-    return response.data;
+    console.log('Received project data:', response.data);
+    
+    if (!response.data) {
+      throw new Error('프로젝트 데이터가 없습니다.');
+    }
+
+    const transformedData = transformProjectData(response.data);
+    console.log('Transformed project data:', transformedData);
+    
+    return transformedData;
   } catch (error) {
     console.error("Fetch project by ID error:", error);
     throw new Error("프로젝트를 불러오는 중 오류가 발생했습니다.");

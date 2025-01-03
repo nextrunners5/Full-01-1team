@@ -24,15 +24,14 @@ const ProjectCreationPage: React.FC = () => {
         description: projectDescription,
         startDate,
         endDate,
-        status: "진행 중" as const
+        status: "진행 중"
       };
 
-      const response = await createProject(projectData);
-      console.log('Created project:', response);
+      await createProject(projectData);
       setIsModalOpen(true);
     } catch (error) {
       console.error('프로젝트 생성 실패:', error);
-      // TODO: 에러 처리 추가
+      alert('프로젝트 생성에 실패했습니다.');
     }
   };
 
@@ -142,7 +141,6 @@ const ProjectCreationPage: React.FC = () => {
                   <p className="modalMessage">새로운 프로젝트 '{projectName}'이 생성되었습니다.</p>
                   <div className="detailsBox">
                     <p className="modalDetails"><strong>프로젝트 이름:</strong> {projectName}</p>
-                    <p className="modalDetails"><strong>프로젝트 ID:</strong> PRJ-2024-0001</p>
                     <p className="modalDetails"><strong>생성 일시:</strong> {new Date().toLocaleString()}</p>
                   </div>
                 </div>
