@@ -15,6 +15,7 @@ import PersonalInfoPage from "./pages/PersonalInfoUpdate";
 import Header from "./components/common/Header";
 import Sidebar from "./components/common/Sidebar";
 import Footer from "./components/common/Footer";
+import TermsPage from "./pages/TermsPage";
 
 const App: React.FC = () => (
   <Router>
@@ -24,6 +25,7 @@ const App: React.FC = () => (
       <Route path="/login/findemail" element={<FindEmail />} />
       <Route path="/login/resetpassword" element={<ResetPassword />} />
       <Route path="/signup" element={<SignupPage />} />
+      <Route path="/terms" element={<TermsPage />} />
       <Route path="/schedule" element={<SchedulePage />} />
       <Route path="/schedule/monthly" element={<MonthPage />} />
       <Route path="/schedule/weekly" element={<WeeklyPage />} />

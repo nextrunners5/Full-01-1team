@@ -4,6 +4,7 @@ import sequelize from "./config/db";
 import authRoutes from "./routes/authRoutes";
 import cors from "cors";
 import projectRoutes from "./routes/projectRoutes";
+import signupRouter from "./routes/signupRouter"
 
 dotenv.config(); // 환경 변수 로드
 
@@ -18,13 +19,15 @@ app.use(
   cors({
     origin: "http://localhost:3000",
     methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true,
+    credentials: true
   })
 );
 
 // 라우트 설정
 app.use("/api/auth", authRoutes);
 app.use("/api/projects", projectRoutes);
+// 회원가입 라우트 등록
+app.use("/api/signup", signupRouter);
 
 // 데이터베이스 연결 및 서버 실행
 (async () => {
@@ -40,6 +43,7 @@ app.use("/api/projects", projectRoutes);
     app.get("/", (req: Request, res: Response) => {
       res.send("Welcome to the Backend API");
     });
+    
 
     // 서버 실행
     app.listen(PORT, () => {
@@ -49,4 +53,4 @@ app.use("/api/projects", projectRoutes);
     console.error("애플리케이션 실행 중 오류 발생:", (err as Error).message);
     process.exit(1);
   }
-})(); 
+})();
