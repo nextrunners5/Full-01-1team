@@ -5,7 +5,7 @@ import Header from "../components/common/Header";
 import Sidebar from "../components/common/Sidebar";
 import Footer from "../components/common/Footer";
 import "../styles/ProjectPageCreate.css";
-import { createProject } from '../services/projectApi';
+import { createProject, Project } from '../services/projectApi';
 
 const ProjectCreationPage: React.FC = () => {
   const [projectName, setProjectName] = useState<string>('');
@@ -19,12 +19,12 @@ const ProjectCreationPage: React.FC = () => {
 
   const handleProjectCreation = async (): Promise<void> => {
     try {
-      const projectData = {
+      const projectData: Project = {
         name: projectName,
         description: projectDescription,
         startDate,
         endDate,
-        status: "진행 중"
+        status: "진행 중" as const
       };
 
       await createProject(projectData);
