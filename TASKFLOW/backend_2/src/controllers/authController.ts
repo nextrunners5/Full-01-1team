@@ -4,6 +4,7 @@ import { UserModel } from "../models/User";
 import { responseHandler } from "../utils/responseHandler";
 import { logger } from "../utils/logger";
 import bcrypt from "bcrypt";
+import pool from '../config/database';
 
 const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key";
 
@@ -46,35 +47,45 @@ export const login = async (req: Request, res: Response) => {
     
     console.log('Login attempt with:', { email, password });
 
-    const user = await UserModel.findOne({
-      where: { email }
-    });
+    // 사용자 조회
+    const [rows] = await pool.query(
+      'SELECT * FROM users WHERE email = ?',
+      [email]
+    );
+    const user = (rows as any[])[0];
 
     console.log('Found user:', user);
 
     if (!user) {
       return res.status(401).json({
         success: false,
-        error: "이메일 또는 비밀번호가 잘못되었습니다."
+        message: "이메일 또는 비밀번호가 잘못되었습니다."
       });
     }
 
+    // 비밀번호 검증
     const isValid = await bcrypt.compare(password, user.password);
     console.log('Password validation:', { isValid });
 
     if (!isValid) {
       return res.status(401).json({
         success: false,
-        error: "이메일 또는 비밀번호가 잘못되었습니다."
+        message: "이메일 또는 비밀번호가 잘못되었습니다."
       });
     }
 
+    // JWT 토큰 생성
     const token = jwt.sign(
-      { id: user.id, email: user.email, name: user.name },
+      { 
+        id: user.id, 
+        email: user.email, 
+        name: user.name 
+      },
       process.env.JWT_SECRET || 'your-secret-key',
       { expiresIn: '24h' }
     );
 
+    // 성공 응답
     return res.status(200).json({
       success: true,
       data: {
@@ -84,14 +95,15 @@ export const login = async (req: Request, res: Response) => {
           email: user.email,
           name: user.name
         }
-      }
+      },
+      message: "로그인에 성공했습니다."
     });
 
   } catch (error) {
     console.error('Login error:', error);
     return res.status(500).json({
       success: false,
-      error: "서버 오류가 발생했습니다."
+      message: "서버 오류가 발생했습니다."
     });
   }
 }; 
