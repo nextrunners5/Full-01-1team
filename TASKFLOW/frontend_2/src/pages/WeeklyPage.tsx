@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Calendar, momentLocalizer, ToolbarProps as BigCalendarToolbarProps } from 'react-big-calendar';
 import moment from 'moment';
-import axios from 'axios';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import '../styles/Weekly.css';
 import { scheduleApi, Schedule } from '../services/scheduleApi';

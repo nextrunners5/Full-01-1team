@@ -6,7 +6,7 @@ import '../../styles/Header.css';
 const Header: React.FC = () => {
   return (
     <header className="header">
-      <h2></h2>
+      <h1>헤더 제목</h1>
       <div className="user-area">
         <button className="notification" aria-label="Notifications">
           <img src={BellIcon} alt="Notifications" />

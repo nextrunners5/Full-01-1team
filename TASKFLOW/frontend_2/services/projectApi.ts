@@ -11,7 +11,8 @@ interface Project {
   endDate: string;
 }
 
-export const fetchProjects = async (): Promise<Project[]> => {
+// 프로젝트 목록 조회
+export const fetchProjects = async () => {
   try {
     const response = await API.get("/projects");
     return response.data;
@@ -21,7 +22,8 @@ export const fetchProjects = async (): Promise<Project[]> => {
   }
 };
 
-export const createProject = async (projectData: Project): Promise<Project> => {
+// 프로젝트 생성
+export const createProject = async (projectData: Project) => {
   try {
     const response = await API.post("/projects", projectData);
     return response.data;

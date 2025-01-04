@@ -1,12 +1,4 @@
-import axios from "axios";
-
-// BASEURL, HTTP 통신 프로토콜(application/json 등등..) 옵션 설정 추가
-const API = axios.create({ 
-  baseURL: "http://localhost:3500/api",
-  headers: {
-    'Content-Type': 'application/json'
-  }
-});
+import API from '../api/axiosConfig';
 
 export interface Project {
   id?: number;
@@ -39,7 +31,7 @@ const transformProjectData = (data: any): Project => ({
 export const fetchProjects = async (): Promise<Project[]> => {
   try {
     const response = await API.get("/projects");
-    return response.data.map(transformProjectData);
+    return response.data;
   } catch (error) {
     console.error("Fetch projects error:", error);
     throw new Error("프로젝트를 불러오는 중 오류가 발생했습니다.");

@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 const SignupPage: React.FC = () => {
-    const navigate = useNavigate();
     const location = useLocation();
     const [formData, setFormData] = useState({
         email: '',
@@ -11,7 +10,8 @@ const SignupPage: React.FC = () => {
         name: '',
         birthdate: '',
         gender: '',
-        idNumber: '',
+        idNumberFront: '',
+        idNumberBack: '',
         agree1: false,
         agree2: false,
     });
@@ -43,7 +43,12 @@ const SignupPage: React.FC = () => {
 
     const handleEmailDuplicationCheck = async () => {
         try {
-            const response = await fetch('http://localhost:3000/api/check-email', {
+            if (!isValidEmail(formData.email)) {
+                alert('유효하지 않은 이메일 형식입니다.');
+                return;
+            }
+
+            const response = await fetch('http://localhost:3500/api/signup/check-email', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email: formData.email }),
@@ -63,23 +68,40 @@ const SignupPage: React.FC = () => {
 
     const sendToBackend = async (data: typeof formData) => {
         try {
-            const response = await fetch('http://localhost:3000/api/signup', {
+            const fullIdNumber = `${data.idNumberFront}-${data.idNumberBack}`;
+            
+            const response = await fetch('http://localhost:3500/api/signup', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data),
+                body: JSON.stringify({
+                    email: data.email,
+                    password: data.password,
+                    name: data.name,
+                    birthdate: data.birthdate,
+                    gender: data.gender,
+                    idNumber: fullIdNumber,
+                }),
             });
 
+            const result = await response.json();
+            
             if (response.ok) {
-                const result = await response.json();
                 alert(result.message);
+                // 회원가입 성공 시 로그인 페이지로 이동
+                window.location.href = '/login';
             } else {
-                const error = await response.json();
-                alert(error.message);
+                alert(result.message || "회원가입 중 오류가 발생했습니다.");
             }
         } catch (error) {
             console.error('Error:', error);
-            alert('회원가입 중 오류가 발생했습니다.');
+            alert('회원가입 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
         }
+    };
+
+    const isValidIdNumber = (front: string, back: string) => {
+        const frontRegex = /^\d{6}$/;
+        const backRegex = /^\d{7}$/;
+        return frontRegex.test(front) && backRegex.test(back);
     };
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -97,6 +119,11 @@ const SignupPage: React.FC = () => {
 
         if (formData.password !== formData.confirmPassword) {
             alert("비밀번호와 비밀번호 확인이 일치하지 않습니다.");
+            return;
+        }
+
+        if (!isValidIdNumber(formData.idNumberFront, formData.idNumberBack)) {
+            alert("올바른 주민등록번호 형식이 아닙니다.");
             return;
         }
 
@@ -200,15 +227,23 @@ const SignupPage: React.FC = () => {
                     <label htmlFor="female">여성</label>
                 </div>
 
-                <label htmlFor="idNumber">주민등록번호</label>
+                <label htmlFor="idNumberFront">주민등록번호 앞자리</label>
                 <input
                     type="text"
-                    id="idNumber"
-                    name="idNumber"
-                    placeholder="주민등록번호를 입력해주세요"
-                    value={formData.idNumber}
+                    name="idNumberFront"
+                    value={formData.idNumberFront}
                     onChange={handleChange}
-                    style={customStyles.input}
+                    maxLength={6}
+                    placeholder="주민번호 앞자리"
+                />
+                -
+                <input
+                    type="password"
+                    name="idNumberBack"
+                    value={formData.idNumberBack}
+                    onChange={handleChange}
+                    maxLength={7}
+                    placeholder="주민번호 뒷자리"
                 />
 
                 <div style={customStyles.checkboxGroup}>

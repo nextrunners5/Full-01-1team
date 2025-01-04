@@ -1,7 +1,7 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import HomePage from "./pages/HomePage";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
+import HomePage from "./pages/HomePage";
 import SignupPage from "./pages/SignupPage";
 import SchedulePage from "./pages/SchedulePage";
 import MonthPage from "./pages/MonthPage";
@@ -20,7 +20,7 @@ import TermsPage from "./pages/TermsPage";
 const App: React.FC = () => (
   <Router>
     <Routes>
-      <Route path="/" element={<HomePage />} />
+      <Route path="/" element={<Navigate to="/login" replace />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/login/findemail" element={<FindEmail />} />
       <Route path="/login/resetpassword" element={<ResetPassword />} />

@@ -2,7 +2,7 @@ import axios from "axios";
 
 const API = axios.create({ baseURL: "http://localhost:3500/api" });
 
-export const login = async (email: string, password: string): Promise<string> => {
+export const login = async (email: string, password: string) => {
   try {
     const response = await API.post("/auth/login", { email, password });
     return response.data.token;
@@ -12,7 +12,7 @@ export const login = async (email: string, password: string): Promise<string> =>
   }
 };
 
-export const signup = async (email: string, password: string): Promise<void> => {
+export const signup = async (email: string, password: string) => {
   try {
     await API.post("/auth/signup", { email, password });
   } catch (error) {

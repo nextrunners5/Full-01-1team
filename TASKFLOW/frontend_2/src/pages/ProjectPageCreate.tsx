@@ -44,10 +44,6 @@ const ProjectCreationPage: React.FC = () => {
     setIsCancelModalOpen(true);
   };
 
-  const closeCancelModal = (): void => {
-    setIsCancelModalOpen(false);
-  };
-
   const confirmCancel = (): void => {
     setIsCancelModalOpen(false);
     navigate('/project');

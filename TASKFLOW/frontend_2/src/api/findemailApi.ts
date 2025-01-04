@@ -1,11 +1,11 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'https://your-api-endpoint.com';
+const API_BASE_URL = 'http://localhost:3500/api';
 
 // 이메일 찾기 API 호출 함수
 export const findEmail = async (name: string, birthNumber: string) => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/find-email`, {
+    const response = await axios.post(`${API_BASE_URL}/auth/find-email`, {
       name,
       birthNumber,
     });
