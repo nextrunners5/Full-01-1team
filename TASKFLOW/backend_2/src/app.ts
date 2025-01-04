@@ -1,56 +1,47 @@
-import dotenv from "dotenv";
-import express, { Request, Response } from "express";
-import sequelize from "./config/db";
-import authRoutes from "./routes/authRoutes";
+import dotenv from 'dotenv';
+import express, { Router } from "express";
 import cors from "cors";
-import projectRoutes from "./routes/projectRoutes";
-import signupRouter from "./routes/signupRouter"
+import { connectDB } from "./config/database";
 
-dotenv.config(); // 환경 변수 로드
+// 라우터 import
+import authRoutes from "./routes/authRoutes";
+import signupRouter from "./routes/signupRouter";
+import checkEmailRouter from "./routes/checkEmail";
+import scheduleRoutes from "./routes/scheduleRoutes";
+import projectRoutes from "./routes/projectRoutes";
+import eventRoutes from "./routes/eventRoutes";
+
+dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 3500;
 
 // 미들웨어 설정
 app.use(express.json());
+app.use(cors({
+  origin: process.env.FRONTEND_URL || "http://localhost:3000",
+  credentials: true
+}));
 
-// CORS 설정
-app.use(
-  cors({
-    origin: "http://localhost:3000",
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true
-  })
-);
+// 라이터베이스 연결
+connectDB();
 
-// 라우트 설정
-app.use("/api/auth", authRoutes);
-app.use("/api/projects", projectRoutes);
-// 회원가입 라우트 등록
-app.use("/api/signup", signupRouter);
+// 라우터 타입 체크
+const isRouter = (router: any): router is Router => {
+  return router && typeof router.use === 'function';
+};
 
-// 데이터베이스 연결 및 서버 실행
-(async () => {
-  try {
-    await sequelize.sync();
-    console.log("데이터베이스 연결 성공");
+// 라우터 설정
+if (isRouter(authRoutes)) app.use("/api/auth", authRoutes);
+if (isRouter(signupRouter)) app.use("/api/signup", signupRouter);
+if (isRouter(checkEmailRouter)) app.use("/api/check-email", checkEmailRouter);
+if (isRouter(scheduleRoutes)) app.use("/api/schedules", scheduleRoutes);
+if (isRouter(projectRoutes)) app.use("/api/projects", projectRoutes);
+if (isRouter(eventRoutes)) app.use("/api/events", eventRoutes);
 
-    // 간단한 API 엔드포인트 추가
-    app.get("/api/test", (req: Request, res: Response) => {
-      res.json({ message: "API 연동 성공!", dbStatus: "connected" });
-    });
+const PORT = process.env.PORT || 3500;
 
-    app.get("/", (req: Request, res: Response) => {
-      res.send("Welcome to the Backend API");
-    });
-    
+app.listen(PORT, () => {
+  console.log(`서버가 http://localhost:${PORT} 에서 실행 중입니다.`);
+});
 
-    // 서버 실행
-    app.listen(PORT, () => {
-      console.log(`서버가 http://localhost:${PORT} 에서 실행 중입니다.`);
-    });
-  } catch (err) {
-    console.error("애플리케이션 실행 중 오류 발생:", (err as Error).message);
-    process.exit(1);
-  }
-})();
+export default app;

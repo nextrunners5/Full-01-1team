@@ -1,67 +1,51 @@
-import express, { Request, Response } from "express";
-import mysql, { RowDataPacket, OkPacket } from "mysql2/promise";
-import bcrypt from "bcrypt";
+import { Router, Request, Response } from 'express';
+import pool from '../config/database';
+import bcrypt from 'bcrypt';
+import crypto from 'crypto';
 
-const router = express.Router();
-
-// 데이터베이스 연결 설정 (Promise 기반 API)
-const db = mysql.createPool({
-  host: "test-mysql.c9aacka00jcg.ap-northeast-2.rds.amazonaws.com",
-  user: "root",
-  password: "rlatngus7!",
-  database: "mysqldb",
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0,
-});
+const router = Router();
 
 router.post("/", async (req: Request, res: Response) => {
   const { email, password, name, birthdate, gender, idNumber } = req.body;
 
-  // 입력값 검증
-  if (!email || !password || !name || !birthdate || !gender) {
-    return res.status(400).json({ message: "필수 항목이 누락되었습니다." });
-  }
-
-  // 이메일 형식 검사
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(email)) {
-    return res.status(400).json({ message: "유효하지 않은 이메일 형식입니다." });
-  }
-
-  // 비밀번호 길이 검사
-  if (password.length < 6) {
-    return res.status(400).json({ message: "비밀번호는 6자 이상이어야 합니다." });
-  }
-
   try {
-    // 이메일 중복 확인
-    const checkEmailQuery = "SELECT COUNT(*) as count FROM users WHERE email = ?";
-    const [checkResult] = await db.query<RowDataPacket[]>(checkEmailQuery, [email]);
-
-    if (checkResult[0]?.count > 0) {
-      return res.status(400).json({ message: "이미 사용 중인 이메일입니다." });
-    }
-
     // 비밀번호 해싱
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
 
-    // 회원가입 쿼리 실행
-    const insertQuery =
-      "INSERT INTO users (email, password, name, birthdate, gender, idNumber) VALUES (?, ?, ?, ?, ?, ?)";
-    const values = [email, hashedPassword, name, birthdate, gender, idNumber];
+    // 주민번호 암호화
+    const encryptedIdNumber = idNumber ? encryptIdNumber(idNumber) : null;
 
-    const [result] = await db.query<OkPacket>(insertQuery, values);
+    const [result] = await pool.query(
+      `INSERT INTO users (email, password, name, birthdate, gender, id_number)
+       VALUES (?, ?, ?, ?, ?, ?)`,
+      [email, hashedPassword, name, birthdate, gender, encryptedIdNumber]
+    );
 
-    // 회원가입 성공 응답
-    res.status(201).json({
-      message: "회원가입이 성공적으로 완료되었습니다.",
-      userId: result.insertId,
+    res.status(201).json({ 
+      success: true,
+      message: "회원가입이 완료되었습니다." 
     });
   } catch (error) {
-    console.error("Database query error:", error);
-    res.status(500).json({ message: "서버 오류가 발생했습니다." });
+    console.error('Signup error:', error);
+    res.status(500).json({ 
+      success: false,
+      message: "회원가입 중 오류가 발생했습니다." 
+    });
   }
 });
+
+// 주민번호 암호화 함수
+const encryptIdNumber = (idNumber: string): string => {
+  const algorithm = 'aes-256-cbc';
+  const key = crypto.scryptSync(process.env.ENCRYPTION_KEY || 'your-secret-key', 'salt', 32);
+  const iv = crypto.randomBytes(16);
+
+  const cipher = crypto.createCipheriv(algorithm, key, iv);
+  let encrypted = cipher.update(idNumber, 'utf8', 'hex');
+  encrypted += cipher.final('hex');
+
+  return `${iv.toString('hex')}:${encrypted}`;
+};
 
 export default router;

@@ -1,16 +1,23 @@
-import { Sequelize } from 'sequelize';
-import dotenv from 'dotenv';
+import mysql from 'mysql2/promise';
 
-dotenv.config(); // 환경 변수 로드
+const pool = mysql.createPool({
+  host: "test-mysql.c9aacka00jcg.ap-northeast-2.rds.amazonaws.com",
+  user: "root",
+  password: "rlatngus7!",
+  database: "mysqldb",
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0,
+});
 
-const sequelize = new Sequelize(
-  process.env.DB_NAME as string,
-  process.env.DB_USER as string,
-  process.env.DB_PASS as string,
-  {
-    host: process.env.DB_HOST,
-    dialect: 'mysql',
-  }
-);
+// 데이터베이스 연결 테스트
+pool.getConnection()
+  .then(connection => {
+    console.log('Database connected successfully');
+    connection.release();
+  })
+  .catch(err => {
+    console.error('Error connecting to the database:', err);
+  });
 
-export default sequelize;
+export default pool;

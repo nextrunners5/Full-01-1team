@@ -1,38 +1,38 @@
-import { Model, DataTypes } from "sequelize";
-import sequelize from "../config/db";
+import pool from '../config/database';
 
-class Project extends Model {
-  public id!: number;
-  public name!: string;
-  public description!: string;
-  public startDate!: Date;
-  public endDate!: Date;
+export interface ProjectAttributes {
+  id?: number;
+  name: string;
+  description: string;
+  startDate: Date;
+  endDate: Date;
+  status: 'pending' | 'in_progress' | 'completed';
 }
 
-Project.init(
-  {
-    name: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    description: {
-      type: DataTypes.TEXT,
-      allowNull: true,
-    },
-    startDate: {
-      type: DataTypes.DATE,
-      allowNull: false,
-    },
-    endDate: {
-      type: DataTypes.DATE,
-      allowNull: false,
-    },
-  },
-  {
-    sequelize,
-    modelName: "Project",
-    timestamps: true,
+export class ProjectModel {
+  static async findAll() {
+    const [rows] = await pool.query('SELECT * FROM projects');
+    return rows;
   }
-);
 
-export default Project; 
+  static async findById(id: number) {
+    const [rows] = await pool.query('SELECT * FROM projects WHERE id = ?', [id]);
+    return (rows as any[])[0];
+  }
+
+  static async create(data: ProjectAttributes) {
+    const [result] = await pool.query(
+      'INSERT INTO projects (name, description, start_date, end_date, status) VALUES (?, ?, ?, ?, ?)',
+      [data.name, data.description, data.startDate, data.endDate, data.status]
+    );
+    return { id: (result as any).insertId, ...data };
+  }
+
+  static async update(id: number, data: Partial<ProjectAttributes>) {
+    await pool.query(
+      'UPDATE projects SET ? WHERE id = ?',
+      [data, id]
+    );
+    return this.findById(id);
+  }
+} 

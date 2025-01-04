@@ -1,4 +1,4 @@
-import express from 'express';
+import { Router } from 'express';
 import { authenticateToken } from '../middlewares/authMiddleware';
 import {
   getAllEvents,
@@ -8,14 +8,12 @@ import {
   deleteEvent
 } from '../controllers/eventController';
 
-const router = express.Router();
+const router = Router();
 
-router.use(authenticateToken);
-
-router.get('/', getAllEvents);
-router.get('/:id', getEventById);
-router.post('/', createEvent);
-router.put('/:id', updateEvent);
-router.delete('/:id', deleteEvent);
+router.get('/', authenticateToken, getAllEvents);
+router.get('/:id', authenticateToken, getEventById);
+router.post('/', authenticateToken, createEvent);
+router.put('/:id', authenticateToken, updateEvent);
+router.delete('/:id', authenticateToken, deleteEvent);
 
 export default router; 

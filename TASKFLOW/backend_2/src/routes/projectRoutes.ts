@@ -1,5 +1,5 @@
-import express from "express";
-import { authenticateToken } from "../middlewares/authMiddleware";
+import { Router } from 'express';
+import { authenticateToken } from '../middlewares/authMiddleware';
 import {
   getAllProjects,
   getProjectById,
@@ -7,17 +7,15 @@ import {
   updateProject,
   deleteProject,
   deleteMultipleProjects
-} from "../controllers/projectController";
+} from '../controllers/projectController';
 
-const router = express.Router();
+const router = Router();
 
-router.use(authenticateToken);
-
-router.get("/", getAllProjects);
-router.get("/:id", getProjectById);
-router.post("/", createProject);
-router.put("/:id", updateProject);
-router.delete("/:id", deleteProject);
-router.post("/delete-multiple", deleteMultipleProjects);
+router.get('/', authenticateToken, getAllProjects);
+router.get('/:id', authenticateToken, getProjectById);
+router.post('/', authenticateToken, createProject);
+router.put('/:id', authenticateToken, updateProject);
+router.delete('/:id', authenticateToken, deleteProject);
+router.post('/delete-multiple', authenticateToken, deleteMultipleProjects);
 
 export default router; 

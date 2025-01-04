@@ -1,9 +1,8 @@
-import express from "express";
-import { login, signup } from "../controllers/authController";
+import { Router } from 'express';
+import { login } from '../controllers/authController';
 
-const router = express.Router();
+const router = Router();
 
-router.post("/login", login); // 로그인 엔드포인트
-router.post("/signup", signup); // 회원가입 엔드포인트
+router.post('/login', login);
 
 export default router; 

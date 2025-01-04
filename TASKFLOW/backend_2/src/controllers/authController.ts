@@ -1,70 +1,97 @@
 import { Request, Response } from "express";
-import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import sequelize from "../config/db";
-import { QueryTypes } from "sequelize";
+import { UserModel } from "../models/User";
+import { responseHandler } from "../utils/responseHandler";
+import { logger } from "../utils/logger";
+import bcrypt from "bcrypt";
 
-// 회원가입
+const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key";
+
 export const signup = async (req: Request, res: Response) => {
-  const { email, password } = req.body;
-
-  if (!email || !password) {
-    return res.status(400).json({ error: "Email and password are required" });
-  }
-
   try {
-    const [existingUser] = await sequelize.query<any>(
-      "SELECT * FROM users WHERE email = ?",
-      { replacements: [email], type: QueryTypes.SELECT }
-    );
-    if (existingUser) {
-      return res.status(409).json({ error: "Email already exists" });
+    const { email, password, name, birthdate, gender, idNumber } = req.body;
+
+    // 입력값 검증
+    if (!email || !password || !name || !birthdate || !gender) {
+      return responseHandler.error(res, 400, "필수 항목이 누락되었습니다.");
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    // 이메일 중복 확인
+    const existingUser = await UserModel.findByEmail(email);
+    if (existingUser) {
+      return responseHandler.error(res, 400, "이미 사용 중인 이메일입니다.");
+    }
 
-    await sequelize.query(
-      "INSERT INTO users (email, password) VALUES (?, ?)",
-      { replacements: [email, hashedPassword], type: QueryTypes.INSERT }
-    );
+    // 사용자 생성
+    const user = await UserModel.create({
+      email,
+      password,
+      name,
+      birthdate,
+      gender,
+      id_number: idNumber
+    });
 
-    res.status(201).json({ message: "회원가입 성공!" });
+    logger.info('회원가입 성공:', { email, name });
+    responseHandler.success(res, 201, { message: "회원가입이 완료되었습니다." });
   } catch (error) {
-    console.error("회원가입 중 오류 발생:", (error as Error).message);
-    res.status(500).json({ error: "서버 오류" });
+    logger.error('회원가입 중 오류 발생:', error);
+    responseHandler.error(res, 500, "서버 오류가 발생했습니다.");
   }
 };
 
-// 로그인
 export const login = async (req: Request, res: Response) => {
-  const { email, password } = req.body;
-
-  if (!email || !password) {
-    return res.status(400).json({ error: "Email and password are required" });
-  }
-
   try {
-    const [user] = await sequelize.query<any>(
-      "SELECT * FROM users WHERE email = ?",
-      { replacements: [email], type: QueryTypes.SELECT }
-    );
+    const { email, password } = req.body;
+    
+    console.log('Login attempt with:', { email, password });
 
-    if (!user) {
-      return res.status(404).json({ error: "사용자를 찾을 수 없습니다." });
-    }
-
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      return res.status(400).json({ error: "비밀번호가 일치하지 않습니다." });
-    }
-
-    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET as string, {
-      expiresIn: "1h"
+    const user = await UserModel.findOne({
+      where: { email }
     });
 
-    res.json({ token });
+    console.log('Found user:', user);
+
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        error: "이메일 또는 비밀번호가 잘못되었습니다."
+      });
+    }
+
+    const isValid = await bcrypt.compare(password, user.password);
+    console.log('Password validation:', { isValid });
+
+    if (!isValid) {
+      return res.status(401).json({
+        success: false,
+        error: "이메일 또는 비밀번호가 잘못되었습니다."
+      });
+    }
+
+    const token = jwt.sign(
+      { id: user.id, email: user.email, name: user.name },
+      process.env.JWT_SECRET || 'your-secret-key',
+      { expiresIn: '24h' }
+    );
+
+    return res.status(200).json({
+      success: true,
+      data: {
+        token,
+        user: {
+          id: user.id,
+          email: user.email,
+          name: user.name
+        }
+      }
+    });
+
   } catch (error) {
-    console.error("로그인 중 오류 발생:", (error as Error).message);
-    res.status(500).json({ error: "서버 오류" });
+    console.error('Login error:', error);
+    return res.status(500).json({
+      success: false,
+      error: "서버 오류가 발생했습니다."
+    });
   }
 }; 
