@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { authApi, LoginCredentials, SignupData } from "../services/authApi";
+import { authApi } from "../services/authApi";
+import type { LoginCredentials, SignupData, LoginResponse } from "../services/authApi";
 
 export const useAuth = () => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
@@ -7,10 +8,11 @@ export const useAuth = () => {
   const handleLogin = async (credentials: LoginCredentials) => {
     try {
       const response = await authApi.login(credentials);
-      const token = response.data.token;
-      localStorage.setItem('token', token);
-      setIsAuthenticated(true);
-      return token;
+      if (response.token) {
+        setIsAuthenticated(true);
+        return response.token;
+      }
+      throw new Error("토큰이 없습니다.");
     } catch (error) {
       console.error("Login error:", error);
       throw new Error("로그인 중 오류가 발생했습니다.");
@@ -26,5 +28,22 @@ export const useAuth = () => {
     }
   };
 
-  return { isAuthenticated, handleLogin, handleSignup };
+  const handleLogout = () => {
+    authApi.logout();
+    setIsAuthenticated(false);
+  };
+
+  const checkAuth = () => {
+    const isAuth = authApi.checkAuthToken();
+    setIsAuthenticated(isAuth);
+    return isAuth;
+  };
+
+  return { 
+    isAuthenticated, 
+    handleLogin, 
+    handleSignup, 
+    handleLogout,
+    checkAuth 
+  };
 }; 

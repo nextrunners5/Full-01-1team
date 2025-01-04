@@ -1,170 +1,120 @@
 import React, { useState, ChangeEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
-import completeIcon from '../assets/complete.png';
-import Header from "../components/common/Header";
-import Sidebar from "../components/common/Sidebar";
-import Footer from "../components/common/Footer";
-import "../styles/ProjectPageCreate.css";
-import { createProject, Project } from '../services/projectApi';
+import Header from '../components/common/Header';
+import Sidebar from '../components/common/Sidebar';
+import Footer from '../components/common/Footer';
+import '../styles/ProjectPageCreate.css';
+
+interface ProjectData {
+  projectName: string;
+  projectDescription: string;
+  startDate: string;
+  endDate: string;
+  status: 'active' | 'completed';
+}
 
 const ProjectCreationPage: React.FC = () => {
-  const [projectName, setProjectName] = useState<string>('');
-  const [projectDescription, setProjectDescription] = useState<string>('');
-  const [startDate, setStartDate] = useState<string>('');
-  const [endDate, setEndDate] = useState<string>('');
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [isCancelModalOpen, setIsCancelModalOpen] = useState<boolean>(false);
-
   const navigate = useNavigate();
+  const [projectData, setProjectData] = useState<ProjectData>({
+    projectName: '',
+    projectDescription: '',
+    startDate: '',
+    endDate: '',
+    status: 'active'
+  });
 
-  const handleProjectCreation = async (): Promise<void> => {
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+    setProjectData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
     try {
-      const projectData: Project = {
-        name: projectName,
-        description: projectDescription,
-        startDate,
-        endDate,
-        status: "진행 중" as const
-      };
-
-      await createProject(projectData);
-      setIsModalOpen(true);
+      // API 호출 로직
+      navigate('/project');
     } catch (error) {
-      console.error('프로젝트 생성 실패:', error);
-      alert('프로젝트 생성에 실패했습니다.');
+      console.error('프로젝트 생성 중 오류:', error);
     }
   };
 
-  const closeModal = (): void => {
-    setIsModalOpen(false);
-    navigate('/project');
-  };
-
-  const handleCancel = (): void => {
-    setIsCancelModalOpen(true);
-  };
-
-  const confirmCancel = (): void => {
-    setIsCancelModalOpen(false);
-    navigate('/project');
-  };
-
   return (
-    <div className="contentContainer">
-      <Header />
-      <div style={{ display: "flex" }}>
-        <Sidebar />
-        <div className="project-creation-container" style={{ flex: 1 }}>
-          <div className="headerContainer">
+    <div className="app-container">
+      <Sidebar />
+      <div className="main-container">
+        <Header />
+        <div className="project-creation-content">
+          <div className="header-container">
             <h2 className="title">새 프로젝트 생성</h2>
             <p className="subtitle">프로젝트에 대한 기본 정보를 입력해주세요.</p>
           </div>
 
-          <div className="formGroup">
-            <label htmlFor="projectName" className="label">
-              프로젝트 이름
-            </label>
-            <input
-              type="text"
-              id="projectName"
-              placeholder="프로젝트 이름을 입력하세요"
-              value={projectName}
-              onChange={(e: ChangeEvent<HTMLInputElement>) => setProjectName(e.target.value)}
-              className="input"
-            />
-          </div>
+          <form onSubmit={handleSubmit} className="project-form">
+            <div className="form-group">
+              <label htmlFor="projectName">프로젝트 이름</label>
+              <input
+                type="text"
+                id="projectName"
+                name="projectName"
+                value={projectData.projectName}
+                onChange={handleChange}
+                placeholder="프로젝트 이름을 입력하세요"
+                required
+              />
+            </div>
 
-          <div className="formGroup">
-            <label htmlFor="projectDescription" className="label">
-              프로젝트 설명
-            </label>
-            <textarea
-              id="projectDescription"
-              placeholder="프로젝트에 대한 설명을 입력하세요"
-              value={projectDescription}
-              onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
-                setProjectDescription(e.target.value)
-              }
-              className="textarea"
-            ></textarea>
-          </div>
+            <div className="form-group">
+              <label htmlFor="projectDescription">프로젝트 설명</label>
+              <textarea
+                id="projectDescription"
+                name="projectDescription"
+                value={projectData.projectDescription}
+                onChange={handleChange}
+                placeholder="프로젝트에 대한 설명을 입력하세요"
+              />
+            </div>
 
-          <div className="formDates">
-            <div className="formGroup">
-              <label htmlFor="startDate" className="label">
-                시작일
-              </label>
+            <div className="form-group">
+              <label htmlFor="startDate">시작일</label>
               <input
                 type="date"
                 id="startDate"
-                value={startDate}
-                onChange={(e: ChangeEvent<HTMLInputElement>) => setStartDate(e.target.value)}
-                className="dateInput"
+                name="startDate"
+                value={projectData.startDate}
+                onChange={handleChange}
+                required
               />
             </div>
-            <div className="formGroup">
-              <label htmlFor="endDate" className="label">
-                종료 예정일
-              </label>
+
+            <div className="form-group">
+              <label htmlFor="endDate">종료일</label>
               <input
                 type="date"
                 id="endDate"
-                value={endDate}
-                onChange={(e: ChangeEvent<HTMLInputElement>) => setEndDate(e.target.value)}
-                className="dateInput"
+                name="endDate"
+                value={projectData.endDate}
+                onChange={handleChange}
+                required
               />
             </div>
-          </div>
 
-          <div className="formButtons">
-            <button className="cancelButton" onClick={handleCancel}>
-              취소
-            </button>
-            <button onClick={handleProjectCreation} className="createButton">
-              프로젝트 생성
-            </button>
-          </div>
-
-          {isModalOpen && (
-            <div className="modalOverlay">
-              <div className="modalContent">
-                <div className="modalHeader">
-                  <h2 className="modalTitle">프로젝트 생성 완료</h2>
-                  <span className="modalClose" onClick={closeModal}>×</span>
-                </div>
-                <div className="modalBodyCentered">
-                  <img src={completeIcon} alt="Complete" className="completeIcon" />
-                  <p className="modalMessage">새로운 프로젝트 '{projectName}'이 생성되었습니다.</p>
-                  <div className="detailsBox">
-                    <p className="modalDetails"><strong>프로젝트 이름:</strong> {projectName}</p>
-                    <p className="modalDetails"><strong>생성 일시:</strong> {new Date().toLocaleString()}</p>
-                  </div>
-                </div>
-                <div className="modalFooterCompact">
-                  <button className="completeButton" onClick={closeModal}>완료</button>
-                  <button className="closeButton" onClick={closeModal}>닫기</button>
-                </div>
-              </div>
+            <div className="button-group">
+              <button type="button" className="cancel-btn" onClick={() => navigate('/project')}>
+                취소
+              </button>
+              <button type="submit" className="save-btn">
+                생성하기
+              </button>
             </div>
-          )}
-
-          {isCancelModalOpen && (
-            <div className="modalOverlay">
-              <div className="cancelModalContent">
-                <div className="modalBodyCentered">
-                  <img src={completeIcon} alt="Cancelled" className="cancelIcon" />
-                  <h2 className="cancelTitle">취소되었습니다</h2>
-                  <p className="cancelMessage">프로젝트 생성이 취소되었습니다.</p>
-                </div>
-                <div className="modalFooterCompact">
-                  <button className="confirmButton" onClick={confirmCancel}>확인</button>
-                </div>
-              </div>
-            </div>
-          )}
+          </form>
         </div>
+        <Footer />
       </div>
-      <Footer />
     </div>
   );
 };

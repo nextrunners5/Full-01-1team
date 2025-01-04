@@ -1,36 +1,9 @@
 import API from '../api/axiosConfig';
-
-export interface Project {
-  id?: number;
-  name: string;
-  description: string;
-  startDate: string;
-  endDate: string;
-  status: "진행 중" | "완료";
-}
-
-export interface ProjectResponse {
-  id?: number;
-  name: string;
-  description: string;
-  startDate: string;
-  endDate: string;
-  status: "진행 중" | "완료";
-}
-
-// 서버 응답 데이터를 프론트엔드 형식으로 변환
-const transformProjectData = (data: any): Project => ({
-  id: data.id,
-  name: data.name || '',
-  description: data.description || '',
-  startDate: data.startDate || '',
-  endDate: data.endDate || '',
-  status: data.status || "진행 중"
-});
+import type { Project, ProjectStatus, NewProject } from '../types/project';
 
 export const fetchProjects = async (): Promise<Project[]> => {
   try {
-    const response = await API.get("/projects");
+    const response = await API.get<Project[]>("/projects");
     return response.data;
   } catch (error) {
     console.error("Fetch projects error:", error);
@@ -38,39 +11,22 @@ export const fetchProjects = async (): Promise<Project[]> => {
   }
 };
 
-export const createProject = async (projectData: Project): Promise<Project> => {
+export const createProject = async (projectData: NewProject): Promise<Project> => {
   try {
-    const response = await API.post("/projects", projectData);
-    return response.data;
+    const response = await API.post<Project>("/projects", projectData);
+    return {
+      ...response.data,
+      status: response.data.status as ProjectStatus
+    };
   } catch (error) {
     console.error("Create project error:", error);
     throw new Error("프로젝트 생성 중 오류가 발생했습니다.");
   }
 };
 
-export const fetchProjectById = async (projectId: string): Promise<Project> => {
+export const updateProject = async (projectId: number, projectData: Partial<Project>): Promise<Project> => {
   try {
-    console.log('Fetching project with ID:', projectId);
-    const response = await API.get(`/projects/${projectId}`);
-    console.log('Received project data:', response.data);
-    
-    if (!response.data) {
-      throw new Error('프로젝트 데이터가 없습니다.');
-    }
-
-    const transformedData = transformProjectData(response.data);
-    console.log('Transformed project data:', transformedData);
-    
-    return transformedData;
-  } catch (error) {
-    console.error("Fetch project by ID error:", error);
-    throw new Error("프로젝트를 불러오는 중 오류가 발생했습니다.");
-  }
-};
-
-export const updateProject = async (projectId: string, projectData: Project): Promise<Project> => {
-  try {
-    const response = await API.put(`/projects/${projectId}`, projectData);
+    const response = await API.put<Project>(`/projects/${projectId}`, projectData);
     return response.data;
   } catch (error) {
     console.error("Update project error:", error);
@@ -78,11 +34,26 @@ export const updateProject = async (projectId: string, projectData: Project): Pr
   }
 };
 
-export const deleteProject = async (projectId: string): Promise<void> => {
+export const deleteProject = async (projectId: number): Promise<void> => {
   try {
     await API.delete(`/projects/${projectId}`);
   } catch (error) {
     console.error("Delete project error:", error);
     throw new Error("프로젝트 삭제 중 오류가 발생했습니다.");
   }
-}; 
+};
+
+export const fetchProjectById = async (projectId: string): Promise<Project> => {
+  try {
+    const response = await API.get<Project>(`/projects/${projectId}`);
+    return {
+      ...response.data,
+      status: response.data.status as ProjectStatus
+    };
+  } catch (error) {
+    console.error("Fetch project by ID error:", error);
+    throw new Error("프로젝트를 불러오는 중 오류가 발생했습니다.");
+  }
+};
+
+export type { Project, NewProject }; 

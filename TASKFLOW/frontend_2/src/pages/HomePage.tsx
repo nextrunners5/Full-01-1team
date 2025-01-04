@@ -1,6 +1,5 @@
-import React, { FC, useState, useEffect } from 'react';
-import { Calendar, dateFnsLocalizer, ToolbarProps } from 'react-big-calendar';
-import { useNavigate } from 'react-router-dom';
+import React from 'react';
+import { Calendar, dateFnsLocalizer } from 'react-big-calendar';
 import format from 'date-fns/format';
 import parse from 'date-fns/parse';
 import startOfWeek from 'date-fns/startOfWeek';
@@ -10,8 +9,6 @@ import '../styles/HomePage.css';
 import Header from "../components/common/Header";
 import Sidebar from "../components/common/Sidebar";
 import Footer from "../components/common/Footer";
-import "../styles/ProjectPage.css";
-import axios from 'axios';
 
 const locales = {
   'en-US': require('date-fns/locale/en-US'),
@@ -25,135 +22,37 @@ const localizer = dateFnsLocalizer({
   locales,
 });
 
-interface CalendarEvent {
-  title: string;
-  start: Date;
-  end: Date;
-}
-
-// 툴바 커스텀 컴포넌트
-const CustomToolbar: FC<ToolbarProps> = (toolbar) => {
-  const goToBack = () => toolbar.onNavigate('PREV');
-  const goToNext = () => toolbar.onNavigate('NEXT');
-  const changeView = (view: string) => toolbar.onView(view);
-
-  return (
-    <div className="toolbar-container">
-      <div className="toolbar-center">
-        <button className="navigate-btn" onClick={goToBack}>
-          &lt;
-        </button>
-        <span className="current-month">{toolbar.label}</span>
-        <button className="navigate-btn" onClick={goToNext}>
-          &gt;
-        </button>
-      </div>
-      <div className="view-switcher">
-        <button onClick={() => changeView('month')} className="view-btn">
-          Month
-        </button>
-        <button onClick={() => changeView('week')} className="view-btn">
-          Week
-        </button>
-        <button onClick={() => changeView('day')} className="view-btn">
-          Today
-        </button>
-      </div>
-    </div>
-  );
-};
-
-const HomePage: FC = () => {
-  const navigate = useNavigate();
-  const [events, setEvents] = useState<CalendarEvent[]>([]);
-  const currentDate = new Date();
-  const dayOfWeek = currentDate.toLocaleString('default', { weekday: 'long' });
-
-  useEffect(() => {
-    axios.get('/api/events')
-      .then(response => setEvents(response.data))
-      .catch(error => console.error("이벤트 로드 중 오류 발생:", error));
-  }, []);
-
-  const handleCalendarClick = (event: React.MouseEvent) => {
-    if (!(event.target instanceof HTMLButtonElement)) {
-      navigate('/Schedule/Monthly');
-    }
-  };
-
+const HomePage: React.FC = () => {
   return (
     <div className="app-container">
-      <Header />
       <Sidebar />
       <div className="main-container">
-        <main className="content">
-          <section className="to-do-list" aria-label="To-do list">
-            <h3>TO-DO LIST</h3>
-            <ul>
-              <li>
-                <label>
-                  <input type="checkbox" /> 프로젝트 제안서 검토
-                </label>
-              </li>
-              <li>
-                <label>
-                  <input type="checkbox" /> 오후 2시 팀 미팅
-                </label>
-              </li>
-              <li>
-                <label>
-                  <input type="checkbox" /> 주간 보고서 업데이트
-                </label>
-              </li>
-              <li>
-                <label>
-                  <input type="checkbox" /> 고객 프레젠테이션 준비
-                </label>
-              </li>
-            </ul>
-          </section>
-
-          <section className="today" aria-label="Today schedule">
-            <h3>TODAY</h3>
-            <p className="date">{`${currentDate.toLocaleDateString()} (${dayOfWeek})`}</p>
-            <ul>
-              <li>10:00 AM - 주간 회의</li>
-              <li>2:00 PM - 팀 미팅</li>
-              <li>4:00 PM - 고객 미팅</li>
-            </ul>
-          </section>
-
-          <section className="project-status" aria-label="Project status">
-            <h3>PROJECT STATUS</h3>
-            <ul>
-              <li>
-                웹사이트 리뉴얼 <span className="status">진행중</span>
-              </li>
-              <li>
-                모바일 앱 개발 <span className="status">진행중</span>
-              </li>
-              <li>
-                마케팅 캠페인 <span className="status">진행중</span>
-              </li>
-            </ul>
-          </section>
-
-          <section className="calendar" aria-label="Calendar" onClick={handleCalendarClick}>
-            <h3>MONTH</h3>
+        <Header />
+        <div className="content">
+          <div className="to-do-list">
+            <h2>To Do List</h2>
+            {/* To Do List 내용 */}
+          </div>
+          <div className="today">
+            <h2>Today</h2>
+            {/* Today 내용 */}
+          </div>
+          <div className="project-status">
+            <h2>Project Status</h2>
+            {/* Project Status 내용 */}
+          </div>
+          <div className="calendar">
             <Calendar
               localizer={localizer}
-              events={events}
+              events={[]}
               startAccessor="start"
               endAccessor="end"
-              defaultView="month"
-              views={['month', 'week', 'day']}
-              className="calendar-container"
-              components={{ toolbar: CustomToolbar }}
+              style={{ height: 500 }}
             />
-          </section>
-        </main>
+          </div>
+        </div>
+        <Footer />
       </div>
-      <Footer />
     </div>
   );
 };

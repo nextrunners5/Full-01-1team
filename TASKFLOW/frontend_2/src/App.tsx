@@ -16,25 +16,62 @@ import Header from "./components/common/Header";
 import Sidebar from "./components/common/Sidebar";
 import Footer from "./components/common/Footer";
 import TermsPage from "./pages/TermsPage";
+import { AuthProvider } from './contexts/AuthContext';
+import ProtectedRoute from './components/auth/ProtectedRoute';
 
 const App: React.FC = () => (
-  <Router>
-    <Routes>
-      <Route path="/" element={<Navigate to="/login" replace />} />
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/login/findemail" element={<FindEmail />} />
-      <Route path="/login/resetpassword" element={<ResetPassword />} />
-      <Route path="/signup" element={<SignupPage />} />
-      <Route path="/terms" element={<TermsPage />} />
-      <Route path="/schedule" element={<SchedulePage />} />
-      <Route path="/schedule/monthly" element={<MonthPage />} />
-      <Route path="/schedule/weekly" element={<WeeklyPage />} />
-      <Route path="/project" element={<ProjectPage />} />
-      <Route path="/project/create" element={<ProjectPageCreate />} />
-      <Route path="/project/edit/:projectId" element={<ProjectPageEdit />} />
-      <Route path="/personalinfo/update" element={<PersonalInfoPage />} />
-    </Routes>
-  </Router>
+  <AuthProvider>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Navigate to="/home" replace />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/login/findemail" element={<FindEmail />} />
+        <Route path="/login/resetpassword" element={<ResetPassword />} />
+        <Route path="/signup" element={<SignupPage />} />
+        <Route path="/terms" element={<TermsPage />} />
+        <Route path="/home" element={
+          <ProtectedRoute>
+            <HomePage />
+          </ProtectedRoute>
+        } />
+        <Route path="/schedule" element={
+          <ProtectedRoute>
+            <SchedulePage />
+          </ProtectedRoute>
+        } />
+        <Route path="/schedule/monthly" element={
+          <ProtectedRoute>
+            <MonthPage />
+          </ProtectedRoute>
+        } />
+        <Route path="/schedule/weekly" element={
+          <ProtectedRoute>
+            <WeeklyPage />
+          </ProtectedRoute>
+        } />
+        <Route path="/project" element={
+          <ProtectedRoute>
+            <ProjectPage />
+          </ProtectedRoute>
+        } />
+        <Route path="/project/create" element={
+          <ProtectedRoute>
+            <ProjectPageCreate />
+          </ProtectedRoute>
+        } />
+        <Route path="/project/edit/:projectId" element={
+          <ProtectedRoute>
+            <ProjectPageEdit />
+          </ProtectedRoute>
+        } />
+        <Route path="/personalinfo/update" element={
+          <ProtectedRoute>
+            <PersonalInfoPage />
+          </ProtectedRoute>
+        } />
+      </Routes>
+    </Router>
+  </AuthProvider>
 );
 
 export default App;

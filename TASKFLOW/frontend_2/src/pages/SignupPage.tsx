@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import "../styles/Signup.css";
 
 const SignupPage: React.FC = () => {
     const location = useLocation();
@@ -131,13 +132,12 @@ const SignupPage: React.FC = () => {
     };
 
     return (
-        <div style={customStyles.container}>
-            <h1 style={customStyles.title}>회원가입</h1>
-            <p style={customStyles.subtitle}>서비스 이용을 위해 회원가입이 필요합니다</p>
+        <div className="signup-container">
+            <h1 className="signup-title">회원가입</h1>
+            <p className="signup-subtitle">서비스 이용을 위해 회원가입이 필요합니다</p>
 
-            <form onSubmit={handleSubmit}>
-                <label htmlFor="email">이메일 주소</label>
-                <div style={customStyles.emailContainer}>
+            <form onSubmit={handleSubmit} className="signup-form">
+                <div className="email-container">
                     <input
                         type="email"
                         id="email"
@@ -146,12 +146,12 @@ const SignupPage: React.FC = () => {
                         value={formData.email}
                         onChange={handleChange}
                         required
-                        style={customStyles.input}
+                        className="input-field"
                     />
                     <button
                         type="button"
                         onClick={handleEmailDuplicationCheck}
-                        style={customStyles.verifyButton}
+                        className="verify-button"
                     >
                         이메일 중복확인
                     </button>
@@ -166,7 +166,7 @@ const SignupPage: React.FC = () => {
                     value={formData.password}
                     onChange={handleChange}
                     required
-                    style={customStyles.input}
+                    className="input-field"
                 />
 
                 <label htmlFor="confirmPassword">비밀번호 확인</label>
@@ -178,7 +178,7 @@ const SignupPage: React.FC = () => {
                     value={formData.confirmPassword}
                     onChange={handleChange}
                     required
-                    style={customStyles.input}
+                    className="input-field"
                 />
 
                 <label htmlFor="name">이름 (닉네임)</label>
@@ -190,7 +190,7 @@ const SignupPage: React.FC = () => {
                     value={formData.name}
                     onChange={handleChange}
                     required
-                    style={customStyles.input}
+                    className="input-field"
                 />
 
                 <label htmlFor="birthdate">생년월일</label>
@@ -201,11 +201,11 @@ const SignupPage: React.FC = () => {
                     value={formData.birthdate}
                     onChange={handleChange}
                     required
-                    style={customStyles.input}
+                    className="input-field"
                 />
 
-                <label style={customStyles.inlineLabel}>성별</label>
-                <div style={customStyles.inlineRadioGroup}>
+                <label>성별</label>
+                <div className="inline-radio-group">
                     <input
                         type="radio"
                         id="male"
@@ -235,6 +235,7 @@ const SignupPage: React.FC = () => {
                     onChange={handleChange}
                     maxLength={6}
                     placeholder="주민번호 앞자리"
+                    className="input-field"
                 />
                 -
                 <input
@@ -244,9 +245,10 @@ const SignupPage: React.FC = () => {
                     onChange={handleChange}
                     maxLength={7}
                     placeholder="주민번호 뒷자리"
+                    className="input-field"
                 />
 
-                <div style={customStyles.checkboxGroup}>
+                <div className="checkbox-group">
                     <input
                         type="checkbox"
                         id="agree1"
@@ -258,7 +260,7 @@ const SignupPage: React.FC = () => {
                     <label htmlFor="agree1">
                         <a
                             href="/terms"
-                            style={customStyles.link}
+                            className="link"
                             target="_blank"
                             rel="noopener noreferrer"
                         >
@@ -267,80 +269,10 @@ const SignupPage: React.FC = () => {
                     </label>
                 </div>
                 
-                <button type="submit" style={customStyles.button}>회원가입 완료</button>
+                <button type="submit" className="button">회원가입 완료</button>
             </form>
         </div>
     );
-};
-
-const customStyles = {
-    container: {
-        width: "400px",
-        margin: "auto",
-        backgroundColor: "#fff",
-        padding: "20px",
-        borderRadius: "8px",
-        boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)"
-    },
-    title: {
-        textAlign: "center" as const,
-        marginBottom: "10px"
-    },
-    subtitle: {
-        textAlign: "center" as const,
-        marginBottom: "20px",
-        color: "#555"
-    },
-    input: {
-        width: "100%",
-        padding: "10px",
-        marginBottom: "15px",
-        border: "1px solid #ccc",
-        borderRadius: "4px"
-    },
-    emailContainer: {
-        display: "flex",
-        gap: "10px",
-        alignItems: "center",
-        marginBottom: "15px"
-    },
-    verifyButton: {
-        padding: "10px",
-        backgroundColor: "#4A90E2",
-        color: "#fff",
-        border: "none",
-        borderRadius: "4px",
-        cursor: "pointer"
-    },
-    inlineRadioGroup: {
-        display: "row",
-        gap: "10px",
-        alignItems: "center",
-        justifyContent: "flex-start",
-        marginBottom: "15px"
-    },
-    inlineLabel: {
-        display: "inline-block",
-        marginBottom: "5px"
-    },
-    checkboxGroup: {
-        display: "flex",
-        alignItems: "center",
-        marginBottom: "15px"
-    },
-    link: {
-        textDecoration: "none",
-        color: "#4A90E2"
-    },
-    button: {
-        width: "100%",
-        padding: "10px",
-        backgroundColor: "#4A90E2",
-        color: "#fff",
-        border: "none",
-        borderRadius: "4px",
-        cursor: "pointer"
-    }
 };
 
 export default SignupPage;

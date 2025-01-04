@@ -1,21 +1,34 @@
-import axios from 'axios';
-
-const API = axios.create({ baseURL: 'http://localhost:3500/api' });
+import API from '../api/axiosConfig';
 
 export interface Schedule {
-  id?: string;
+  id?: number;
   title: string;
   start: Date;
   end: Date;
   description?: string;
-  projectId?: string;
+}
+
+export interface ScheduleResponse extends Schedule {
+  id: number;
 }
 
 export const scheduleApi = {
-  getAllSchedules: () => API.get('/schedules'),
-  getScheduleById: (id: string) => API.get(`/schedules/${id}`),
-  createSchedule: (data: Schedule) => API.post('/schedules', data),
-  updateSchedule: (id: string, data: Schedule) => API.put(`/schedules/${id}`, data),
-  deleteSchedule: (id: string) => API.delete(`/schedules/${id}`),
-  getSchedulesByProject: (projectId: string) => API.get(`/schedules/project/${projectId}`)
+  getSchedules: async (): Promise<ScheduleResponse[]> => {
+    const response = await API.get<ScheduleResponse[]>('/schedules');
+    return response.data;
+  },
+  
+  createSchedule: async (schedule: Omit<Schedule, 'id'>): Promise<ScheduleResponse> => {
+    const response = await API.post<ScheduleResponse>('/schedules', schedule);
+    return response.data;
+  },
+  
+  updateSchedule: async (id: number, schedule: Partial<Schedule>): Promise<ScheduleResponse> => {
+    const response = await API.put<ScheduleResponse>(`/schedules/${id}`, schedule);
+    return response.data;
+  },
+  
+  deleteSchedule: async (id: number): Promise<void> => {
+    await API.delete(`/schedules/${id}`);
+  }
 }; 

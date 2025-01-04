@@ -69,114 +69,77 @@ const ResetPassword: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="bg-white p-8 shadow-md rounded-md w-full max-w-md">
-        {step === "email" && (
-          <>
-            <h2 className="text-xl font-bold mb-6 text-center">
+    <div className="reset-password-container">
+      <h1 className="reset-password-title">TASKFLOW</h1>
+      {step === "email" ? (
+        <>
+          <h2 className="reset-password-subtitle">비밀번호 재설정</h2>
+          <p className="reset-password-description">
+            가입 시 등록한 이메일을 확인 후 비밀번호를 재설정하실 수 있습니다.
+          </p>
+          <form onSubmit={handleSubmitEmail} className="reset-password-form">
+            <div className="form-group">
+              <label htmlFor="email">이메일 주소</label>
+              <input
+                type="email"
+                id="email"
+                value={email}
+                onChange={handleEmailChange}
+                className="input-field"
+                placeholder="example@example.com"
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="name">이름</label>
+              <input
+                type="text"
+                id="name"
+                value={name}
+                onChange={handleNameChange}
+                className="input-field"
+                placeholder="홍길동"
+              />
+            </div>
+            <button type="submit" className="submit-button">
+              확인하기
+            </button>
+          </form>
+        </>
+      ) : (
+        <>
+          <h2 className="reset-password-subtitle">새 비밀번호 설정</h2>
+          <form onSubmit={handleSubmitPassword} className="reset-password-form">
+            <div className="form-group">
+              <label htmlFor="password">새 비밀번호</label>
+              <input
+                type="password"
+                id="password"
+                value={password}
+                onChange={handlePasswordChange}
+                className="input-field"
+                placeholder="비밀번호 입력"
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="confirmPassword">비밀번호 확인</label>
+              <input
+                type="password"
+                id="confirmPassword"
+                value={confirmPassword}
+                onChange={handleConfirmPasswordChange}
+                className="input-field"
+                placeholder="비밀번호 다시 입력"
+              />
+            </div>
+            <button type="submit" className="submit-button">
               비밀번호 재설정
-            </h2>
-            <p className="text-gray-600 text-sm mb-6 text-center">
-              가입 시 등록한 이메일을 확인 후 비밀번호를 재설정하실 수 있습니다.
-            </p>
-            <form onSubmit={handleSubmitEmail} className="space-y-4">
-              <div>
-                <label
-                  htmlFor="email"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  이메일 주소
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  value={email}
-                  onChange={handleEmailChange}
-                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="example@example.com"
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="name"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  이름
-                </label>
-                <input
-                  type="text"
-                  id="name"
-                  value={name}
-                  onChange={handleNameChange}
-                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="홍길동"
-                />
-              </div>
-              <button
-                type="submit"
-                className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:ring-2 focus:ring-blue-400 focus:outline-none"
-              >
-                확인하기
-              </button>
-            </form>
-          </>
-        )}
+            </button>
+          </form>
+        </>
+      )}
 
-        {step === "reset" && (
-          <>
-            <h2 className="text-xl font-bold mb-6 text-center">
-              비밀번호 재설정
-            </h2>
-            <form onSubmit={handleSubmitPassword} className="space-y-4">
-              <div>
-                <label
-                  htmlFor="password"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  새 비밀번호
-                </label>
-                <input
-                  type="password"
-                  id="password"
-                  value={password}
-                  onChange={handlePasswordChange}
-                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="비밀번호 입력"
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="confirmPassword"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  비밀번호 확인
-                </label>
-                <input
-                  type="password"
-                  id="confirmPassword"
-                  value={confirmPassword}
-                  onChange={handleConfirmPasswordChange}
-                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="비밀번호 다시 입력"
-                />
-              </div>
-              <button
-                type="submit"
-                className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:ring-2 focus:ring-blue-400 focus:outline-none"
-              >
-                비밀번호 재설정
-              </button>
-            </form>
-          </>
-        )}
-
-        {error && (
-          <p className="mt-4 text-red-500 text-sm text-center">{error}</p>
-        )}
-        {success && (
-          <p className="mt-4 text-green-500 text-sm text-center">{success}</p>
-        )}
-      </div>
+      {error && <p className="error-message">{error}</p>}
+      {success && <p className="success-message">{success}</p>}
     </div>
   );
 };
