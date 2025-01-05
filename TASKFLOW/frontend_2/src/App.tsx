@@ -6,6 +6,7 @@ import SignupPage from "./pages/SignupPage";
 import SchedulePage from "./pages/SchedulePage";
 import MonthPage from "./pages/MonthPage";
 import WeeklyPage from "./pages/WeeklyPage";
+import TodayPage from "./pages/TodayPage";
 import ProjectPage from "./pages/ProjectPage";
 import ProjectCreatePage from "./pages/ProjectCreatePage";
 import ProjectPageEdit from "./pages/ProjectPageEdit";
@@ -47,6 +48,11 @@ const App: React.FC = () => (
         <Route path="/schedule/weekly" element={
           <ProtectedRoute>
             <WeeklyPage />
+          </ProtectedRoute>
+        } />
+        <Route path="/schedule/Today" element={
+          <ProtectedRoute>
+            <TodayPage />
           </ProtectedRoute>
         } />
         <Route path="/project" element={

@@ -1,12 +1,11 @@
 /* Monthly Page 스타일 */
-.calendar-container {
-  height: 700px;
-  margin-top: 20px;
+.M-calendar-container {
+  height: 900px;
   background-color: #fff;
   border-radius: 8px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   padding: 20px;
-} 
+}
 
 /* Global styles for MonthPage */
 body.monthly-page {
@@ -27,29 +26,32 @@ body.monthly-page {
   justify-content: flex-start;
   padding: 0px;
   background-color: #F4F5FB;
-  height: 85vh;
-  width: 500%;
+  height: 100vh;
+  width: 60%;
 }
 
 .M-title {
-  font-size: 2em;
+  font-size: 1.5em;
   color: #1a73e8;
-  margin-bottom: 25px;
+  margin-bottom: -40px;
   font-weight: bold;
   text-align: left;
   width: 100%;
-  margin-left: 0px;
   margin-top: 0px;
+  transform: translateX(10px);
 }
 
 .M-calendar-container {
-  width: 90%;
-  max-width: 1600px;
+  width: 100%;
+  min-width: 1600px;
   background: #ffffff;
   border-radius: 12px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   padding: 10px;
   overflow: hidden;
+  min-height: 950px;
+  margin-bottom: 100px;
+  transform: translateX(400px);
 }
 
 /* Calendar specific styles */
@@ -61,12 +63,12 @@ body.monthly-page {
 }
 
 .rbc-day-bg.M-day-bg {
-  border: none !important;
-  height: 100%;
+  border: none;
+  height: 80%;
 }
 
 .rbc-month-row.M-month-row {
-  min-height: 600px;
+  max-height: 200px;
 }
 
 .rbc-date-cell.M-date-cell {
@@ -162,7 +164,7 @@ body.monthly-page {
 }
 
 /* Modal Overlay */
-.modal-overlay {
+.M-modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -176,7 +178,7 @@ body.monthly-page {
 }
 
 /* Modal Content */
-.modal-content {
+.M-modal-content {
   background: #ffffff;
   border-radius: 8px;
   width: 600px;
@@ -188,7 +190,7 @@ body.monthly-page {
 }
 
 /* Modal Header */
-.modal-content h3 {
+.M-modal-content h3 {
   margin: 0;
   font-size: 1.5rem;
   font-weight: bold;
@@ -198,21 +200,21 @@ body.monthly-page {
 }
 
 /* Row Layout for Start and End Time */
-.modal-row {
+.M-modal-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 10px;
 }
 
-.modal-row > div {
+.M-modal-row > div {
   flex: 1;
   display: flex;
   flex-direction: column;
 }
 
-.modal-row input[type="text"],
-.modal-row input[type="datetime-local"] {
+.M-modal-row input[type="text"],
+.M-modal-row input[type="datetime-local"] {
   width: 100%;
   padding: 10px;
   border: 1px solid #ccc;
@@ -222,8 +224,8 @@ body.monthly-page {
 }
 
 /* Form Fields */
-.modal-content input[type="text"],
-.modal-content textarea {
+.M-modal-content input[type="text"],
+.M-modal-content textarea {
   width: 100%;
   padding: 10px;
   border: 1px solid #ccc;
@@ -232,13 +234,13 @@ body.monthly-page {
   box-sizing: border-box;
 }
 
-.modal-content textarea {
+.M-modal-content textarea {
   resize: none;
   height: 80px;
 }
 
 /* Button Section */
-.modal-buttons {
+.M-modal-buttons {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -246,7 +248,7 @@ body.monthly-page {
 }
 
 /* Delete Button */
-.modal-delete-btn {
+.M-modal-delete-btn {
   background: none;
   color: #d32f2f;
   font-weight: bold;
@@ -255,17 +257,17 @@ body.monthly-page {
   cursor: pointer;
 }
 
-.modal-delete-btn:hover {
+.M-modal-delete-btn:hover {
   text-decoration: underline;
 }
 
 /* Cancel and Save Buttons */
-.modal-actions {
+.M-modal-actions {
   display: flex;
   gap: 10px;
 }
 
-.modal-cancel-btn {
+.M-modal-cancel-btn {
   background: #f5f5f5;
   color: #333;
   padding: 10px 20px;
@@ -274,11 +276,11 @@ body.monthly-page {
   cursor: pointer;
 }
 
-.modal-cancel-btn:hover {
+.M-modal-cancel-btn:hover {
   background: #e0e0e0;
 }
 
-.modal-save-btn {
+.M-modal-save-btn {
   background: #1a73e8;
   color: white;
   padding: 10px 20px;
@@ -287,6 +289,6 @@ body.monthly-page {
   cursor: pointer;
 }
 
-.modal-save-btn:hover {
+.M-modal-save-btn:hover {
   background: #155ab0;
-} 
+}

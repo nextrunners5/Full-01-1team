@@ -1,13 +1,3 @@
-/* Weekly Page 스타일 */
-.calendar-container {
-  height: 700px;
-  margin-top: 20px;
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  padding: 20px;
-} 
-
 /* 전체 배경 */
 body.weekly-page {
   margin: 0;
@@ -18,7 +8,7 @@ body.weekly-page {
   height: 100%;
   overflow-x: hidden;
   margin-top: 50px;
-  margin-left: -300px;
+  margin-left: -350px;
 }
 
 /* 전체 컨테이너 스타일 */
@@ -29,6 +19,9 @@ body.weekly-page {
   display: flex;
   flex-direction: column;
   width: 300%;
+  margin-top: 20px;
+  padding: 20px;
+  transform: translateX(50px);
 }
 
 /* 캘린더 스타일 */
@@ -47,6 +40,7 @@ body.weekly-page {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 10px;
+  margin-top: 10px;
 }
 
 .title-bar h2 {
