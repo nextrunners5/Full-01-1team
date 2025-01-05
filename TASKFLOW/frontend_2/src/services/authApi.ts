@@ -1,20 +1,11 @@
 import API from '../api/axiosConfig';
 
-interface LoginResponse {
-  token: string;
-  user: {
-    id: number;
-    email: string;
-    name: string;
-  };
-}
-
-interface LoginCredentials {
+export interface LoginCredentials {
   email: string;
   password: string;
 }
 
-interface SignupData {
+export interface SignupData {
   email: string;
   password: string;
   name: string;
@@ -23,31 +14,35 @@ interface SignupData {
   idNumber?: string;
 }
 
-interface IAuthApi {
-  login: (credentials: LoginCredentials) => Promise<LoginResponse>;
-  signup: (data: SignupData) => Promise<void>;
-  logout: () => void;
-  checkAuthToken: () => boolean;
+export interface LoginResponse {
+  success: boolean;
+  data: {
+    token: string;
+    user: {
+      id: number;
+      email: string;
+      name: string;
+    }
+  };
+  message?: string;
 }
 
-export const authApi: IAuthApi = {
-  login: async (credentials: LoginCredentials): Promise<LoginResponse> => {
+export const authApi = {
+  login: async (credentials: LoginCredentials) => {
     try {
-      const response = await API.post<LoginResponse>("/auth/login", credentials);
-      const loginData = response.data;
+      const response = await API.post<LoginResponse>('/auth/login', credentials);
       
-      if (loginData.token) {
-        localStorage.setItem('token', loginData.token);
-        localStorage.setItem('user', JSON.stringify(loginData.user));
-        API.defaults.headers.common['Authorization'] = `Bearer ${loginData.token}`;
+      if (response.data.success && response.data.data) {
+        const { token, user } = response.data.data;
+        API.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        return { token, user };
       }
-      
-      return loginData;
+      throw new Error(response.data.message || '로그인에 실패했습니다.');
     } catch (error: any) {
-      if (error.response) {
-        throw new Error(error.response.data.error || "로그인 중 오류가 발생했습니다.");
+      if (error.response?.data?.message) {
+        throw new Error(error.response.data.message);
       }
-      throw new Error("서버와 통신 중 오류가 발생했습니다.");
+      throw new Error('로그인 중 오류가 발생했습니다.');
     }
   },
 
@@ -55,10 +50,10 @@ export const authApi: IAuthApi = {
     try {
       await API.post("/auth/signup", data);
     } catch (error: any) {
-      if (error.response) {
-        throw new Error(error.response.data.error || "회원가입 중 오류가 발생했습니다.");
+      if (error.response?.data?.message) {
+        throw new Error(error.response.data.message);
       }
-      throw new Error("서버와 통신 중 오류가 발생했습니다.");
+      throw new Error("회원가입 중 오류가 발생했습니다.");
     }
   },
 
@@ -72,11 +67,4 @@ export const authApi: IAuthApi = {
     const token = localStorage.getItem('token');
     return !!token;
   }
-};
-
-export type {
-  LoginResponse,
-  LoginCredentials,
-  SignupData,
-  IAuthApi
 }; 

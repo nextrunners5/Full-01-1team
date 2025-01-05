@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { authApi } from '../services/authApi';
 
 interface User {
   id: number;
@@ -9,7 +10,7 @@ interface User {
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
-  login: (token: string, user: User) => void;
+  login: (email: string, password: string) => Promise<void>;
   logout: () => void;
 }
 
@@ -30,11 +31,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, []);
 
-  const login = (token: string, user: User) => {
-    localStorage.setItem('token', token);
-    localStorage.setItem('user', JSON.stringify(user));
-    setUser(user);
-    setIsAuthenticated(true);
+  const login = async (email: string, password: string) => {
+    try {
+      const response = await authApi.login({ email, password });
+      if (response.token && response.user) {
+        localStorage.setItem('token', response.token);
+        localStorage.setItem('user', JSON.stringify(response.user));
+        setUser(response.user);
+        setIsAuthenticated(true);
+      } else {
+        throw new Error('로그인 응답이 올바르지 않습니다.');
+      }
+    } catch (error: any) {
+      console.error('Login error:', error);
+      throw error; // 원본 에러를 그대로 전달
+    }
   };
 
   const logout = () => {

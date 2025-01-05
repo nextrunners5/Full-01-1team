@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { authApi } from '../../services/authApi';
+import { useAuth } from '../../contexts/AuthContext';
 import '../../styles/LoginForm.css';
 
 const LoginForm: React.FC = () => {
@@ -8,6 +8,7 @@ const LoginForm: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [error, setError] = useState<string>("");
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -19,13 +20,12 @@ const LoginForm: React.FC = () => {
     const password = (document.getElementById("password") as HTMLInputElement).value;
 
     try {
-      const loginData = await authApi.login({ email, password });
-      if (loginData && loginData.token) {
-        navigate('/home');
-      }
+      await login(email, password);
+      navigate('/home', { replace: true });
     } catch (error: any) {
       setIsModalOpen(true);
-      setError(error.message);
+      setError(error.message || '로그인에 실패했습니다.');
+      console.error('Login error:', error);
     }
   };
 
@@ -38,6 +38,7 @@ const LoginForm: React.FC = () => {
             type="email" 
             id="email" 
             placeholder="이메일을 입력하세요" 
+            required
           />
         </div>
         <div className="input-group">
@@ -47,6 +48,7 @@ const LoginForm: React.FC = () => {
               type={showPassword ? "text" : "password"}
               id="password"
               placeholder="비밀번호를 입력하세요"
+              required
             />
             <span
               className="eye-icon"
@@ -67,7 +69,7 @@ const LoginForm: React.FC = () => {
         <div className="modal-overlay">
           <div className="modal-content">
             <h2 className="modal-title">로그인 실패</h2>
-            <p className="modal-message">이메일 또는 비밀번호가 일치하지 않습니다.</p>
+            <p className="modal-message">{error}</p>
             <button
               className="modal-button"
               onClick={() => setIsModalOpen(false)}

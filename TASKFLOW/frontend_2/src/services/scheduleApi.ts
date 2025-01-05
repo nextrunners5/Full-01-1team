@@ -1,34 +1,52 @@
 import API from '../api/axiosConfig';
 
 export interface Schedule {
-  id?: number;
+  id: number;
   title: string;
+  description: string;
   start: Date;
   end: Date;
-  description?: string;
 }
 
-export interface ScheduleResponse extends Schedule {
+export interface ScheduleResponse {
   id: number;
+  title: string;
+  description: string;
+  start_date: string;
+  end_date: string;
 }
 
-export const scheduleApi = {
+export interface ScheduleCreate {
+  title: string;
+  description: string;
+  start_date: string;
+  end_date: string;
+}
+
+const scheduleApi = {
   getSchedules: async (): Promise<ScheduleResponse[]> => {
-    const response = await API.get<ScheduleResponse[]>('/schedules');
+    const response = await API.get('/schedules');
     return response.data;
   },
-  
-  createSchedule: async (schedule: Omit<Schedule, 'id'>): Promise<ScheduleResponse> => {
-    const response = await API.post<ScheduleResponse>('/schedules', schedule);
+
+  getDailySchedules: async (date: string): Promise<ScheduleResponse[]> => {
+    const response = await API.get(`/schedules/daily/${date}`);
     return response.data;
   },
-  
-  updateSchedule: async (id: number, schedule: Partial<Schedule>): Promise<ScheduleResponse> => {
-    const response = await API.put<ScheduleResponse>(`/schedules/${id}`, schedule);
+
+  createSchedule: async (schedule: ScheduleCreate): Promise<ScheduleResponse> => {
+    const response = await API.post('/schedules', schedule);
     return response.data;
   },
-  
+
+  updateSchedule: async (id: number, schedule: Partial<ScheduleCreate>): Promise<ScheduleResponse> => {
+    const response = await API.put(`/schedules/${id}`, schedule);
+    return response.data;
+  },
+
   deleteSchedule: async (id: number): Promise<void> => {
     await API.delete(`/schedules/${id}`);
   }
-}; 
+};
+
+export default scheduleApi; 
