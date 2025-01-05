@@ -50,11 +50,21 @@ const SignupPage: React.FC = () => {
                 return;
             }
 
-            const result = await authApi.checkEmail(formData.email);
-            alert(result.message);
-        } catch (error: any) {
+            const response = await fetch('http://localhost:3500/api/signup/check-email', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: formData.email }),
+            });
+
+            const result = await response.json();
+            if (response.ok) {
+                alert("사용 가능한 이메일입니다.");
+            } else {
+                alert(result.message || "이미 사용 중인 이메일입니다.");
+            }
+        } catch (error) {
             console.error('Error checking email:', error);
-            alert(error.message || '이메일 중복 확인 중 문제가 발생했습니다.');
+            alert('이메일 중복 확인 중 문제가 발생했습니다.');
         }
     };
 
@@ -62,24 +72,31 @@ const SignupPage: React.FC = () => {
         try {
             const fullIdNumber = `${data.idNumberFront}-${data.idNumberBack}`;
             
-            const result = await authApi.signup({
-                email: data.email,
-                password: data.password,
-                name: data.name,
-                birthdate: data.birthdate,
-                gender: data.gender,
-                idNumber: fullIdNumber,
+            const response = await fetch('http://localhost:3500/api/signup', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    email: data.email,
+                    password: data.password,
+                    name: data.name,
+                    birthdate: data.birthdate,
+                    gender: data.gender,
+                    idNumber: fullIdNumber,
+                }),
             });
 
-            if (result.success) {
+            const result = await response.json();
+            
+            if (response.ok) {
                 alert(result.message);
+                // 회원가입 성공 시 로그인 페이지로 이동
                 window.location.href = '/login';
             } else {
                 alert(result.message || "회원가입 중 오류가 발생했습니다.");
             }
-        } catch (error: any) {
+        } catch (error) {
             console.error('Error:', error);
-            alert(error.message || '회원가입 중 오류가 발생했습니다.');
+            alert('회원가입 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
         }
     };
 
@@ -190,47 +207,55 @@ const SignupPage: React.FC = () => {
 
                 <label>성별</label>
                 <div className="inline-radio-group">
-                    <input
-                        type="radio"
-                        id="male"
-                        name="gender"
-                        value="male"
-                        checked={formData.gender === "male"}
-                        onChange={handleChange}
-                    />
-                    <label htmlFor="male">남성</label>
+    <div className="radio-option">
+        <input
+            type="radio"
+            id="male"
+            name="gender"
+            value="male"
+            checked={formData.gender === "male"}
+            onChange={handleChange}
+        />
+        <label htmlFor="male">남성</label>
+    </div>
+    <div className="radio-option">
+        <input
+            type="radio"
+            id="female"
+            name="gender"
+            value="female"
+            checked={formData.gender === "female"}
+            onChange={handleChange}
+        />
+        <label htmlFor="female">여성</label>
+    </div>
+</div>
 
-                    <input
-                        type="radio"
-                        id="female"
-                        name="gender"
-                        value="female"
-                        checked={formData.gender === "female"}
-                        onChange={handleChange}
-                    />
-                    <label htmlFor="female">여성</label>
-                </div>
 
-                <label htmlFor="idNumberFront">주민등록번호 앞자리</label>
-                <input
-                    type="text"
-                    name="idNumberFront"
-                    value={formData.idNumberFront}
-                    onChange={handleChange}
-                    maxLength={6}
-                    placeholder="주민번호 앞자리"
-                    className="input-field"
-                />
-                -
-                <input
-                    type="password"
-                    name="idNumberBack"
-                    value={formData.idNumberBack}
-                    onChange={handleChange}
-                    maxLength={7}
-                    placeholder="주민번호 뒷자리"
-                    className="input-field"
-                />
+<div className="id-number-section">
+    <label htmlFor="idNumberFront">주민등록번호</label>
+    <div className="id-number-container">
+        <input
+            type="text"
+            name="idNumberFront"
+            value={formData.idNumberFront}
+            onChange={handleChange}
+            maxLength={6}
+            placeholder="앞자리"
+            className="id-number-input"
+        />
+        <span className="id-number-dash">-</span>
+        <input
+            type="password"
+            name="idNumberBack"
+            value={formData.idNumberBack}
+            onChange={handleChange}
+            maxLength={7}
+            placeholder="뒷자리"
+            className="id-number-input"
+        />
+    </div>
+</div>
 
                 <div className="checkbox-group">
                     <input
