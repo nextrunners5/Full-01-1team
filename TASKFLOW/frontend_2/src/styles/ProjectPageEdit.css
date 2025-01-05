@@ -1,6 +1,6 @@
 .project-edit-container {
   position: fixed;
-  top: 100px; /* 상단 여백 */
+  top: 400px; /* 상단 여백 */
   left: 25%; /* 화면 크기에 맞게 조정 */
   padding: 24px;
   font-family: Arial, sans-serif;

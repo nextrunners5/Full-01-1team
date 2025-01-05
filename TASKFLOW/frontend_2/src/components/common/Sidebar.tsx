@@ -45,9 +45,6 @@ const Sidebar: React.FC = () => {
         <Link to="/project" className="menu-item">
           <img src={ProjectIcon} alt="Project" className="icon" /> PROJECT
         </Link>
-        <Link to="/chat" className="menu-item">
-          <img src={ChatIcon} alt="Chat" className="icon" /> CHAT
-        </Link>
         <Link to="/mypage" className="menu-item">
           <img src={UserIcon} alt="My Page" className="icon" /> MY PAGE
         </Link>

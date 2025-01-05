@@ -134,6 +134,18 @@ const ProjectPage: React.FC = () => {
   if (loading) return <div className="loading">로딩 중...</div>;
   if (error) return <div className="error">{error}</div>;
 
+  // 필터 상태에 따른 헤더 제목을 반환하는 함수
+  const getHeaderTitle = (): string => {
+    switch (filter) {
+      case '진행 중':
+        return '진행 중 프로젝트 목록';
+      case '완료':
+        return '완료 프로젝트 목록';
+      default:
+        return '전체 프로젝트 목록';
+    }
+  };
+
   return (
     <div className="flex-container">
       <Sidebar />
@@ -170,7 +182,8 @@ const ProjectPage: React.FC = () => {
         </div>
 
         <div className="header-container">
-          <h1 className="header-title">전체 프로젝트 목록</h1>
+          {/* 동적 제목 사용 */}
+          <h1 className="header-title">{getHeaderTitle()}</h1>
           <div className="buttons-wrapper">
             {selectedIds.length > 0 && (
               <button

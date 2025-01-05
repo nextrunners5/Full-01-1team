@@ -33,7 +33,7 @@
 }
 
 .input-field {
-    width: 100%;
+    width: 95%;
     padding: 12px;
     font-size: 14px;
     border: 1px solid #d1d5db;
@@ -67,7 +67,7 @@
     cursor: pointer;
     transition: background-color 0.3s;
     height: 45px;
-    margin-bottom: 13px;
+    width: 95px;
 }
 
 .verify-button:hover {
@@ -146,7 +146,7 @@ label {
 }
 
 .checkbox-group input[type="checkbox"] {
-    margin-bottom: -5px; /* 기본 여백 제거 */
+    margin-bottom: -13px; /* 기본 여백 제거 */
     accent-color: #2563eb; /* 체크박스 색상 */
     width: 16px; /* 체크박스 크기 */
     height: 16px; /* 체크박스 크기 */
@@ -157,6 +157,7 @@ label {
     align-items: center; /* 텍스트와 체크박스 중앙 정렬 */
     cursor: pointer; /* 커서를 클릭 가능하도록 변경 */
     margin-top: 20px;
+    font-size: 15px;
 }
 
 .link {

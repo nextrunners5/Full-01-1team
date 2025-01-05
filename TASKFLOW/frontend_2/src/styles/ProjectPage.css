@@ -1,5 +1,6 @@
 .flex-container {
   display: flex;
+  min-width: 250%;
 }
 
 .project-container {
@@ -7,6 +8,7 @@
   padding: 24px;
   background-color: #F4F5FC;
   min-height: calc(100vh - 160px);
+  margin-left: -250px;
 }
 
 /* 상태 카드 스타일 */
@@ -92,7 +94,7 @@
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 14px;
-  min-width: 120px;
+  max-width: 180px;
 }
 
 /* 프로젝트 목록 테이블 스타일 */
@@ -276,7 +278,7 @@
 
 .modal-content h3 {
   margin: 0 0 16px 0;
-  color: #333;
+  color: #1f2d2e;
 }
 
 .modal-content p {
@@ -314,4 +316,25 @@
 
 .cancel-button:hover {
   background-color: #e0e0e0;
+}
+
+/* 업데이트된 헤더 스타일 */
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem; /* 필요에 따라 조정 가능 */
+  margin-top: 2rem;    /* 기존 margin-top 유지 */
+}
+
+.header-title {
+  font-size: 1.5rem; /* 글자 크기를 줄임 */
+  font-weight: bold; /* 강조 효과 유지 */
+  margin: 0;         /* 기존 margin-bottom과 margin-top을 제거 */
+}
+
+.buttons-wrapper {
+  display: flex;
+  gap: 10px;
+  align-items: center; /* 버튼들을 수직 중앙 정렬 */
 }

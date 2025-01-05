@@ -4,7 +4,7 @@ import Sidebar from '../components/common/Sidebar';
 import Header from '../components/common/Header';
 import Footer from '../components/common/Footer';
 import { projectApi, Project } from '../services/projectApi';
-import '../styles/ProjectPage.css';
+import '../styles/ProjectPageEdit.css';
 
 const ProjectPageEdit: React.FC = () => {
   const navigate = useNavigate();
