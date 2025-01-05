@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const API = axios.create({
-  baseURL: 'http://localhost:3500/api',
+  baseURL: 'http://test-mysql.c9aacka00jcg.ap-northeast-2.rds.amazonaws.com:3500/api',
   timeout: 5000,
   headers: {
     'Content-Type': 'application/json'

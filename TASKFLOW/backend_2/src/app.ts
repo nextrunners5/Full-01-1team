@@ -1,47 +1,32 @@
-import dotenv from 'dotenv';
-import express, { Router } from "express";
+import express from "express";
 import cors from "cors";
-import { connectDB } from "./config/database";
-
-// 라우터 import
-import authRoutes from "./routes/authRoutes";
-import signupRouter from "./routes/signupRouter";
-import checkEmailRouter from "./routes/checkEmail";
-import scheduleRoutes from "./routes/scheduleRoutes";
-import projectRoutes from "./routes/projectRoutes";
-import eventRoutes from "./routes/eventRoutes";
-
-dotenv.config();
+import routes from "./routes";
+import pool from "./config/database";
 
 const app = express();
 
 // 미들웨어 설정
+app.use(cors());
 app.use(express.json());
-app.use(cors({
-  origin: process.env.FRONTEND_URL || "http://localhost:3000",
-  credentials: true
-}));
 
-// 라이터베이스 연결
-connectDB();
+// 데이터베이스 연결 테스트
+pool.getConnection()
+  .then(connection => {
+    console.log('데이터베이스 연결 성공');
+    connection.release();
+  })
+  .catch(err => {
+    console.error('데이터베이스 연결 실패:', err);
+    process.exit(1);
+  });
 
-// 라우터 타입 체크
-const isRouter = (router: any): router is Router => {
-  return router && typeof router.use === 'function';
-};
-
-// 라우터 설정
-if (isRouter(authRoutes)) app.use("/api/auth", authRoutes);
-if (isRouter(signupRouter)) app.use("/api/signup", signupRouter);
-if (isRouter(checkEmailRouter)) app.use("/api/check-email", checkEmailRouter);
-if (isRouter(scheduleRoutes)) app.use("/api/schedules", scheduleRoutes);
-if (isRouter(projectRoutes)) app.use("/api/projects", projectRoutes);
-if (isRouter(eventRoutes)) app.use("/api/events", eventRoutes);
+// API 라우트 설정
+app.use('/api', routes);
 
 const PORT = process.env.PORT || 3500;
 
 app.listen(PORT, () => {
-  console.log(`서버가 http://localhost:${PORT} 에서 실행 중입니다.`);
+  console.log(`서버가 포트 ${PORT}에서 실행 중입니다.`);
 });
 
 export default app;
