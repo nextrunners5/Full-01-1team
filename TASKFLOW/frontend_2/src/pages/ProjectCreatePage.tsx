@@ -1,17 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Sidebar from '../components/common/Sidebar';
 import Header from '../components/common/Header';
 import Footer from '../components/common/Footer';
-import { projectApi, Project } from '../services/projectApi';
+import { projectApi } from '../services/projectApi';
 import '../styles/ProjectPage.css';
 
-const ProjectPageEdit: React.FC = () => {
+const ProjectCreatePage: React.FC = () => {
   const navigate = useNavigate();
-  const { projectId } = useParams<{ projectId: string }>();
-  const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -19,27 +15,8 @@ const ProjectPageEdit: React.FC = () => {
     startDate: '',
     endDate: ''
   });
-
-  useEffect(() => {
-    const fetchProject = async () => {
-      try {
-        if (!projectId) return;
-        const response = await projectApi.getProjectById(parseInt(projectId));
-        setFormData({
-          name: response.name,
-          description: response.description,
-          status: response.status,
-          startDate: response.startDate,
-          endDate: response.endDate
-        });
-      } catch (err: any) {
-        console.error('프로젝트 조회 오류:', err);
-        setError(err.message);
-      }
-    };
-
-    fetchProject();
-  }, [projectId]);
+  const [error, setError] = useState<string | null>(null);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -47,19 +24,23 @@ const ProjectPageEdit: React.FC = () => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: value
+      [name]: name === 'progress' ? parseInt(value) || 0 : value
     }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log('폼 제출 시작');
+    
     try {
-      if (!projectId) return;
-      await projectApi.updateProject(parseInt(projectId), formData);
+      console.log('프로젝트 생성 요청 데이터:', formData);
+      const response = await projectApi.createProject(formData);
+      console.log('프로젝트 생성 응답:', response);
       setShowSuccessModal(true);
     } catch (err: any) {
-      console.error('프로젝트 수정 오류:', err);
-      setError(err.message);
+      console.error('프로젝트 생성 오류:', err);
+      console.error('상세 에러:', err.response?.data);
+      setError(err.response?.data?.message || err.message);
     }
   };
 
@@ -74,7 +55,7 @@ const ProjectPageEdit: React.FC = () => {
       <div className="project-container">
         <Header />
         <div className="project-form-container">
-          <h2>프로젝트 수정</h2>
+          <h2>새 프로젝트 생성</h2>
           {error && <div className="error-message">{error}</div>}
           <form onSubmit={handleSubmit} className="project-form">
             <div className="form-group">
@@ -98,19 +79,6 @@ const ProjectPageEdit: React.FC = () => {
                 onChange={handleChange}
                 rows={4}
               />
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="status">상태</label>
-              <select
-                id="status"
-                name="status"
-                value={formData.status}
-                onChange={handleChange}
-              >
-                <option value="IN_PROGRESS">진행 중</option>
-                <option value="COMPLETED">완료</option>
-              </select>
             </div>
 
             <div className="form-row">
@@ -144,7 +112,7 @@ const ProjectPageEdit: React.FC = () => {
                 취소
               </button>
               <button type="submit" className="submit-button">
-                수정
+                생성
               </button>
             </div>
           </form>
@@ -154,8 +122,8 @@ const ProjectPageEdit: React.FC = () => {
         {showSuccessModal && (
           <div className="modal-overlay">
             <div className="modal-content">
-              <h3>프로젝트 수정 완료</h3>
-              <p>프로젝트가 성공적으로 수정되었습니다.</p>
+              <h3>프로젝트 생성 완료</h3>
+              <p>프로젝트가 성공적으로 생성되었습니다.</p>
               <div className="modal-buttons">
                 <button onClick={handleConfirm} className="confirm-button">
                   확인
@@ -169,4 +137,4 @@ const ProjectPageEdit: React.FC = () => {
   );
 };
 
-export default ProjectPageEdit;
+export default ProjectCreatePage; 

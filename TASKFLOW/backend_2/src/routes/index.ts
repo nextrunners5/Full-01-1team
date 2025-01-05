@@ -12,7 +12,8 @@ import {
   getProjectById,
   createProject,
   updateProject,
-  deleteProject
+  deleteProject,
+  deleteMultipleProjects
 } from '../controllers/projectController';
 import bcrypt from 'bcrypt';
 import pool from '../config/database';
@@ -39,5 +40,6 @@ router.get('/projects/:id', authenticateToken, getProjectById);
 router.post('/projects', authenticateToken, createProject);
 router.put('/projects/:id', authenticateToken, updateProject);
 router.delete('/projects/:id', authenticateToken, deleteProject);
+router.post('/projects/delete-multiple', authenticateToken, deleteMultipleProjects);
 
 export default router; 

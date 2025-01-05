@@ -1,31 +1,27 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
+import { authApi } from '../../services/authApi';
 import '../../styles/LoginForm.css';
 
 const LoginForm: React.FC = () => {
-  const [showPassword, setShowPassword] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [error, setError] = useState<string>("");
   const navigate = useNavigate();
   const { login } = useAuth();
-
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const email = (document.getElementById("email") as HTMLInputElement).value;
-    const password = (document.getElementById("password") as HTMLInputElement).value;
 
     try {
-      await login(email, password);
-      navigate('/home', { replace: true });
+      const response = await authApi.login({ email, password });
+      if (response.token) {
+        login(response.token); // 토큰만 전달
+        navigate('/home', { replace: true });
+      }
     } catch (error: any) {
       setIsModalOpen(true);
-      setError(error.message || '로그인에 실패했습니다.');
-      console.error('Login error:', error);
     }
   };
 
@@ -39,24 +35,28 @@ const LoginForm: React.FC = () => {
             id="email" 
             placeholder="이메일을 입력하세요" 
             required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
         </div>
         <div className="input-group">
           <label htmlFor="password">비밀번호</label>
           <div className="password-wrapper">
             <input
-              type={showPassword ? "text" : "password"}
+              type="password"
               id="password"
               placeholder="비밀번호를 입력하세요"
               required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
             <span
               className="eye-icon"
-              onClick={togglePasswordVisibility}
+              onClick={() => {}}
               role="button"
               aria-label="비밀번호 보기"
             >
-              {showPassword ? "🙈" : "👁️"}
+              "👁️"
             </span>
           </div>
         </div>
@@ -69,7 +69,7 @@ const LoginForm: React.FC = () => {
         <div className="modal-overlay">
           <div className="modal-content">
             <h2 className="modal-title">로그인 실패</h2>
-            <p className="modal-message">{error}</p>
+            <p className="modal-message">로그인에 실패했습니다.</p>
             <button
               className="modal-button"
               onClick={() => setIsModalOpen(false)}

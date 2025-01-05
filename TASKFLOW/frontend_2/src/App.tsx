@@ -7,7 +7,7 @@ import SchedulePage from "./pages/SchedulePage";
 import MonthPage from "./pages/MonthPage";
 import WeeklyPage from "./pages/WeeklyPage";
 import ProjectPage from "./pages/ProjectPage";
-import ProjectPageCreate from "./pages/ProjectPageCreate";
+import ProjectCreatePage from "./pages/ProjectCreatePage";
 import ProjectPageEdit from "./pages/ProjectPageEdit";
 import FindEmail from "./pages/FindEmail";
 import ResetPassword from "./pages/ResetPassword";
@@ -56,7 +56,7 @@ const App: React.FC = () => (
         } />
         <Route path="/project/create" element={
           <ProtectedRoute>
-            <ProjectPageCreate />
+            <ProjectCreatePage />
           </ProtectedRoute>
         } />
         <Route path="/project/edit/:projectId" element={

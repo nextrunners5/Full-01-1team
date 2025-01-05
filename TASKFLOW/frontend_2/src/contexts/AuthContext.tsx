@@ -1,62 +1,36 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { authApi } from '../services/authApi';
-
-interface User {
-  id: number;
-  email: string;
-  name: string;
-}
+import React, { createContext, useState, useContext, useEffect } from 'react';
 
 interface AuthContextType {
-  user: User | null;
   isAuthenticated: boolean;
-  login: (email: string, password: string) => Promise<void>;
+  login: (token: string) => void;
   logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
+  // 컴포넌트 마운트 시 로컬 스토리지에서 토큰 확인
   useEffect(() => {
-    // 페이지 로드 시 로컬 스토리지에서 인증 정보 확인
     const token = localStorage.getItem('token');
-    const storedUser = localStorage.getItem('user');
-    
-    if (token && storedUser) {
-      setUser(JSON.parse(storedUser));
+    if (token) {
       setIsAuthenticated(true);
     }
   }, []);
 
-  const login = async (email: string, password: string) => {
-    try {
-      const response = await authApi.login({ email, password });
-      if (response.token && response.user) {
-        localStorage.setItem('token', response.token);
-        localStorage.setItem('user', JSON.stringify(response.user));
-        setUser(response.user);
-        setIsAuthenticated(true);
-      } else {
-        throw new Error('로그인 응답이 올바르지 않습니다.');
-      }
-    } catch (error: any) {
-      console.error('Login error:', error);
-      throw error; // 원본 에러를 그대로 전달
-    }
+  const login = (token: string) => {
+    localStorage.setItem('token', token);
+    setIsAuthenticated(true);
   };
 
   const logout = () => {
     localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    setUser(null);
     setIsAuthenticated(false);
   };
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated, login, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
