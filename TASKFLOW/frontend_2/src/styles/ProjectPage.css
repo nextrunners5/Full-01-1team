@@ -50,6 +50,11 @@
   margin-right: 12px;
 }
 
+.status-icon img {
+  width: 45px;
+  height: 45px;
+}
+
 .status-info {
   display: flex;
   flex-direction: column;
@@ -71,6 +76,7 @@
   display: flex;
   gap: 1rem;
   margin-bottom: 1rem;
+  margin-top: 1rem;
 }
 
 .search-input {

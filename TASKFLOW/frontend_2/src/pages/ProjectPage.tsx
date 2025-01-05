@@ -4,6 +4,9 @@ import { useNavigate } from 'react-router-dom';
 import Sidebar from '../components/common/Sidebar';
 import Header from '../components/common/Header';
 import Footer from '../components/common/Footer';
+import WholeIcon from '../assets/Whole.png';
+import OngoingIcon from "../assets/ongoing.png";
+import FinishIcon from "../assets/finished.png";
 import { projectApi, Project } from '../services/projectApi';
 import '../styles/ProjectPage.css';
 
@@ -138,21 +141,27 @@ const ProjectPage: React.FC = () => {
         <Header />
         <div className="status-cards">
           <div className="status-card">
-            <span className="status-icon">📋</span>
+            <span className="status-icon">
+              <img src={WholeIcon} alt="전체" />
+            </span>
             <div className="status-info">
               <span className="status-title">전체 프로젝트</span>
               <span className="status-count">{statusCounts.total || 0}</span>
             </div>
           </div>
           <div className="status-card">
-            <span className="status-icon">🔄</span>
+            <span className="status-icon">
+              <img src={OngoingIcon} alt="진행중" />
+            </span>
             <div className="status-info">
               <span className="status-title">진행 중</span>
               <span className="status-count">{statusCounts.IN_PROGRESS || 0}</span>
             </div>
           </div>
           <div className="status-card">
-            <span className="status-icon">✅</span>
+            <span className="status-icon">
+              <img src={FinishIcon} alt="완료" />
+            </span>
             <div className="status-info">
               <span className="status-title">완료</span>
               <span className="status-count">{statusCounts.COMPLETED || 0}</span>
