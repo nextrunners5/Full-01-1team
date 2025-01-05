@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { login } from '../controllers/authController';
+import { login, signup } from '../controllers/authController';
 import { authenticateToken } from '../middlewares/authMiddleware';
 import {
   getAllSchedules,
@@ -14,10 +14,16 @@ import {
   updateProject,
   deleteProject
 } from '../controllers/projectController';
+import bcrypt from 'bcrypt';
+import pool from '../config/database';
+import signupRouter from './signupRouter';
+import checkEmailRouter from './checkEmail';
 
 const router = Router();
 
 // Auth routes
+router.use('/signup', signupRouter);
+router.use('/signup/check-email', checkEmailRouter);
 router.post('/auth/login', login);
 
 // Schedule routes

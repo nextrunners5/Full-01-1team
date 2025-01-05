@@ -20,7 +20,7 @@ pool.getConnection()
     process.exit(1);
   });
 
-// API 라우트 설정
+// API 라우트 설정 (모든 라우트가 /api 프리픽스를 가짐)
 app.use('/api', routes);
 
 const PORT = process.env.PORT || 3500;

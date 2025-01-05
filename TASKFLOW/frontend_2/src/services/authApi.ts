@@ -27,6 +27,11 @@ export interface LoginResponse {
   message?: string;
 }
 
+export interface SignupResponse {
+  success: boolean;
+  message: string;
+}
+
 export const authApi = {
   login: async (credentials: LoginCredentials) => {
     try {
@@ -46,14 +51,15 @@ export const authApi = {
     }
   },
 
-  signup: async (data: SignupData): Promise<void> => {
+  signup: async (data: SignupData): Promise<SignupResponse> => {
     try {
-      await API.post("/auth/signup", data);
+      const response = await API.post<SignupResponse>('/signup', data);
+      return response.data;
     } catch (error: any) {
       if (error.response?.data?.message) {
         throw new Error(error.response.data.message);
       }
-      throw new Error("회원가입 중 오류가 발생했습니다.");
+      throw new Error('회원가입 중 오류가 발생했습니다.');
     }
   },
 
@@ -66,5 +72,17 @@ export const authApi = {
   checkAuthToken: () => {
     const token = localStorage.getItem('token');
     return !!token;
+  },
+
+  checkEmail: async (email: string): Promise<{ message: string }> => {
+    try {
+      const response = await API.post<{ message: string }>('/signup/check-email', { email });
+      return response.data;
+    } catch (error: any) {
+      if (error.response?.data?.message) {
+        throw new Error(error.response.data.message);
+      }
+      throw new Error('이메일 중복 확인 중 오류가 발생했습니다.');
+    }
   }
 }; 

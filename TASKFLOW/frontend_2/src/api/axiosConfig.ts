@@ -1,8 +1,8 @@
 import axios from 'axios';
 
 const API = axios.create({
-  baseURL: 'http://test-mysql.c9aacka00jcg.ap-northeast-2.rds.amazonaws.com:3500/api',
-  timeout: 5000,
+  baseURL: 'http://localhost:3500/api',
+  timeout: 10000,
   headers: {
     'Content-Type': 'application/json'
   }
@@ -26,6 +26,10 @@ API.interceptors.request.use(
 API.interceptors.response.use(
   response => response,
   error => {
+    if (error.code === 'ECONNABORTED') {
+      console.error('API Timeout:', error.message);
+      return Promise.reject(new Error('서버 응답 시간이 초과되었습니다. 잠시 후 다시 시도해주세요.'));
+    }
     console.error('API Error:', error.response?.data || error.message);
     return Promise.reject(error);
   }
