@@ -1,0 +1,20 @@
+.birth-number-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.birth-number-container input[type="password"] {
+  font-family: monospace;
+  -webkit-text-security: disc;
+}
+
+.error-message {
+  color: #ff0000;
+  margin-top: 8px;
+}
+
+.success-message {
+  color: #008000;
+  margin-top: 8px;
+} 

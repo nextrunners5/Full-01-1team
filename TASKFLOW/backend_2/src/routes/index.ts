@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { login, signup } from '../controllers/authController';
+import { login, signup, findEmail } from '../controllers/authController';
 import { authenticateToken } from '../middlewares/authMiddleware';
 import {
   getAllSchedules,
@@ -25,6 +25,7 @@ const router = Router();
 router.use('/signup', signupRouter);
 router.use('/signup/check-email', checkEmailRouter);
 router.post('/auth/login', login);
+router.post('/auth/find-email', findEmail);
 
 // Schedule routes
 router.get('/schedules', authenticateToken, getAllSchedules);
