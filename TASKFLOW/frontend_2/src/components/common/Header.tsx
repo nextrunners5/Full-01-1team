@@ -9,7 +9,7 @@ const Header: React.FC = () => {
 
   return (
     <header className="header">
-      <h2 className="header-title">TASKFLOW</h2>
+      <h2 className="header-title"></h2>
       <div className="user-area">
         <button className="notification-btn" aria-label="알림">
           <img src={BellIcon} alt="알림" />
@@ -18,10 +18,7 @@ const Header: React.FC = () => {
           <button className="profile-btn" aria-label="프로필">
             <img src={UserIcon} alt="프로필" />
           </button>
-          <span className="user-name">{user?.name}</span>
-          <button className="logout-btn" onClick={logout}>
-            로그아웃
-          </button>
+
         </div>
       </div>
     </header>

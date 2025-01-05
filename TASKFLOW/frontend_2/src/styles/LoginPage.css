@@ -1,13 +1,3 @@
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background-color: #f4f5fa;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-}
-
 .login-container {
   width: 400px;
   margin: 100px auto;
@@ -15,35 +5,39 @@ body {
   background-color: white;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  height: 300px;
 }
 
 .logo {
   text-align: center;
   color: #0056FF;
-  margin-bottom: 20px;
+  margin-bottom: 60px;
+  font-size: 40px;
+  margin-top: 100px;
 }
 
 .login-title {
   text-align: center;
   color: #333;
-  margin-bottom: 30px;
+  margin-bottom: -50px;
 }
 
 .login-form {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 10px;
 }
 
 .input-group {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 4px;
 }
 
 .input-group label {
   font-size: 14px;
   color: #666;
+  margin-top: 4px;
 }
 
 .input-group input {
@@ -51,6 +45,7 @@ body {
   border: 1px solid #ddd;
   border-radius: 5px;
   font-size: 14px;
+  margin-bottom: 0px;
 }
 
 .password-wrapper {
@@ -73,7 +68,7 @@ body {
   border-radius: 5px;
   cursor: pointer;
   font-size: 16px;
-  margin-top: 10px;
+  margin-top: 30px;
 }
 
 .login-btn:hover {

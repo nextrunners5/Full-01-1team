@@ -1,20 +1,87 @@
-.birth-number-container {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+.find-email-container {
+  padding: 2rem;
+  max-width: 600px;
+  margin: 0 auto;
+  text-align: center;
+  background-color: white;
+  border-radius: 15px;
 }
 
-.birth-number-container input[type="password"] {
-  font-family: monospace;
-  -webkit-text-security: disc;
+.find-email-container h1 {
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.find-email-container p {
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  color: #666;
+  text-align: left;
+}
+
+.inputGroup-info {
+  margin-bottom: 1rem;
+}
+
+.form-group-FE label {
+  display: flex;
+  text-align: left;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  margin-top: 40px;
+}
+
+.form-group-FE input {
+  display: block;
+  width: 100%;
+  padding: 0.5rem;
+  /* margin-top: 0.5rem; */
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.birthNumberContainer {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-start;
+}
+
+.birthNumberContainer input {
+  flex: 1;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
 
 .error-message {
-  color: #ff0000;
-  margin-top: 8px;
+  color: red;
+  margin-bottom: 1rem;
 }
 
 .success-message {
-  color: #008000;
-  margin-top: 8px;
-} 
+  color: green;
+  margin-bottom: 1rem;
+}
+
+.submitBtn {
+  background-color: #0056ff;
+  color: white;
+  padding: 0.75rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 3em;
+  height: 50px;
+  margin-bottom: 10px;
+}
+
+.submit-button:hover {
+  background-color: #003fcc;
+}
+
+.info {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  color: #666;
+}
