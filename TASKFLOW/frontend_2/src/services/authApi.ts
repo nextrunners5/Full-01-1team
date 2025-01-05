@@ -84,5 +84,21 @@ export const authApi = {
       }
       throw new Error('이메일 중복 확인 중 오류가 발생했습니다.');
     }
+  },
+
+  resetPassword: async (email: string, name: string, newPassword: string) => {
+    try {
+      const response = await API.post('/auth/reset-password', {
+        email,
+        name,
+        newPassword
+      });
+      return response.data;
+    } catch (error: any) {
+      if (error.response?.data?.message) {
+        throw new Error(error.response.data.message);
+      }
+      throw new Error('비밀번호 재설정 중 오류가 발생했습니다.');
+    }
   }
 }; 

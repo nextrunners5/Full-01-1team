@@ -208,4 +208,55 @@ export const findEmail = async (req: Request, res: Response) => {
       message: '서버 오류가 발생했습니다.' 
     });
   }
+};
+
+export const resetPassword = async (req: Request, res: Response) => {
+  const { email, name, newPassword } = req.body;
+  
+  try {
+    // 사용자 확인
+    const [rows] = await pool.query(
+      'SELECT * FROM users WHERE email = ? AND name = ?',
+      [email, name]
+    );
+
+    if ((rows as any[]).length === 0) {
+      return res.status(404).json({ 
+        success: false,
+        message: '일치하는 사용자 정보를 찾을 수 없습니다.' 
+      });
+    }
+
+    const user = (rows as any[])[0];
+
+    // 이전 비밀번호와 동일한지 확인
+    const isSamePassword = await bcrypt.compare(newPassword, user.password);
+    if (isSamePassword) {
+      return res.status(400).json({
+        success: false,
+        message: '이전 비밀번호와 동일한 비밀번호로 변경할 수 없습니다.'
+      });
+    }
+
+    // 비밀번호 해싱
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+    // 비밀번호 업데이트
+    await pool.query(
+      'UPDATE users SET password = ? WHERE email = ?',
+      [hashedPassword, email]
+    );
+
+    res.json({ 
+      success: true,
+      message: '비밀번호가 성공적으로 재설정되었습니다.' 
+    });
+  } catch (error) {
+    console.error('Reset password error:', error);
+    res.status(500).json({ 
+      success: false,
+      message: '서버 오류가 발생했습니다.' 
+    });
+  }
 }; 
