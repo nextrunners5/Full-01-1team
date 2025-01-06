@@ -220,7 +220,14 @@ const WCalendar: React.FC = () => {
       end: slotInfo.end,
       description: ''
     });
+    setModalMode('create');
     setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setNewEvent(null);
+    setModalMode('create');
   };
 
   return (
@@ -263,13 +270,13 @@ const WCalendar: React.FC = () => {
             modalMode === 'detail' && newEvent ? (
               <ScheduleDetailModal
                 schedule={newEvent}
-                onClose={() => setShowModal(false)}
+                onClose={handleCloseModal}
                 onEdit={handleEditClick}
                 onDelete={() => handleDeleteEvent(newEvent.id)}
               />
             ) : (
               <ScheduleModal
-                onClose={() => setShowModal(false)}
+                onClose={handleCloseModal}
                 onSave={handleAddEvent}
                 initialData={modalMode === 'edit' && newEvent ? {
                   id: newEvent.id,

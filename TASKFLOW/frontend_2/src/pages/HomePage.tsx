@@ -18,6 +18,11 @@ import Header from '../components/common/Header';
 import Sidebar from '../components/common/Sidebar';
 import Footer from '../components/common/Footer';
 import { useNavigate } from 'react-router-dom';
+import { scheduleApi, Schedule, TodaySchedule } from '../services/scheduleApi';
+import ScheduleModal, { ScheduleData } from '../components/modals/ScheduleModal';
+import ScheduleDetailModal from '../components/modals/ScheduleDetailModal';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const locales = {
   'en-US': require('date-fns/locale/en-US'),
@@ -39,38 +44,17 @@ interface CalendarEvent {
   end: Date;
 }
 
-// TO-DO 항목 타입
-interface TodoItem {
-  id: number;
-  title: string;
-  checked: boolean;
-}
-
-// 오늘 일정 타입(간단 예시)
-interface TodaySchedule {
-  date: string;           // YYYY-MM-DD
-  dayOfWeek: string;      // 예: "Sunday"
-  schedules: {
-    time: string;         // 예: "10:00 AM"
-    title: string;        // 예: "주간 회의"
-  }[];
-}
-
 // 프로젝트 상태 타입
 interface ProjectStatus {
   id: number;
   name: string;
-  status: string;         // 예: "진행중", "완료" 등
+  status: string;
 }
 
 // 커스텀 툴바(옵션)
 const CustomToolbar: FC<ToolbarProps> = (props) => {
   const goToBack = () => props.onNavigate('PREV');
   const goToNext = () => props.onNavigate('NEXT');
-
-  const changeView = (view: string) => {
-    props.onView(view as View);
-  };
 
   return (
     <div className="toolbar-container">
@@ -81,17 +65,6 @@ const CustomToolbar: FC<ToolbarProps> = (props) => {
         <span className="current-month">{props.label}</span>
         <button className="navigate-btn" onClick={goToNext}>
           &gt;
-        </button>
-      </div>
-      <div className="view-switcher">
-        <button onClick={() => changeView('month')} className="view-btn">
-          Month
-        </button>
-        <button onClick={() => changeView('week')} className="view-btn">
-          Week
-        </button>
-        <button onClick={() => changeView('day')} className="view-btn">
-          Today
         </button>
       </div>
     </div>
@@ -105,9 +78,12 @@ const HomePage: FC = () => {
   // 1) State 정의
   // ---------------------
   const [events, setEvents] = useState<CalendarEvent[]>([]);
-  const [todoItems, setTodoItems] = useState<TodoItem[]>([]);
   const [todayInfo, setTodayInfo] = useState<TodaySchedule | null>(null);
   const [projectList, setProjectList] = useState<ProjectStatus[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedSchedule, setSelectedSchedule] = useState<Schedule | null>(null);
+  const [modalMode, setModalMode] = useState<'detail' | 'edit' | 'create'>('create');
 
   // 날짜/요일 표시에 사용할 값
   const currentDate = new Date();
@@ -117,44 +93,35 @@ const HomePage: FC = () => {
   // 2) useEffect를 통한 백엔드 연동
   // ---------------------
   useEffect(() => {
-    // (a) 달력 이벤트
-    axios
-      .get('/api/events')
-      .then((res) => {
-        // 백엔드에서 반환한 이벤트(문자열 날짜)를 실제 Date 객체로 변환
-        const fetchedEvents: CalendarEvent[] = res.data.map((item: any) => ({
-          title: item.title,
-          // 문자열 -> Date 변환
-          start: new Date(item.start),
-          end: new Date(item.end),
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
+        
+        // 오늘의 일정 가져오기
+        const todaySchedules = await scheduleApi.getTodaySchedules();
+        setTodayInfo(todaySchedules);
+
+        // 달력 이벤트 가져오기
+        const response = await scheduleApi.getSchedules();
+        const fetchedEvents = response.map(schedule => ({
+          title: schedule.title,
+          start: new Date(schedule.start_date),
+          end: new Date(schedule.end_date)
         }));
         setEvents(fetchedEvents);
-      })
-      .catch((err) => console.error('Failed to fetch events:', err));
 
-    // (b) TO-DO LIST
-    axios
-      .get('/api/todos')
-      .then((res) => {
-        setTodoItems(res.data);
-      })
-      .catch((err) => console.error('Failed to fetch todos:', err));
+        // 프로젝트 상태 가져오기
+        const projectResponse = await axios.get('/api/projects');
+        setProjectList(projectResponse.data);
+      } catch (error) {
+        console.error('Failed to fetch data:', error);
+        toast.error('데이터를 불러오는데 실패했습니다.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-    // (c) TODAY 일정
-    axios
-      .get('/api/today')
-      .then((res) => {
-        setTodayInfo(res.data);
-      })
-      .catch((err) => console.error('Failed to fetch today schedule:', err));
-
-    // (d) 프로젝트 상태
-    axios
-      .get('/api/projects')
-      .then((res) => {
-        setProjectList(res.data);
-      })
-      .catch((err) => console.error('Failed to fetch projects:', err));
+    fetchData();
   }, []);
 
   // 달력 빈 영역 클릭 시 Monthly 페이지로 이동
@@ -164,52 +131,155 @@ const HomePage: FC = () => {
     }
   };
 
+  const handleAddClick = () => {
+    setSelectedSchedule(null);
+    setModalMode('create');
+    setShowModal(true);
+  };
+
+  const handleScheduleClick = (schedule: TodaySchedule['schedules'][0]) => {
+    const scheduleDetail: Schedule = {
+      id: schedule.id,
+      title: schedule.title,
+      description: '',  // 기본값
+      start_date: schedule.start_date,
+      end_date: schedule.end_date
+    };
+    setSelectedSchedule(scheduleDetail);
+    setModalMode('detail');
+    setShowModal(true);
+  };
+
+  const handleSlotSelect = (slotInfo: { start: Date; end: Date }) => {
+    setSelectedSchedule(null);
+    setModalMode('create');
+    setShowModal(true);
+  };
+
+  const handleEditClick = () => {
+    setModalMode('edit');
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setSelectedSchedule(null);
+  };
+
+  const handleSaveSchedule = async (scheduleData: ScheduleData): Promise<void> => {
+    try {
+      if (!scheduleData.start || !scheduleData.end) {
+        throw new Error('시작 시간과 종료 시간을 입력해주세요');
+      }
+
+      if (scheduleData.id) {
+        await scheduleApi.updateSchedule(scheduleData.id, {
+          title: scheduleData.title,
+          description: scheduleData.description,
+          start_date: scheduleData.start.toISOString(),
+          end_date: scheduleData.end.toISOString()
+        });
+        toast.success('일정이 수정되었습니다! 🔄');
+      } else {
+        await scheduleApi.createSchedule({
+          title: scheduleData.title,
+          description: scheduleData.description,
+          start_date: scheduleData.start.toISOString(),
+          end_date: scheduleData.end.toISOString()
+        });
+        toast.success('새로운 일정이 추가되었습니다! ✨');
+      }
+
+      // 일정 목록과 달력 이벤트 모두 새로고침
+      const [todaySchedules, allSchedules] = await Promise.all([
+        scheduleApi.getTodaySchedules(),
+        scheduleApi.getSchedules()
+      ]);
+
+      setTodayInfo(todaySchedules);
+      setEvents(allSchedules.map(schedule => ({
+        title: schedule.title,
+        start: new Date(schedule.start_date),
+        end: new Date(schedule.end_date)
+      })));
+
+      handleCloseModal();
+    } catch (error) {
+      console.error('Error saving schedule:', error);
+      toast.error('일정 저장에 실패했습니다. 다시 시도해주세요.');
+    }
+  };
+
+  const handleDeleteSchedule = async (id: number) => {
+    try {
+      await scheduleApi.deleteSchedule(id);
+      
+      // 일정 목록과 달력 이벤트 모두 새로고침
+      const [todaySchedules, allSchedules] = await Promise.all([
+        scheduleApi.getTodaySchedules(),
+        scheduleApi.getSchedules()
+      ]);
+
+      setTodayInfo(todaySchedules);
+      setEvents(allSchedules.map(schedule => ({
+        title: schedule.title,
+        start: new Date(schedule.start_date),
+        end: new Date(schedule.end_date)
+      })));
+
+      handleCloseModal();
+      toast.success('일정이 삭제되었습니다! 🗑️');
+    } catch (error) {
+      console.error('Error deleting schedule:', error);
+      toast.error('일정 삭제에 실패했습니다. 다시 시도해주세요.');
+    }
+  };
+
   // ---------------------
   // 3) 렌더링
   // ---------------------
   return (
     <div className="app-container">
       <Sidebar />
-
       <div className="main-container">
         <Header />
         <main className="content">
-          {/* (A) TO-DO LIST */}
-          <section className="to-do-list" aria-label="To-do list">
-            <h3>TO-DO LIST</h3>
-            <ul>
-              {todoItems.map((item) => (
-                <li key={item.id}>
-                  <label>
-                    <input type="checkbox" checked={item.checked} readOnly />
-                    {item.title}
-                  </label>
-                </li>
-              ))}
-            </ul>
-          </section>
-
-          {/* (B) TODAY */}
+          {/* TODAY */}
           <section className="today" aria-label="Today schedule">
-            <h3>TODAY</h3>
-            {/* 오늘 날짜/요일 표시는 로컬 Date 사용 or 백엔드에서 가져온 값 사용 가능 */}
-            <p className="date">
-              {todayInfo
-                ? `${todayInfo.date} (${todayInfo.dayOfWeek})`
-                : `${currentDate.toLocaleDateString()} (${dayOfWeek})`}
-            </p>
-            <ul>
-              {todayInfo
-                ? todayInfo.schedules.map((sched, index) => (
-                    <li key={index}>
-                      {sched.time} - {sched.title}
-                    </li>
-                  ))
-                : null}
-            </ul>
+            <div className="today-header">
+              <h3>오늘의 일정</h3>
+              <button className="add-schedule-btn" onClick={handleAddClick}>
+                +
+              </button>
+            </div>
+            {isLoading ? (
+              <div className="loading">로딩 중...</div>
+            ) : (
+              <>
+                <p className="date">
+                  {todayInfo?.date} ({todayInfo?.dayOfWeek})
+                </p>
+                <div className="schedule-list">
+                  {todayInfo?.schedules.length === 0 ? (
+                    <div className="no-schedule">오늘 예정된 일정이 없습니다.</div>
+                  ) : (
+                    <ul>
+                      {todayInfo?.schedules.map((schedule) => (
+                        <li 
+                          key={`${schedule.time}-${schedule.title}`}
+                          onClick={() => handleScheduleClick(schedule)}
+                        >
+                          <span className="schedule-time">{schedule.time}</span>
+                          <span className="schedule-title">{schedule.title}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              </>
+            )}
           </section>
 
-          {/* (C) PROJECT STATUS */}
+          {/* PROJECT STATUS */}
           <section className="project-status" aria-label="Project status">
             <h3>PROJECT STATUS</h3>
             <ul>
@@ -222,22 +292,74 @@ const HomePage: FC = () => {
             </ul>
           </section>
 
-          {/* (D) CALENDAR */}
-          <section className="calendar" aria-label="Calendar" onClick={handleCalendarClick}>
-            <h3>MONTH</h3>
+          {/* CALENDAR */}
+          <section className="calendar" aria-label="Calendar">
             <Calendar
               localizer={localizer}
               events={events}
               startAccessor="start"
               endAccessor="end"
               defaultView="month"
-              views={['month', 'week', 'day']}
+              views={['month']}
               className="calendar-container"
               components={{ toolbar: CustomToolbar }}
+              selectable={true}
+              onSelectSlot={handleSlotSelect}
+              onSelectEvent={handleScheduleClick}
+              messages={{
+                next: "다음",
+                previous: "이전",
+                today: "오늘",
+                month: "월",
+                noEventsInRange: "일정이 없습니다."
+              }}
             />
           </section>
         </main>
         <Footer />
+
+        {/* 모달 */}
+        {showModal && (
+          modalMode === 'detail' && selectedSchedule ? (
+            <ScheduleDetailModal
+              schedule={{
+                id: selectedSchedule.id,
+                title: selectedSchedule.title,
+                description: selectedSchedule.description || '',
+                start: selectedSchedule.start_date ? new Date(selectedSchedule.start_date) : new Date(),
+                end: selectedSchedule.end_date ? new Date(selectedSchedule.end_date) : new Date()
+              }}
+              onClose={handleCloseModal}
+              onEdit={handleEditClick}
+              onDelete={() => handleDeleteSchedule(selectedSchedule.id)}
+            />
+          ) : (
+            <ScheduleModal
+              onClose={handleCloseModal}
+              onSave={handleSaveSchedule}
+              initialData={modalMode === 'edit' && selectedSchedule ? {
+                id: selectedSchedule.id,
+                title: selectedSchedule.title,
+                description: selectedSchedule.description,
+                start: selectedSchedule.start_date ? new Date(selectedSchedule.start_date) : new Date(),
+                end: selectedSchedule.end_date ? new Date(selectedSchedule.end_date) : new Date()
+              } : null}
+              isOpen={showModal}
+            />
+          )
+        )}
+        <ToastContainer
+          position="top-right"
+          autoClose={1500}
+          hideProgressBar={false}
+          newestOnTop
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+        />
       </div>
     </div>
   );

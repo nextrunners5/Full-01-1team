@@ -11,77 +11,74 @@
   flex-grow: 1;
   display: flex;
   flex-direction: column;
-  padding-bottom: 40px; /* 푸터 높이에 맞춰 패딩 추가 */
+  padding-bottom: 60px; /* 하단 패딩 증가 */
+  overflow: visible; /* overflow 제거 */
 }
 
 /* 메인 콘텐츠 스타일 */
 .content {
   flex-grow: 1;
-  padding: 80px 0; /* 위쪽 여백 추가, 좌우 여백 제거 */
+  padding: 80px 0;
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* 세 박스가 동일한 너비로 배치 */
-  grid-gap: 20px; /* 박스 간격 */
-  width: 150%; /* 가로로 전체 화면 사용 */
-  margin: 0; /* 기본 여백 제거 */
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: 20px;
+  width: 150%;
+  margin: 0;
   box-sizing: border-box;
   margin-left: -38px;
+  overflow: visible; /* 콘텐츠 영역도 overflow 제거 */
+  padding-bottom: 60px; /* 하단 패딩 추가 */
 }
 
 /* 각각의 섹션 스타일 */
-.to-do-list, .today, .project-status {
+.today, .project-status {
   background: #ffffff;
-  padding: 5px 20px; /* 내부 패딩 */
-  border-radius: 10px; /* 둥근 모서리 */
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1); /* 그림자 */
-  height: 300px; /* 동일한 높이 */
+  padding: 5px 20px;
+  border-radius: 10px;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+  height: 300px;
 }
 
 /* 달력 스타일 */
 .calendar {
-  grid-column: span 3; /* 전체 열을 차지하도록 설정 */
+  grid-column: span 2;
   background: #ffffff;
-  padding: 16px; /* 내부 여백 */
+  padding: 16px;
   border-radius: 10px;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1); /* 그림자 */
-  height: auto; /* 높이를 동적으로 설정 */
-  overflow: hidden; /* 내용 넘침 숨기기 */
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+  height: auto;
+  overflow: visible; /* overflow hidden 제거 */
+  margin-bottom: 40px; /* 하단 여백 추가 */
 }
 
 .calendar-container {
-  height: 700px; /* 달력 높이 */
+  height: 800px; /* 달력 높이 증가 */
   margin-top: 20px;
 }
 
+/* 달력 내부 스타일 조정 */
+.rbc-calendar {
+  width: 100%;
+  height: 100%;
+}
+
+.rbc-month-view {
+  min-height: 700px; /* 최소 높이 설정 */
+}
+
 /* 섹션 제목 스타일 */
-.to-do-list h3, .today h3, .project-status h3, .calendar h3 {
+.today h3, .project-status h3, .calendar h3 {
   color: #007bff;
   font-size: 20px;
-  margin-bottom: 25px; /* 제목 아래 간격 축소 */
+  margin-bottom: 25px;
 }
 
 /* 리스트 스타일 */
-.to-do-list ul, .today ul, .project-status ul {
+.today ul, .project-status ul {
   list-style: none;
   padding: 0;
   margin: 0;
 }
-
-.to-do-list ul li {
-  display: flex;
-  align-items: center; /* 체크박스와 텍스트를 수직으로 가운데 정렬 */
-  margin-bottom: 12px; /* 리스트 항목 간격 */
-  font-size: 14px;
-  line-height: 1.5; /* 텍스트의 높이를 조정 */
-}
-
-.to-do-list input {
-  margin-right: 10px;
-  width: 18px;
-  height: 18px;
-  position: relative;
-  top: 4px; /* 체크박스를 살짝 아래로 이동 */
-}
-
 
 /* TODAY 섹션 스타일 */
 .today .date {
@@ -98,11 +95,10 @@
 }
 
 .today ul li {
-  align-items: center; /* 체크박스와 텍스트 정렬 */
-  margin-bottom: 12px; /* 리스트 항목 간격 */
+  align-items: center;
+  margin-bottom: 12px;
   font-size: 14px;
 }
-
 
 /* PROJECT STATUS 스타일 */
 .project-status ul li {
@@ -161,6 +157,6 @@
 /* 반응형 스타일 */
 @media screen and (min-width: 1200px) {
   .content {
-    grid-template-columns: repeat(3, 1fr); /* 큰 화면에서는 세 열 */
+    grid-template-columns: repeat(2, 1fr);
   }
 }
