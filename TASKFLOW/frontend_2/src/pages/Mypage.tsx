@@ -36,16 +36,16 @@ const Mypage: React.FC = () => {
   };
 
   return (
-    <div className="flex-container">
+    <div className="MP-flex-container">
       <Sidebar />
-      <div className="project-container">
+      <div className="MP-project-container">
         <Header />
-        <div className="content-wrapper">
-          <div className="header-container">
-            <h1 className="header-title">마이페이지</h1>
+        <div className="MP-content-wrapper">
+          <div className="MP-header-container">
+            <h1 className="MP-header-title">마이페이지</h1>
           </div>
 
-          <div className="my-content">
+          <div className="MP-my-content">
             <div className="my-profile-box">
               <div className="profile-header">
                 <h3>{userInfo?.name || '사용자'}</h3>
