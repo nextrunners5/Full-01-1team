@@ -1,10 +1,67 @@
 /* Monthly Page 스타일 */
+.M-month-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0px;
+  background-color: #F4F5FB;
+  height: 100vh;
+  width: 60%; /* 기존 60% 유지 또는 필요에 따라 조정 */
+}
+
+/* Calendar Container */
 .M-calendar-container {
-  height: 900px;
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  padding: 20px;
+  width: 200%; /* 기존 100%에서 90%로 축소 */
+  min-width: 800px; /* 최소 너비을 줄임 */
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  overflow: hidden;
+  min-height: 800px; /* 기존 950px에서 축소 */
+  margin-bottom: 80px; /* 기존 100px에서 축소 */
+  margin-left: -100px;
+  margin-right: -90px;
+  margin-top: 70px;
+}
+
+/* 내부 react-big-calendar 요소 스타일 */
+.M-calendar-container .rbc-calendar {
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border: none;
+  height: 100%;
+}
+
+.M-calendar-container .rbc-day-bg {
+  border: none;
+  height: 80%;
+}
+
+.M-calendar-container .rbc-month-row {
+  max-height: 180px; /* 기존 200px에서 축소 */
+}
+
+.M-calendar-container .rbc-date-cell {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 8px; /* 패딩 약간 축소 */
+}
+
+.M-calendar-container .rbc-event {
+  margin: 4px 0; /* 마진 축소 */
+}
+
+.M-calendar-container .rbc-row {
+  display: flex;
+  align-items: stretch;
+}
+
+.M-calendar-container .rbc-events-container {
+  overflow: hidden;
 }
 
 /* Global styles for MonthPage */
@@ -18,18 +75,7 @@ body.monthly-page {
   align-items: center;
 }
 
-/* Main container styles */
-.M-month-page {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  padding: 0px;
-  background-color: #F4F5FB;
-  height: 100vh;
-  width: 60%;
-}
-
+/* Title 스타일 */
 .M-title {
   font-size: 1.5em;
   color: #1a73e8;
@@ -37,59 +83,8 @@ body.monthly-page {
   font-weight: bold;
   text-align: left;
   width: 100%;
-  margin-top: 0px;
-  transform: translateX(10px);
-}
-
-.M-calendar-container {
-  width: 100%;
-  min-width: 1600px;
-  background: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  padding: 10px;
-  overflow: hidden;
-  min-height: 950px;
-  margin-bottom: 100px;
-  transform: translateX(400px);
-}
-
-/* Calendar specific styles */
-.rbc-calendar.M-calendar {
-  background: #ffffff;
-  border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  border: none;
-}
-
-.rbc-day-bg.M-day-bg {
-  border: none;
-  height: 80%;
-}
-
-.rbc-month-row.M-month-row {
-  max-height: 200px;
-}
-
-.rbc-date-cell.M-date-cell {
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  padding: 10px;
-}
-
-.rbc-event.M-event {
-  margin: 5px 0;
-}
-
-.rbc-row.M-row {
-  display: flex;
-  align-items: stretch;
-}
-
-/* Ensure events don't overflow */
-.rbc-events-container.M-events-container {
-  overflow: hidden;
+  margin-top: 20px;
+  transform: translateX(-80px);
 }
 
 /* Toolbar styles */
@@ -97,7 +92,7 @@ body.monthly-page {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 10px;
+  padding: 8px; /* 패딩 약간 축소 */
   position: relative;
 }
 
@@ -106,53 +101,17 @@ body.monthly-page {
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 18px;
+  font-size: 16px; /* 폰트 크기 축소 */
   font-weight: bold;
   margin: 0;
   color: #1a73e8;
   padding: 0;
-  margin-bottom: 20px;
+  margin-bottom: 15px; /* 마진 축소 */
+  margin-top: 13px;
 }
 
 .M-navigate-btn:hover {
   text-decoration: underline;
-}
-
-/* Current month styles */
-.M-current-month {
-  font-size: 20px;
-  font-weight: bold;
-  margin: 0 10px;
-  color: #1a73e8;
-  margin-bottom: 20px;
-  width: 200px;
-  text-align: center;
-}
-
-/* Add-event button styles */
-.M-add-event-btn {
-  position: absolute;
-  top: 40%;
-  transform: translateY(-50%);
-  right: 10px;
-  width: 40px;
-  height: 40px;
-  background-color: #1a73e8;
-  color: white;
-  border: none;
-  border-radius: 50%;
-  font-size: 20px;
-  font-weight: bold;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-}
-
-.M-add-event-btn:hover {
-  background-color: #155ab0;
 }
 
 .M-navigate-btn:first-of-type {
@@ -163,36 +122,77 @@ body.monthly-page {
   margin-left: 0px;
 }
 
+/* Current month styles */
+.M-current-month {
+  font-size: 18px; /* 폰트 크기 축소 */
+  font-weight: bold;
+  margin: 0 10px;
+  color: #1a73e8;
+  margin-bottom: 15px; /* 마진 축소 */
+  width: 180px; /* 너비 조정 */
+  text-align: center;
+  margin-top: 10px;
+}
+
+/* Add-event button styles */
+.M-add-event-btn {
+  position: absolute;
+  top: 40%;
+  transform: translateY(-50%);
+  right: 10px;
+  width: 35px; /* 크기 축소 */
+  height: 35px; /* 크기 축소 */
+  background-color: #1a73e8;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  font-size: 18px; /* 폰트 크기 축소 */
+  font-weight: bold;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  margin-top: 5px;
+}
+
+.M-add-event-btn:hover {
+  background-color: #155ab0;
+}
+
 /* Modal Overlay */
 .M-modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
+  width: 150%;
   height: 100%;
   background: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
+
 }
 
 /* Modal Content */
 .M-modal-content {
   background: #ffffff;
   border-radius: 8px;
-  width: 600px;
+  width: 600px; /* 너비 축소 */
   padding: 20px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
   gap: 20px;
+  margin-left: -600px;
 }
 
 /* Modal Header */
 .M-modal-content h3 {
   margin: 0;
-  font-size: 1.5rem;
+  font-size: 1.4rem; /* 폰트 크기 축소 */
   font-weight: bold;
   color: #333;
   text-align: left;
@@ -216,10 +216,10 @@ body.monthly-page {
 .M-modal-row input[type="text"],
 .M-modal-row input[type="datetime-local"] {
   width: 100%;
-  padding: 10px;
+  padding: 8px; /* 패딩 축소 */
   border: 1px solid #ccc;
   border-radius: 4px;
-  font-size: 0.95rem;
+  font-size: 0.9rem; /* 폰트 크기 축소 */
   box-sizing: border-box;
 }
 
@@ -227,16 +227,16 @@ body.monthly-page {
 .M-modal-content input[type="text"],
 .M-modal-content textarea {
   width: 100%;
-  padding: 10px;
+  padding: 8px; /* 패딩 축소 */
   border: 1px solid #ccc;
   border-radius: 4px;
-  font-size: 0.95rem;
+  font-size: 0.9rem; /* 폰트 크기 축소 */
   box-sizing: border-box;
 }
 
 .M-modal-content textarea {
   resize: none;
-  height: 80px;
+  height: 60px; /* 높이 축소 */
 }
 
 /* Button Section */
@@ -244,7 +244,7 @@ body.monthly-page {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 20px;
+  margin-top: 15px; /* 마진 축소 */
 }
 
 /* Delete Button */
@@ -253,7 +253,7 @@ body.monthly-page {
   color: #d32f2f;
   font-weight: bold;
   border: none;
-  font-size: 14px;
+  font-size: 13px; /* 폰트 크기 축소 */
   cursor: pointer;
 }
 
@@ -270,10 +270,11 @@ body.monthly-page {
 .M-modal-cancel-btn {
   background: #f5f5f5;
   color: #333;
-  padding: 10px 20px;
+  padding: 8px 16px; /* 패딩 축소 */
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  font-size: 0.9rem; /* 폰트 크기 축소 */
 }
 
 .M-modal-cancel-btn:hover {
@@ -283,16 +284,18 @@ body.monthly-page {
 .M-modal-save-btn {
   background: #1a73e8;
   color: white;
-  padding: 10px 20px;
+  padding: 8px 16px; /* 패딩 축소 */
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  font-size: 0.9rem; /* 폰트 크기 축소 */
 }
 
 .M-modal-save-btn:hover {
   background: #155ab0;
 }
 
+/* Success and Error Messages */
 .success-message {
   background-color: #d4edda;
   color: #155724;
@@ -311,4 +314,34 @@ body.monthly-page {
   margin-bottom: 16px;
   text-align: center;
   font-weight: 500;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 1200px) {
+  .M-calendar-container {
+    width: 100%;
+    min-width: auto;
+    padding: 8px;
+    min-height: 700px;
+    margin-bottom: 60px;
+  }
+
+  .M-modal-content {
+    width: 90%;
+  }
+
+  .M-title {
+    font-size: 1.3em;
+  }
+
+  .M-current-month {
+    font-size: 16px;
+    width: 160px;
+  }
+
+  .M-add-event-btn {
+    width: 30px;
+    height: 30px;
+    font-size: 16px;
+  }
 }

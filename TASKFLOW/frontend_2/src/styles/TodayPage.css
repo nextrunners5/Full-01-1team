@@ -1,6 +1,9 @@
 .today-content {
   padding: 40px;
   flex-grow: 1;
+  width: 2000px;
+  margin-left: 300px;
+  margin-top: -330px;
 }
 
 .today-schedule {
@@ -8,7 +11,7 @@
   padding: 30px;
   border-radius: 12px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  max-width: 800px;
+  max-width: 1300px;
   margin: 0 auto;
 }
 
@@ -29,14 +32,16 @@
 }
 
 .date-info h3 {
-  font-size: 28px;
+  font-size: 35px;
   color: #333;
   margin-bottom: 5px;
+  margin-top: 20px;
 }
 
 .date-info p {
   font-size: 16px;
-  color: #666;
+  color: #363636;
+  margin-bottom: 50px;
 }
 
 .schedule-list {
@@ -47,16 +52,18 @@
   display: flex;
   align-items: center;
   padding: 15px;
-  background-color: #f8f9fa;
+  background-color: #daedff;
   border-radius: 8px;
   margin-bottom: 10px;
   cursor: pointer;
   transition: transform 0.2s;
+  margin-top: 20px;
+  margin-left: -40px;
 }
 
 .schedule-item:hover {
   transform: translateX(5px);
-  background-color: #f0f0f0;
+  background-color: #e0d7ff;
 }
 
 .schedule-time {
@@ -72,19 +79,60 @@
   color: #333;
 }
 
+.add-schedule-btn:hover {
+  background-color: #0056b3;
+}
+
+/* 추가된 스타일 */
+.today-header-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+  position: relative;
+  top: -60px; /* 박스 위로 배치 */
+  margin: 0 auto;
+  max-width: 1400px; /* 박스와 동일한 너비로 정렬 */
+  z-index: 10;
+}
+
+.today-header-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+  position: relative;
+  top: 0; /* 부모 컨테이너와 조화롭게 위치 */
+  margin: 0 auto;
+  max-width: 1400px;
+  z-index: 9999; /* 다른 요소 위로 배치 */
+}
+
+.today-title {
+  font-size: 28px;
+  color: #1a73e8;
+  font-weight: bold;
+  margin: 0;
+  margin-left: 200px;
+  margin-top: -650px;
+}
+
 .add-schedule-btn {
   background-color: #1100FF;
   color: white;
   border: none;
   border-radius: 50%;
-  width: 32px;
-  height: 32px;
+  width: 40px;
+  height: 40px;
   font-size: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: background-color 0.2s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  margin-top: -650px;
+  margin-right:  -100px;
 }
 
 .add-schedule-btn:hover {

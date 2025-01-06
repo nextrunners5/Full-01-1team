@@ -1,5 +1,9 @@
+.MAI-body {
+  width: 300%;
+  background-color: #f9fafb;
+}
 /* 전체 앱 컨테이너 스타일 */
-.app-container {
+.MAI-app-container {
   display: flex;
   height: 100vh;
   font-family: Arial, sans-serif;
@@ -7,16 +11,16 @@
 }
 
 /* 메인 컨테이너 스타일 */
-.main-container {
+.MAI-main-container {
   flex-grow: 1;
   display: flex;
   flex-direction: column;
-  padding-bottom: 60px; /* 하단 패딩 증가 */
-  overflow: visible; /* overflow 제거 */
+  padding-bottom: 60px;
+  overflow: visible;
 }
 
 /* 메인 콘텐츠 스타일 */
-.content {
+.MAI-content {
   flex-grow: 1;
   padding: 80px 0;
   display: grid;
@@ -32,7 +36,7 @@
 }
 
 /* 각각의 섹션 스타일 */
-.today-date, .today, .project-status {
+.MAI-today-date, .MAI-today, .MAI-project-status {
   background: #ffffff;
   padding: 20px;
   border-radius: 10px;
@@ -42,7 +46,7 @@
 }
 
 /* 달력 섹션 스타일 */
-.calendar {
+.MAI-calendar {
   grid-column: 1 / -1;
   background: #ffffff;
   padding: 20px;
@@ -52,67 +56,69 @@
   margin-top: 20px;
 }
 
-.calendar-container {
-  height: 800px; /* 달력 높이 증가 */
+.MAI-calendar-container {
+  height: 800px;
   margin-top: 20px;
+  margin-left: 0px;
 }
 
 /* 달력 내부 스타일 조정 */
-.rbc-calendar {
+.MAI-rbc-calendar {
   width: 100%;
   height: 100%;
 }
 
-.rbc-month-view {
-  min-height: 700px; /* 최소 높이 설정 */
+.MAI-rbc-month-view {
+  min-height: 700px;
 }
 
 /* 섹션 제목 스타일 */
-.today h3, .project-status h3, .calendar h3 {
+.MAI-today h3, .MAI-project-status h3, .MAI-calendar h3 {
   color: #007bff;
   font-size: 20px;
-  margin-bottom: 25px;
+  margin-bottom: 10px;
+  margin-top: 10px;
 }
 
 /* 리스트 스타일 */
-.today ul, .project-status ul {
+.MAI-today ul, .MAI-project-status ul {
   list-style: none;
   padding: 0;
   margin: 0;
 }
 
 /* TODAY 섹션 스타일 */
-.today .date {
+.MAI-today .MAI-date {
   display: none;
 }
 
-.today ul {
+.MAI-today ul {
   list-style-type: disc;
   padding-left: 20px;
   margin-top: 25px;
 }
 
-.today ul li {
+.MAI-today ul li {
   align-items: center;
   margin-bottom: 12px;
   font-size: 14px;
 }
 
 /* PROJECT STATUS 스타일 */
-.project-status {
+.MAI-project-status {
   background: white;
   padding: 20px;
   border-radius: 12px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.project-status h3 {
+.MAI-project-status h3 {
   color: #1a73e8;
   font-size: 20px;
   margin-bottom: 20px;
 }
 
-.project-item {
+.MAI-project-item {
   padding: 12px 15px;
   background-color: #f8f9fa;
   border-radius: 8px;
@@ -120,49 +126,49 @@
   cursor: pointer;
 }
 
-.project-item:hover {
+.MAI-project-item:hover {
   transform: translateX(5px);
   background-color: #f0f0f0;
 }
 
-.project-info {
+.MAI-project-info {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.project-details {
+.MAI-project-details {
   display: flex;
   flex-direction: column;
   gap: 4px;
 }
 
-.project-title {
+.MAI-project-title {
   font-size: 14px;
   color: #333;
   font-weight: 500;
 }
 
-.project-period {
+.MAI-project-period {
   font-size: 12px;
   color: #666;
 }
 
 /* 캘린더 툴바 스타일 */
-.toolbar-container {
+.MAI-toolbar-container {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 10px 0;
 }
 
-.current-month {
+.MAI-current-month {
   font-size: 25px;
   font-weight: bold;
   color: #007bff;
 }
 
-.navigate-btn {
+.MAI-navigate-btn {
   background: none;
   border: none;
   cursor: pointer;
@@ -171,7 +177,7 @@
   color: #007bff;
 }
 
-.view-btn {
+.MAI-view-btn {
   background-color: #007bff;
   color: white;
   border: none;
@@ -182,19 +188,19 @@
   margin-left: 5px;
 }
 
-.view-btn:hover {
+.MAI-view-btn:hover {
   background-color: #0056b3;
 }
 
 /* 반응형 스타일 */
 @media screen and (min-width: 1200px) {
-  .content {
+  .MAI-content {
     grid-template-columns: repeat(3, 1fr);
   }
 }
 
-/* 상태 뱃지 스타일 - ProjectDetail과 동일하게 */
-.status {
+/* 상태 뱃지 스타일 */
+.MAI-status {
   display: inline-block;
   padding: 4px 12px;
   border-radius: 12px;
@@ -202,18 +208,18 @@
   font-weight: 500;
 }
 
-.status.in_progress {
+.MAI-status.in_progress {
   background-color: #e3f2fd;
   color: #1976d2;
 }
 
-.status.completed {
+.MAI-status.completed {
   background-color: #e8f5e9;
   color: #2e7d32;
 }
 
-/* 모달 스타일도 ProjectDetail과 동일하게 */
-.detail-modal-content {
+/* 모달 스타일 */
+.MAI-detail-modal-content {
   background: white;
   padding: 24px;
   border-radius: 8px;
@@ -221,27 +227,27 @@
   max-width: 90vw;
 }
 
-.detail-section {
+.MAI-detail-section {
   margin: 20px 0;
 }
 
-.detail-row {
+.MAI-detail-row {
   margin-bottom: 20px;
 }
 
-.detail-row label {
+.MAI-detail-row label {
   display: block;
   color: #666;
   margin-bottom: 8px;
   font-size: 14px;
 }
 
-.detail-value {
+.MAI-detail-value {
   color: #333;
   font-size: 16px;
 }
 
-.detail-value.description {
+.MAI-detail-value.description {
   white-space: pre-wrap;
   line-height: 1.5;
   background: #f8f9fa;
@@ -250,14 +256,14 @@
 }
 
 /* 프로젝트 헤더 스타일 */
-.project-header {
+.MAI-project-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
 }
 
-.add-project-btn {
+.MAI-add-project-btn {
   background-color: #1100FF;
   color: white;
   border: none;
@@ -272,12 +278,12 @@
   transition: background-color 0.2s;
 }
 
-.add-project-btn:hover {
+.MAI-add-project-btn:hover {
   background-color: #0056b3;
 }
 
 /* 오늘 날짜 섹션 스타일 */
-.today-date {
+.MAI-today-date {
   background: #ffffff;
   padding: 20px;
   border-radius: 10px;
@@ -285,20 +291,20 @@
   height: 300px;
 }
 
-.today-date h3 {
+.MAI-today-date h3 {
   color: #1a73e8;
   font-size: 20px;
   margin-bottom: 20px;
 }
 
-.today-date .date {
+.MAI-today-date .MAI-date {
   font-size: 24px;
   font-weight: bold;
   color: #333;
 }
 
 /* 공통 헤더 스타일 */
-.today-header, .project-header {
+.MAI-today-header, .MAI-project-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -306,7 +312,7 @@
 }
 
 /* 공통 추가 버튼 스타일 */
-.add-schedule-btn, .add-project-btn {
+.MAI-add-schedule-btn, .MAI-add-project-btn {
   background-color: #1100FF;
   color: white;
   border: none;
@@ -321,6 +327,6 @@
   transition: background-color 0.2s;
 }
 
-.add-schedule-btn:hover, .add-project-btn:hover {
+.MAI-add-schedule-btn:hover, .MAI-add-project-btn:hover {
   background-color: #0056b3;
 }

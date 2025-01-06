@@ -243,8 +243,9 @@ const MonthPageM: React.FC = () => {
       <Sidebar />
       <div className="main-content">
         <Header />
+        {/* 제목을 컨테이너 외부로 이동 */}
+        <h2 className="M-title">MONTHLY</h2>
         <div className="M-calendar-container">
-          <h2 className="M-title">MONTHLY</h2>
           <Calendar
             localizer={localizer}
             events={events}

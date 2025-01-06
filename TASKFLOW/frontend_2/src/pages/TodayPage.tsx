@@ -1,5 +1,3 @@
-// TodayPage.tsx
-
 import React, { useState, useEffect } from 'react';
 import Header from '../components/common/Header';
 import Sidebar from '../components/common/Sidebar';
@@ -84,7 +82,7 @@ const TodayPage: React.FC = () => {
         toast.success('새로운 일정이 추가되었습니다! ✨');
       }
 
-      // 일정 목록 새로고침
+      // Refresh schedule list
       const todaySchedules = await scheduleApi.getTodaySchedules();
       setTodayInfo(todaySchedules);
       handleCloseModal();
@@ -98,7 +96,7 @@ const TodayPage: React.FC = () => {
     try {
       await scheduleApi.deleteSchedule(scheduleId);
       
-      // 일정 목록 새로고침
+      // Refresh schedule list
       const todaySchedules = await scheduleApi.getTodaySchedules();
       setTodayInfo(todaySchedules);
       
@@ -115,14 +113,17 @@ const TodayPage: React.FC = () => {
       <Sidebar />
       <div className="main-container">
         <Header />
+
+        {/* TODAY Header Section */}
+        <div className="today-header-container">
+          <h2 className="today-title">TODAY</h2>
+          <button className="add-schedule-btn" onClick={handleAddClick}>
+            +
+          </button>
+        </div>
+
         <main className="today-content">
           <section className="today-schedule">
-            <div className="today-header">
-              <h2>오늘의 일정</h2>
-              <button className="add-schedule-btn" onClick={handleAddClick}>
-                +
-              </button>
-            </div>
             <div className="date-info">
               <h3>{todayInfo?.date}</h3>
               <p>{todayInfo?.dayOfWeek}</p>
@@ -154,7 +155,7 @@ const TodayPage: React.FC = () => {
         <Footer />
       </div>
       
-      {/* 모달 추가 */}
+      {/* Modals */}
       {showModal && (
         modalMode === 'detail' && selectedSchedule ? (
           <ScheduleDetailModal
