@@ -338,6 +338,7 @@ const HomePage: FC = () => {
 
   const handleProjectClick = (project: Project) => {
     setSelectedProject(project);
+    setProjectModalMode('detail');
     setShowProjectModal(true);
   };
 
@@ -359,27 +360,40 @@ const HomePage: FC = () => {
 
   const handleAddProject = async (projectData: ProjectData): Promise<void> => {
     try {
-      // 입력값 검증
       if (!projectData.name || !projectData.startDate || !projectData.endDate) {
         throw new Error('필수 입력값이 누락되었습니다.');
       }
 
       const projectPayload = {
         name: projectData.name,
-        description: projectData.description || '',  // 설명이 없을 경우 빈 문자열
+        description: projectData.description || '',
         startDate: projectData.startDate,
         endDate: projectData.endDate,
-        status: 'IN_PROGRESS'  // 새 프로젝트는 항상 진행 중
+        status: 'IN_PROGRESS'
       };
 
-      console.log('프로젝트 생성 요청 데이터:', projectPayload); // 요청 데이터 로깅
-
       const response = await projectApi.createProject(projectPayload);
-      console.log('프로젝트 생성 응답:', response); // 응답 데이터 로깅
-
+      
       // 프로젝트 목록 새로고침
       const updatedProjects = await projectApi.getAllProjects();
       setProjectList(updatedProjects);
+
+      // 달력 이벤트 업데이트
+      const scheduleEvents = events.filter(event => !event.isProject);
+      
+      // 새로운 프로젝트 이벤트 생성
+      const projectEvents = updatedProjects
+        .filter((project: Project) => project.status !== 'COMPLETED')
+        .map((project: Project) => ({
+          id: project.id,
+          title: `[Project] ${project.name}`,
+          start: new Date(project.startDate),
+          end: new Date(project.endDate),
+          isProject: true
+        }));
+
+      // 일정과 프로젝트 이벤트 합치기
+      setEvents([...scheduleEvents, ...projectEvents]);
       
       setShowProjectCreateModal(false);
       toast.success('새 프로젝트가 생성되었습니다! ✨');
