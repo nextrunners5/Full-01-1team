@@ -270,9 +270,9 @@ const ProjectPage: React.FC = () => {
   };
 
   return (
-    <div className="flex-container">
+    <div className="pjt-flex-container">
       <Sidebar />
-      <div className="project-container">
+      <div className="A_project-container">
         <Header />
         <div className="status-cards">
           <div 
@@ -411,15 +411,15 @@ const ProjectPage: React.FC = () => {
         <Footer />
       </div>
       {showDeleteModal && (
-        <div className="modal-overlay">
-          <div className="modal-content">
+        <div className="PJT-modal-overlay">
+          <div className="PJT-modal-content">
             <h3>프로젝트 삭제</h3>
             <p>선택한 프로젝트를 삭제하시겠습니까?</p>
-            <div className="modal-buttons">
-              <button onClick={() => setShowDeleteModal(false)} className="cancel-button">
+            <div className="PJT-modal-buttons">
+              <button onClick={() => setShowDeleteModal(false)} className="PJT-cancel-button">
                 취소
               </button>
-              <button onClick={confirmDelete} className="confirm-button">
+              <button onClick={confirmDelete} className="PJT-confirm-button">
                 삭제
               </button>
             </div>

@@ -208,14 +208,14 @@ const PersonalInfoUpdate: React.FC = () => {
   }
 
   return (
-    <div className="flex-container">
+    <div className="Update-flex-container">
       <Sidebar />
-      <div className="main-container">
+      <div className="Update-main-container">
         <Header />
         <main className="personal-info-content">
           <h2>개인정보 수정</h2>
           <form onSubmit={handleSubmit} className="personal-info-form">
-            <div className="form-group">
+            <div className="Update-form-group">
               <label htmlFor="name">이름</label>
               <input
                 type="text"
@@ -227,7 +227,7 @@ const PersonalInfoUpdate: React.FC = () => {
               />
             </div>
 
-            <div className="form-group">
+            <div className="Update-form-group">
               <label htmlFor="email">이메일</label>
               <input
                 type="email"
@@ -238,7 +238,7 @@ const PersonalInfoUpdate: React.FC = () => {
               />
             </div>
 
-            <div className="form-group">
+            <div className="Update-form-group">
               <label htmlFor="birthdate">생년월일</label>
               <input
                 type="date"
@@ -250,7 +250,7 @@ const PersonalInfoUpdate: React.FC = () => {
               />
             </div>
 
-            <div className="form-group">
+            <div className="Update-form-group">
               <label htmlFor="gender">성별</label>
               <input
                 type="text"
@@ -262,7 +262,7 @@ const PersonalInfoUpdate: React.FC = () => {
               />
             </div>
 
-            <div className="form-group">
+            <div className="Update-form-group">
               <label htmlFor="currentPassword">현재 비밀번호</label>
               <div className="password-input-wrapper">
                 <input
@@ -282,7 +282,7 @@ const PersonalInfoUpdate: React.FC = () => {
               </div>
             </div>
 
-            <div className="form-group">
+            <div className="Update-form-group">
               <label htmlFor="newPassword">새 비밀번호 (선택사항)</label>
               <div className="password-input-wrapper">
                 <input
@@ -303,7 +303,7 @@ const PersonalInfoUpdate: React.FC = () => {
               </div>
             </div>
 
-            <div className="form-group">
+            <div className="Update-form-group">
               <label htmlFor="confirmPassword">새 비밀번호 확인</label>
               <div className="password-input-wrapper">
                 <input
@@ -325,7 +325,7 @@ const PersonalInfoUpdate: React.FC = () => {
             </div>
 
             {formData.newPassword && (
-              <div className="form-group">
+              <div className="Update-form-group">
                 <label htmlFor="idNumberFront">주민등록번호</label>
                 <div className="id-number-input">
                   <input
@@ -354,11 +354,11 @@ const PersonalInfoUpdate: React.FC = () => {
               </div>
             )}
 
-            <div className="button-group">
-              <button type="button" onClick={() => navigate('/mypage')} className="cancel-btn">
+            <div className="Update-button-group">
+              <button type="button" onClick={() => navigate('/mypage')} className="Update-cancel-btn">
                 취소
               </button>
-              <button type="submit" className="save-btn">
+              <button type="submit" className="Update-save-btn">
                 저장
               </button>
             </div>

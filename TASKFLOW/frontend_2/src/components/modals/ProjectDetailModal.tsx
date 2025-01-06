@@ -42,9 +42,9 @@ const ProjectDetailModal: React.FC<ProjectDetailProps> = ({
   };
 
   return (
-    <div className="modal-overlay">
+    <div className="PJT-modal-overlay">
       <div className="detail-modal-content">
-        <h3>프로젝트 상세</h3>
+        <h3>프로젝트 상세내용</h3>
         
         <div className="detail-section">
           <div className="detail-row">

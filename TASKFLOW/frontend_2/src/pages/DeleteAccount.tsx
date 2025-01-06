@@ -88,9 +88,9 @@ const DeleteAccount: React.FC = () => {
   };
 
   return (
-    <div className="flex-container">
+    <div className="Update-flex-container">
       <Sidebar />
-      <div className="main-container">
+      <div className="Update-main-container">
         <Header />
         <main className="personal-info-content">
           <h2>회원 탈퇴</h2>
@@ -115,9 +115,9 @@ const DeleteAccount: React.FC = () => {
               />
             </div>
 
-            <div className="form-group">
+            <div className="Update-form-group">
               <label htmlFor="idNumberFront">주민등록번호</label>
-              <div className="id-number-input">
+              <div className="DEL-id-number-input">
                 <input
                   type="text"
                   id="idNumberFront"
@@ -128,7 +128,7 @@ const DeleteAccount: React.FC = () => {
                   maxLength={6}
                   required
                 />
-                <span className="id-number-separator">-</span>
+                <span className="DEL-id-number-separator">-</span>
                 <input
                   type="password"
                   id="idNumberBack"
@@ -142,7 +142,7 @@ const DeleteAccount: React.FC = () => {
               </div>
             </div>
 
-            <div className="form-group">
+            <div className="Update-form-group">
               <label htmlFor="confirmText">
                 회원탈퇴를 진행하려면 "회원탈퇴"를 입력하세요
               </label>
@@ -157,11 +157,11 @@ const DeleteAccount: React.FC = () => {
               />
             </div>
 
-            <div className="button-group">
-              <button type="button" onClick={() => navigate('/mypage')} className="cancel-btn">
+            <div className="Delete-button-group">
+              <button type="button" onClick={() => navigate('/mypage')} className="DEL-cancel-btn">
                 취소
               </button>
-              <button type="submit" className="delete-btn">
+              <button type="submit" className="DEL-delete-btn">
                 회원탈퇴
               </button>
             </div>

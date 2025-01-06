@@ -1,34 +1,36 @@
-.flex-container {
+.MP-flex-container {
   display: flex;
   min-height: 100vh;
   background-color: #f4f5fc;
+  width: 100%;
 }
 
-.project-container {
+.MP-project-container {
   flex: 1;
   margin-left: 240px;
   padding: 20px;
   margin-top: 64px;
-}
+  }
 
-.content-wrapper {
+.MP-content-wrapper {
   background: #ffffff;
   border-radius: 8px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   padding: 20px;
+  width: 600px;
 }
 
-.header-container {
+.MP-header-container {
   margin-bottom: 20px;
 }
 
-.header-title {
+.MP-header-title {
   font-size: 24px;
   color: #333;
   margin: 0;
 }
 
-.my-content {
+.MP-my-content {
   max-width: 600px;
   margin: 0 auto;
 }
@@ -133,28 +135,6 @@
 
 .settings-item.withdrawal:hover {
   background-color: #fff1f1;
-}
-
-.mypage-content {
-  padding: 40px;
-  margin: 20px;
-  background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.mypage-content h2 {
-  color: #333;
-  margin-bottom: 30px;
-  font-size: 24px;
-}
-
-.mypage-buttons {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  max-width: 400px;
-  margin: 0 auto;
 }
 
 .mypage-btn {
