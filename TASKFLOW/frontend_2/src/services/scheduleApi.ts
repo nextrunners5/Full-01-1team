@@ -8,16 +8,18 @@ export interface Schedule {
   end_date: string;
 }
 
+interface TodayScheduleItem {
+  id: number;
+  title: string;
+  time: string;
+  start_date: string;
+  end_date: string;
+}
+
 export interface TodaySchedule {
   date: string;
   dayOfWeek: string;
-  schedules: {
-    id: number;
-    title: string;
-    time: string;
-    start_date: string;
-    end_date: string;
-  }[];
+  schedules: TodayScheduleItem[];
 }
 
 export interface ScheduleCreate {
@@ -45,15 +47,39 @@ export const scheduleApi = {
     try {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
-      const tomorrow = new Date(today);
-      tomorrow.setDate(tomorrow.getDate() + 1);
 
       const response = await API.get('/schedules');
       const allSchedules = response.data;
       
       const todaySchedules = allSchedules.filter((schedule: Schedule) => {
-        const scheduleDate = new Date(schedule.start_date);
-        return scheduleDate >= today && scheduleDate < tomorrow;
+        const startDate = new Date(schedule.start_date);
+        const endDate = new Date(schedule.end_date);
+        return (
+          (startDate.toDateString() === today.toDateString()) ||
+          (startDate < today && endDate >= today)
+        );
+      });
+
+      const processedSchedules = todaySchedules.map((schedule: Schedule) => {
+        const startDate = new Date(schedule.start_date);
+        return {
+          id: schedule.id,
+          title: schedule.title,
+          time: startDate < today ? '진행 중' :
+            new Date(schedule.start_date).toLocaleTimeString('ko-KR', {
+              hour: '2-digit',
+              minute: '2-digit',
+              hour12: true
+            }),
+          start_date: schedule.start_date,
+          end_date: schedule.end_date
+        };
+      });
+
+      processedSchedules.sort((a: TodayScheduleItem, b: TodayScheduleItem) => {
+        if (a.time === '진행 중') return -1;
+        if (b.time === '진행 중') return 1;
+        return new Date(a.start_date).getTime() - new Date(b.start_date).getTime();
       });
 
       return {
@@ -63,17 +89,7 @@ export const scheduleApi = {
           day: '2-digit'
         }).replace(/\.$/, ''),
         dayOfWeek: today.toLocaleString('ko-KR', { weekday: 'long' }),
-        schedules: todaySchedules.map((schedule: Schedule) => ({
-          id: schedule.id,
-          title: schedule.title,
-          time: new Date(schedule.start_date).toLocaleTimeString('ko-KR', {
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: true
-          }),
-          start_date: schedule.start_date,
-          end_date: schedule.end_date
-        }))
+        schedules: processedSchedules
       };
     } catch (error) {
       console.error('Failed to fetch today schedules:', error);

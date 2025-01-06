@@ -42,9 +42,11 @@ const localizer = dateFnsLocalizer({
 
 // 달력 이벤트 타입
 interface CalendarEvent {
+  id: number;
   title: string;
   start: Date;
   end: Date;
+  isProject?: boolean;  // 프로젝트와 일정을 구분하기 위한 플래그
 }
 
 // 프로젝트 상태 타입
@@ -106,18 +108,30 @@ const HomePage: FC = () => {
         const todaySchedules = await scheduleApi.getTodaySchedules();
         setTodayInfo(todaySchedules);
 
-        // 달력 이벤트 가져오기
-        const response = await scheduleApi.getSchedules();
-        const fetchedEvents = response.map(schedule => ({
+        // 달력 이벤트 가져오기 (일정)
+        const scheduleResponse = await scheduleApi.getSchedules();
+        const scheduleEvents = scheduleResponse.map(schedule => ({
           id: schedule.id,
           title: schedule.title,
           start: new Date(schedule.start_date),
-          end: new Date(schedule.end_date)
+          end: new Date(schedule.end_date),
+          isProject: false
         }));
-        setEvents(fetchedEvents);
 
-        // 프로젝트 가져오기 (projectApi 사용)
+        // 프로젝트 가져오기 (완료되지 않은 프로젝트만)
         const projects = await projectApi.getAllProjects();
+        const projectEvents = projects
+          .filter((project: Project) => project.status !== 'COMPLETED')
+          .map((project: Project) => ({
+            id: project.id,
+            title: `[Project] ${project.name}`,
+            start: new Date(project.startDate),
+            end: new Date(project.endDate),
+            isProject: true
+          }));
+
+        // 일정과 프로젝트 합치기
+        setEvents([...scheduleEvents, ...projectEvents]);
         setProjectList(projects);
       } catch (error) {
         console.error('Failed to fetch data:', error);
@@ -136,30 +150,39 @@ const HomePage: FC = () => {
     setShowModal(true);
   };
 
-  const handleScheduleClick = (schedule: TodaySchedule['schedules'][0] | CalendarEvent) => {
-    // 달력 이벤트인 경우와 오늘의 일정인 경우를 구분
-    if ('time' in schedule) {
-      // 오늘의 일정인 경우
-      const scheduleDetail: Schedule = {
-        id: schedule.id,
-        title: schedule.title,
-        description: '',
-        start_date: schedule.start_date,
-        end_date: schedule.end_date
-      };
-      setSelectedSchedule(scheduleDetail);
+  const handleCalendarEventClick = (event: CalendarEvent) => {
+    if (event.isProject) {
+      // 프로젝트인 경우
+      const project = projectList.find(p => p.id === event.id);
+      if (project) {
+        setSelectedProject(project);
+        setProjectModalMode('detail');
+        setShowProjectModal(true);
+      }
     } else {
-      // 달력 이벤트인 경우
+      // 일정인 경우
       const scheduleDetail: Schedule = {
-        id: (schedule as any).id, // id가 있다면 사용
-        title: schedule.title,
+        id: event.id,
+        title: event.title,
         description: '',
-        start_date: schedule.start.toISOString(),
-        end_date: schedule.end.toISOString()
+        start_date: event.start.toISOString(),
+        end_date: event.end.toISOString()
       };
       setSelectedSchedule(scheduleDetail);
+      setModalMode('detail');
+      setShowModal(true);
     }
-    
+  };
+
+  const handleTodayScheduleClick = (schedule: TodaySchedule['schedules'][0]) => {
+    const scheduleDetail: Schedule = {
+      id: schedule.id,
+      title: schedule.title,
+      description: '',
+      start_date: schedule.start_date,
+      end_date: schedule.end_date
+    };
+    setSelectedSchedule(scheduleDetail);
     setModalMode('detail');
     setShowModal(true);
   };
@@ -273,8 +296,33 @@ const HomePage: FC = () => {
       };
 
       await projectApi.createProject(projectPayload);
-      const updatedProjects = await projectApi.getAllProjects();
-      setProjectList(updatedProjects);
+      
+      // 프로젝트 목록과 달력 이벤트 업데이트
+      const [schedules, projects] = await Promise.all([
+        scheduleApi.getSchedules(),
+        projectApi.getAllProjects()
+      ]);
+
+      const scheduleEvents = schedules.map(schedule => ({
+        id: schedule.id,
+        title: schedule.title,
+        start: new Date(schedule.start_date),
+        end: new Date(schedule.end_date),
+        isProject: false
+      }));
+
+      const projectEvents = projects
+        .filter((project: Project) => project.status !== 'COMPLETED')
+        .map((project: Project) => ({
+          id: project.id,
+          title: `[Project] ${project.name}`,
+          start: new Date(project.startDate),
+          end: new Date(project.endDate),
+          isProject: true
+        }));
+
+      setEvents([...scheduleEvents, ...projectEvents]);
+      setProjectList(projects);
       
       setShowProjectCreateModal(false);
       toast.success('새 프로젝트가 생성되었습니다! ✨');
@@ -296,8 +344,33 @@ const HomePage: FC = () => {
 
       if (selectedProject?.id) {
         await projectApi.updateProject(selectedProject.id, projectPayload);
-        const updatedProjects = await projectApi.getAllProjects();
-        setProjectList(updatedProjects);
+        
+        // 프로젝트 목록과 달력 이벤트 업데이트
+        const [schedules, projects] = await Promise.all([
+          scheduleApi.getSchedules(),
+          projectApi.getAllProjects()
+        ]);
+
+        const scheduleEvents = schedules.map(schedule => ({
+          id: schedule.id,
+          title: schedule.title,
+          start: new Date(schedule.start_date),
+          end: new Date(schedule.end_date),
+          isProject: false
+        }));
+
+        const projectEvents = projects
+          .filter((project: Project) => project.status !== 'COMPLETED')
+          .map((project: Project) => ({
+            id: project.id,
+            title: `[Project] ${project.name}`,
+            start: new Date(project.startDate),
+            end: new Date(project.endDate),
+            isProject: true
+          }));
+
+        setEvents([...scheduleEvents, ...projectEvents]);
+        setProjectList(projects);
         
         setShowProjectModal(false);
         setProjectModalMode('detail');
@@ -323,6 +396,32 @@ const HomePage: FC = () => {
         // 프로젝트 목록 새로고침
         const updatedProjects = await projectApi.getAllProjects();
         setProjectList(updatedProjects);
+        
+        // 달력 이벤트 업데이트 (완료되지 않은 프로젝트만)
+        const [schedules, projects] = await Promise.all([
+          scheduleApi.getSchedules(),
+          projectApi.getAllProjects()
+        ]);
+
+        const scheduleEvents = schedules.map(schedule => ({
+          id: schedule.id,
+          title: schedule.title,
+          start: new Date(schedule.start_date),
+          end: new Date(schedule.end_date),
+          isProject: false
+        }));
+
+        const projectEvents = projects
+          .filter((project: Project) => project.status !== 'COMPLETED')
+          .map((project: Project) => ({
+            id: project.id,
+            title: `[Project] ${project.name}`,
+            start: new Date(project.startDate),
+            end: new Date(project.endDate),
+            isProject: true
+          }));
+
+        setEvents([...scheduleEvents, ...projectEvents]);
         
         setShowDeleteModal(false);
         toast.success('프로젝트가 삭제되었습니다! 🗑️');
@@ -373,7 +472,7 @@ const HomePage: FC = () => {
                     {todayInfo?.schedules.map((schedule) => (
                       <li 
                         key={`${schedule.time}-${schedule.title}`}
-                        onClick={() => handleScheduleClick(schedule)}
+                        onClick={() => handleTodayScheduleClick(schedule)}
                       >
                         <span className="schedule-time">{schedule.time}</span>
                         <span className="schedule-title">{schedule.title}</span>
@@ -427,7 +526,17 @@ const HomePage: FC = () => {
               views={['month']}
               className="calendar-container"
               components={{ toolbar: CustomToolbar }}
-              onSelectEvent={handleScheduleClick}
+              onSelectEvent={handleCalendarEventClick}
+              eventPropGetter={(event: CalendarEvent) => ({
+                style: {
+                  backgroundColor: event.isProject ? '#1100FF' : '#2563eb',
+                  borderRadius: '4px',
+                  opacity: 0.8,
+                  color: 'white',
+                  border: '0px',
+                  display: 'block'
+                }
+              })}
               messages={{
                 next: "다음",
                 previous: "이전",

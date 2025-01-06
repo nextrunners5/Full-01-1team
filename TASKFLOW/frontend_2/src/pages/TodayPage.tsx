@@ -97,8 +97,11 @@ const TodayPage: React.FC = () => {
   const handleDeleteSchedule = async (scheduleId: number) => {
     try {
       await scheduleApi.deleteSchedule(scheduleId);
+      
+      // 일정 목록 새로고침
       const todaySchedules = await scheduleApi.getTodaySchedules();
       setTodayInfo(todaySchedules);
+      
       setShowModal(false);
       toast.success('일정이 삭제되었습니다! 🗑️');
     } catch (error) {
