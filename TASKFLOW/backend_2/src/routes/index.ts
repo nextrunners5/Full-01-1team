@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { login, signup, findEmail, resetPassword } from '../controllers/authController';
+import { login, signup, findEmail, resetPassword, verifyUserForReset } from '../controllers/authController';
 import { authenticateToken } from '../middlewares/authMiddleware';
 import {
   getAllSchedules,
@@ -34,6 +34,7 @@ router.use('/signup/check-email', checkEmailRouter);
 router.post('/auth/login', login);
 router.post('/auth/find-email', findEmail);
 router.post('/auth/reset-password', resetPassword);
+router.post('/auth/verify-reset', verifyUserForReset);
 
 // Schedule routes
 router.get('/schedules', authenticateToken, getAllSchedules);

@@ -100,5 +100,20 @@ export const authApi = {
       }
       throw new Error('비밀번호 재설정 중 오류가 발생했습니다.');
     }
+  },
+
+  verifyUserForReset: async (email: string, name: string) => {
+    try {
+      const response = await API.post('/auth/verify-reset', {
+        email,
+        name
+      });
+      return response.data;
+    } catch (error: any) {
+      if (error.response?.data?.message) {
+        throw new Error(error.response.data.message);
+      }
+      throw new Error('사용자 정보 확인에 실패했습니다.');
+    }
   }
 }; 

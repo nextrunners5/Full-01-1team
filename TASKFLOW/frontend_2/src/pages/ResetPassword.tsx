@@ -8,7 +8,7 @@ const ResetPassword: React.FC = () => {
   const [name, setName] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
-  const [step, setStep] = useState<"email" | "reset">("email");
+  const [step, setStep] = useState<"email" | "password" | "reset">("email");
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const navigate = useNavigate();
@@ -33,27 +33,23 @@ const ResetPassword: React.FC = () => {
 
   const handleSubmitEmail = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError("");
 
     if (!email || !name) {
-      setError("이메일 주소와 이름을 모두 입력해주세요.");
-      setSuccess(null);
-      return;
-    }
-
-    if (!/\S+@\S+\.\S+/.test(email)) {
-      setError("유효한 이메일 주소를 입력해주세요.");
-      setSuccess(null);
+      setError("이메일과 이름을 모두 입력해주세요.");
       return;
     }
 
     try {
-      // 이메일 확인 성공으로 가정
-      setError(null);
-      setSuccess("이메일 확인이 완료되었습니다. 비밀번호를 재설정해주세요.");
-      setStep("reset");
+      const response = await authApi.verifyUserForReset(email, name);
+      
+      if (response.success) {
+        setStep("password");
+      } else {
+        setError("이메일 또는 이름이 일치하지 않습니다.");
+      }
     } catch (error: any) {
-      setError(error.message);
-      setSuccess(null);
+      setError(error.message || "사용자 정보 확인에 실패했습니다.");
     }
   };
 

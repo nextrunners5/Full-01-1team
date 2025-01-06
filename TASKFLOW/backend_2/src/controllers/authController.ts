@@ -259,4 +259,34 @@ export const resetPassword = async (req: Request, res: Response) => {
       message: '서버 오류가 발생했습니다.' 
     });
   }
+};
+
+export const verifyUserForReset = async (req: Request, res: Response) => {
+  const { email, name } = req.body;
+
+  try {
+    // 이메일과 이름으로 사용자 검색
+    const [rows] = await pool.query(
+      'SELECT * FROM users WHERE email = ? AND name = ?',
+      [email, name]
+    );
+
+    if ((rows as any[]).length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: '일치하는 사용자 정보를 찾을 수 없습니다.'
+      });
+    }
+
+    res.json({
+      success: true,
+      message: '사용자 확인이 완료되었습니다.'
+    });
+  } catch (error) {
+    console.error('User verification error:', error);
+    res.status(500).json({
+      success: false,
+      message: '서버 오류가 발생했습니다.'
+    });
+  }
 }; 
