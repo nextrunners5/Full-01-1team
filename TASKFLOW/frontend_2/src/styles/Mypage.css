@@ -1,28 +1,36 @@
-.my-dashboard {
+.flex-container {
   display: flex;
-  justify-content: space-between;
+  min-height: 100vh;
+  background-color: #f4f5fc;
+}
+
+.project-container {
+  flex: 1;
+  margin-left: 240px;
   padding: 20px;
-  width: 200%;
-  background-color: #f4f7fa;
-  transform: translateX(-200px);
+  margin-top: 64px;
 }
 
-.my-main-content {
-  width: 100%;
+.content-wrapper {
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  padding: 20px;
 }
 
-.my-content-wrapper {
-  display: flex;
-  justify-content: space-between;
-  gap: 20px;
+.header-container {
+  margin-bottom: 20px;
 }
 
-.my-left-panel {
-  width: 35%;
+.header-title {
+  font-size: 24px;
+  color: #333;
+  margin: 0;
 }
 
-.my-right-panel {
-  width: 60%;
+.my-content {
+  max-width: 600px;
+  margin: 0 auto;
 }
 
 .my-profile-box, .my-settings-box {
@@ -33,75 +41,15 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-.my-page-title {
-  font-size: 26px;
-  font-weight: 600;
-  color: #333;
-}
-
-.my-stats-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.my-activity-card, .my-schedule-card {
-  background-color: #ffffff;
-  border-radius: 12px;
-  padding: 20px;
-  margin-bottom: 20px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-/* 김민수, 프로젝트 매니저, 항상 최선을 다하는 매니저 텍스트 왼쪽 정렬 */
 .my-profile-box .profile-header {
   display: flex;
   align-items: flex-start;
   gap: 10px;
-  flex-direction: column; /* 텍스트들을 세로로 배치 */
+  flex-direction: column;
 }
 
 .my-profile-box .avatar {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-}
-
-.my-profile-box .profile-description {
-  font-size: 14px;
-  color: #000000;
-  margin-top: 10px;
-  text-align: left;
-}
-
-/* 최근 활동과 중요 일정 제목의 글자 크기 및 폰트 굵기 맞추기 */
-.my-schedule-card .schedule-title, .my-activity-card .activity-title {
-  font-size: 20px;  /* 글자 크기 동일하게 조정 */
-  font-weight: 600;  /* 글자 두께 동일하게 조정 */
-  color: #333;
-}
-
-/* 로그아웃 버튼 상단 마진 추가 */
-.my-logout-btn {
-  background-color: #1a73e8;
-  color: white;
-  padding: 12px 20px;
-  border-radius: 6px;
-  font-weight: 500;
-  transition: background-color 0.3s;
-  border: none;
-  width: 100%;
-  margin-top: 80px; /* 상단 마진 추가 */
-}
-
-.my-logout-btn:hover {
-  background-color: #124a93;
-  cursor: pointer;
-}
-
-/* 프로필 사진을 동그라미로 클리핑하고 크기 줄이기 */
-.my-profile-box .avatar-img {
-  width: 60px;  
+  width: 60px;
   height: 60px;
   border-radius: 50%;
   object-fit: cover;
@@ -141,9 +89,8 @@
   color: #388e3c;
 }
 
-/* 다크모드 드롭다운의 가로 길이 줄이기 */
 .my-settings-box select {
-  width: 150px; /* 적당한 크기로 줄이기 */
+  width: 150px;
   padding: 6px 12px;
   border: 1px solid #e0e0e0;
   border-radius: 6px;
@@ -152,73 +99,38 @@
   color: #333;
 }
 
-/* 중요일정 박스의 추가 버튼 위치 조정 */
-.my-schedule-card .schedule-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  position: relative;
-}
-
-.my-schedule-card .add-btn {
+.my-logout-btn {
   background-color: #1a73e8;
   color: white;
-  padding: 8px 16px;
+  padding: 12px 20px;
   border-radius: 6px;
   font-weight: 500;
-  position: absolute;
-  top: 0;
-  right: 0;
   transition: background-color 0.3s;
   border: none;
+  width: 100%;
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.my-schedule-card .add-btn:hover {
-  background-color: #092447;
+.my-logout-btn:hover {
+  background-color: #124a93;
   cursor: pointer;
 }
 
-.my-schedule-card .schedule-content {
-  margin-top: 16px;
+.settings-item.withdrawal {
+  color: #dc3545;
 }
 
-.my-schedule-card .schedule-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px;
-  border-bottom: 1px solid #e0e0e0;
+.settings-item.withdrawal .settings-item-left {
+  color: #dc3545;
 }
 
-.my-schedule-card .schedule-item:last-child {
-  border-bottom: none;
+.settings-item.withdrawal svg {
+  color: #dc3545;
 }
 
-.my-schedule-card .schedule-status {
-  color: #1a73e8;
-  font-weight: bold;
-}
-
-.my-activity-card .activity-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px;
-  border-bottom: 1px solid #e0e0e0;
-}
-
-.my-activity-card .activity-item:last-child {
-  border-bottom: none;
-}
-
-.my-activity-card .activity-time {
-  color: #757575;
-  font-size: 12px;
-}
-
-.my-activity-card .activity-icon {
-  background-color: #1a73e8;
-  color: white;
-  padding: 8px;
-  border-radius: 50%;
+.settings-item.withdrawal:hover {
+  background-color: #fff1f1;
 }

@@ -50,3 +50,13 @@
   width: 20px;
   height: 20px;
 }
+
+/* 로그아웃 버튼 특별 스타일 */
+.logout-btn {
+  color: #666;
+}
+
+.logout-btn:hover {
+  background-color: #ff4444 !important;
+  color: white;
+}

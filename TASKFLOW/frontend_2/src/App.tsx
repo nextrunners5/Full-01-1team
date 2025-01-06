@@ -13,6 +13,7 @@ import ProjectPageEdit from "./pages/ProjectPageEdit";
 import FindEmail from "./pages/FindEmail";
 import ResetPassword from "./pages/ResetPassword";
 import PersonalInfoPage from "./pages/PersonalInfoUpdate";
+import Mypage from "./pages/Mypage";
 import Header from "./components/common/Header";
 import Sidebar from "./components/common/Sidebar";
 import Footer from "./components/common/Footer";
@@ -68,6 +69,11 @@ const App: React.FC = () => (
         <Route path="/project/edit/:projectId" element={
           <ProtectedRoute>
             <ProjectPageEdit />
+          </ProtectedRoute>
+        } />
+        <Route path="/mypage" element={
+          <ProtectedRoute>
+            <Mypage />
           </ProtectedRoute>
         } />
         <Route path="/personalinfo/update" element={
