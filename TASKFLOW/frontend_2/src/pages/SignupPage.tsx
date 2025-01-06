@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import "../styles/Signup.css";
-import { authApi } from '../services/authApi';
+import API from '../api/axiosConfig';
 
 const SignupPage: React.FC = () => {
     const location = useLocation();
@@ -50,17 +50,14 @@ const SignupPage: React.FC = () => {
                 return;
             }
 
-            const response = await fetch('http://localhost:3500/api/signup/check-email', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email: formData.email }),
+            const response = await API.post('/signup/check-email', { 
+                email: formData.email 
             });
 
-            const result = await response.json();
-            if (response.ok) {
+            if (response.status === 200) {
                 alert("사용 가능한 이메일입니다.");
             } else {
-                alert(result.message || "이미 사용 중인 이메일입니다.");
+                alert(response.data.message || "이미 사용 중인 이메일입니다.");
             }
         } catch (error) {
             console.error('Error checking email:', error);
@@ -72,27 +69,20 @@ const SignupPage: React.FC = () => {
         try {
             const fullIdNumber = `${data.idNumberFront}-${data.idNumberBack}`;
             
-            const response = await fetch('http://localhost:3500/api/signup', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    email: data.email,
-                    password: data.password,
-                    name: data.name,
-                    birthdate: data.birthdate,
-                    gender: data.gender,
-                    idNumber: fullIdNumber,
-                }),
+            const response = await API.post('/signup', {
+                email: data.email,
+                password: data.password,
+                name: data.name,
+                birthdate: data.birthdate,
+                gender: data.gender,
+                idNumber: fullIdNumber,
             });
 
-            const result = await response.json();
-            
-            if (response.ok) {
-                alert(result.message);
-                // 회원가입 성공 시 로그인 페이지로 이동
+            if (response.status === 200) {
+                alert(response.data.message);
                 window.location.href = '/login';
             } else {
-                alert(result.message || "회원가입 중 오류가 발생했습니다.");
+                alert(response.data.message || "회원가입 중 오류가 발생했습니다.");
             }
         } catch (error) {
             console.error('Error:', error);

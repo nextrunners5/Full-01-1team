@@ -18,21 +18,17 @@ const TodayPage: React.FC = () => {
   const [selectedSchedule, setSelectedSchedule] = useState<Schedule | null>(null);
   const [modalMode, setModalMode] = useState<'detail' | 'edit' | 'create'>('create');
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setIsLoading(true);
-        const todaySchedules = await scheduleApi.getTodaySchedules();
-        setTodayInfo(todaySchedules);
-      } catch (error) {
-        console.error('Failed to fetch data:', error);
-        toast.error('데이터를 불러오는데 실패했습니다.');
-      } finally {
-        setIsLoading(false);
-      }
-    };
+  const getData = async () => {
+    try {
+      const todaySchedules = await scheduleApi.getTodaySchedules();
+      setTodayInfo(todaySchedules);
+    } catch (error) {
+      console.error('Failed to get data:', error);
+    }
+  };
 
-    fetchData();
+  useEffect(() => {
+    getData();
   }, []);
 
   const handleAddClick = () => {

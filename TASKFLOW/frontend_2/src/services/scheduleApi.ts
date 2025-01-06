@@ -98,7 +98,7 @@ export const scheduleApi = {
         schedules: processedSchedules
       };
     } catch (error) {
-      console.error('Failed to fetch today schedules:', error);
+      console.error('Failed to get today schedules:', error);
       throw error;
     }
   },

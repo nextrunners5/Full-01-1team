@@ -20,25 +20,23 @@ const ProjectPageEdit: React.FC = () => {
     endDate: ''
   });
 
-  useEffect(() => {
-    const fetchProject = async () => {
-      try {
-        if (!projectId) return;
-        const response = await projectApi.getProjectById(parseInt(projectId));
-        setFormData({
-          name: response.name,
-          description: response.description,
-          status: response.status,
-          startDate: response.startDate,
-          endDate: response.endDate
-        });
-      } catch (err: any) {
-        console.error('프로젝트 조회 오류:', err);
-        setError(err.message);
-      }
-    };
+  const getProject = async () => {
+    try {
+      const response = await projectApi.getProjectById(parseInt(projectId));
+      setFormData({
+        name: response.name,
+        description: response.description,
+        status: response.status,
+        startDate: response.startDate,
+        endDate: response.endDate
+      });
+    } catch (error) {
+      console.error('Failed to get project:', error);
+    }
+  };
 
-    fetchProject();
+  useEffect(() => {
+    getProject();
   }, [projectId]);
 
   const handleChange = (

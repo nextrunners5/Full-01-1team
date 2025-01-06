@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Calendar, momentLocalizer, ToolbarProps as BigCalendarToolbarProps } from 'react-big-calendar';
 import moment from 'moment';
-import axios from 'axios';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import '../styles/Weekly.css'; // CSS 파일 경로 변경
 import Header from '../components/common/Header';
@@ -120,14 +119,14 @@ const WCalendar: React.FC = () => {
 
   useEffect(() => {
     document.body.classList.add('weekly-page');
-    fetchEvents();
+    getEvents();
 
     return () => {
       document.body.classList.remove('weekly-page');
     };
   }, []);
 
-  const fetchEvents = async () => {
+  const getEvents = async () => {
     try {
       const response = await scheduleApi.getSchedules();
       const events = response.map((schedule: Schedule) => ({
@@ -139,7 +138,7 @@ const WCalendar: React.FC = () => {
       }));
       setEvents(events);
     } catch (error) {
-      console.error('Failed to fetch events:', error);
+      console.error('Failed to get events:', error);
     }
   };
 

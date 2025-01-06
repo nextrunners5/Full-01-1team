@@ -22,17 +22,17 @@ const SchedulePage: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [schedules, setSchedules] = useState<Schedule[]>([]);
 
-  const fetchSchedules = async () => {
+  const getSchedules = async () => {
     try {
       const response = await scheduleApi.getSchedules();
       setSchedules(response);
     } catch (error) {
-      console.error('Failed to fetch schedules:', error);
+      console.error('Failed to get schedules:', error);
     }
   };
 
   useEffect(() => {
-    fetchSchedules();
+    getSchedules();
   }, []);
 
   const handleOpenModal = () => {
@@ -58,7 +58,7 @@ const SchedulePage: React.FC = () => {
         });
         toast.success('새로운 일정이 추가되었습니다! ✨');
         handleCloseModal();
-        fetchSchedules();
+        getSchedules();
       } catch (error) {
         toast.error('일정 생성에 실패했습니다. 다시 시도해주세요.');
         throw new Error('일정 생성 실패');

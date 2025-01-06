@@ -34,27 +34,19 @@ const ProjectPage: React.FC = () => {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
 
   useEffect(() => {
-    fetchProjects();
+    getProjects();
   }, []);
 
   useEffect(() => {
     console.log('현재 프로젝트 목록:', projects);
   }, [projects]);
 
-  const fetchProjects = async () => {
+  const getProjects = async () => {
     try {
-      setLoading(true);
-      console.log('프로젝트 목록 요청 시작');
       const data = await projectApi.getAllProjects();
-      console.log('받아온 프로젝트 데이터:', data);
-      setProjects(Array.isArray(data) ? data : []);
-      setError(null);
-    } catch (err: any) {
-      console.error('프로젝트 목록 조회 오류:', err);
-      setError(err.message);
-      setProjects([]);
-    } finally {
-      setLoading(false);
+      setProjects(data);
+    } catch (error) {
+      console.error('Failed to get projects:', error);
     }
   };
 
@@ -81,7 +73,7 @@ const ProjectPage: React.FC = () => {
   const confirmDelete = async () => {
     try {
       await projectApi.deleteMultipleProjects(selectedIds);
-      await fetchProjects();
+      await getProjects();
       setSelectedIds([]);
       setShowDeleteModal(false);
     } catch (err: any) {

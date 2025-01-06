@@ -68,33 +68,24 @@ const PersonalInfoUpdate: React.FC = () => {
     confirmPassword: false
   });
 
-  const fetchUserInfo = async () => {
+  const getUserInfo = async () => {
     try {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        navigate('/login');
-        return;
-      }
-
       const response = await API.get('/users/me');
-      const userInfo: UserInfo = response.data;
-      
-      console.log('Fetched user info:', userInfo);
-
       setFormData(prev => ({
         ...prev,
-        name: userInfo.name || '',
-        email: userInfo.email || '',
-        birthdate: userInfo.birthdate || '',
-        gender: userInfo.gender || '',
+        name: response.data.name || '',
+        email: response.data.email || '',
+        birthdate: response.data.birthdate || '',
+        gender: response.data.gender || '',
         currentPassword: '',
         newPassword: '',
         confirmPassword: '',
         idNumberFront: '',
         idNumberBack: ''
       }));
+      console.log('Got user info:', response.data);
     } catch (error) {
-      console.error('Failed to fetch user info:', error);
+      console.error('Failed to get user info:', error);
       if ((error as any).response?.status === 401) {
         navigate('/login');
       } else {
@@ -106,8 +97,8 @@ const PersonalInfoUpdate: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchUserInfo();
-  }, [navigate]);
+    getUserInfo();
+  }, []);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -163,7 +154,7 @@ const PersonalInfoUpdate: React.FC = () => {
 
       await API.put('/users/me', updateData);
       
-      await fetchUserInfo();
+      await getUserInfo();
       
       toast.success('개인정보가 성공적으로 수정되었습니다.');
       

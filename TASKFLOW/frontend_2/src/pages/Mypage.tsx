@@ -18,15 +18,15 @@ const Mypage: React.FC = () => {
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
 
   useEffect(() => {
-    fetchUserInfo();
+    getUserInfo();
   }, []);
 
-  const fetchUserInfo = async () => {
+  const getUserInfo = async () => {
     try {
       const response = await API.get('/users/me');
       setUserInfo(response.data);
     } catch (error) {
-      console.error('Failed to fetch user info:', error);
+      console.error('Failed to get user info:', error);
       toast.error('사용자 정보를 불러오는데 실패했습니다.');
     }
   };

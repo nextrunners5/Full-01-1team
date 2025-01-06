@@ -35,7 +35,7 @@ export interface SignupResponse {
 export const authApi = {
   login: async (credentials: LoginCredentials) => {
     try {
-      const response = await API.post<LoginResponse>('/auth/login', credentials);
+      const response = await API.post<LoginResponse>('/login', credentials);
       
       if (response.data.success && response.data.data) {
         const { token, user } = response.data.data;
@@ -88,7 +88,7 @@ export const authApi = {
 
   resetPassword: async (email: string, name: string, newPassword: string) => {
     try {
-      const response = await API.post('/auth/reset-password', {
+      const response = await API.post('/reset-password', {
         email,
         name,
         newPassword
@@ -104,7 +104,7 @@ export const authApi = {
 
   verifyUserForReset: async (email: string, name: string) => {
     try {
-      const response = await API.post('/auth/verify-reset', {
+      const response = await API.post('/verify-reset', {
         email,
         name
       });

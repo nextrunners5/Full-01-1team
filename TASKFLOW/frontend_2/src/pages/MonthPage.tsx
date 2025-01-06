@@ -55,7 +55,7 @@ const MonthPageM: React.FC = () => {
   const [newEvent, setNewEvent] = useState<Event | null>(null);
   const [modalMode, setModalMode] = useState<'detail' | 'edit' | 'create'>('create');
 
-  const fetchEvents = async () => {
+  const getEvents = async () => {
     try {
       const response = await scheduleApi.getSchedules();
       const events = response.map((schedule: Schedule) => ({
@@ -67,7 +67,7 @@ const MonthPageM: React.FC = () => {
       }));
       setEvents(events);
     } catch (error) {
-      console.error('Failed to fetch events:', error);
+      console.error('Failed to get events:', error);
     }
   };
 
@@ -117,7 +117,7 @@ const MonthPageM: React.FC = () => {
 
   useEffect(() => {
     document.body.classList.add('monthly-page');
-    fetchEvents();
+    getEvents();
     return () => {
       document.body.classList.remove('monthly-page');
     };
