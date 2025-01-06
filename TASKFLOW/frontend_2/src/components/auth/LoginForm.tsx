@@ -41,24 +41,14 @@ const LoginForm: React.FC = () => {
         </div>
         <div className="input-group">
           <label htmlFor="password">비밀번호</label>
-          <div className="password-wrapper">
-            <input
-              type="password"
-              id="password"
-              placeholder="비밀번호를 입력하세요"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            <span
-              className="eye-icon"
-              onClick={() => {}}
-              role="button"
-              aria-label="비밀번호 보기"
-            >
-              "👁️"
-            </span>
-          </div>
+          <input
+            type="password"
+            id="password"
+            placeholder="비밀번호를 입력하세요"
+            required
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
         </div>
         <button type="submit" className="login-btn">
           로그인
