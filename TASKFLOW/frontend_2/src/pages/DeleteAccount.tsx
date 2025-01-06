@@ -7,6 +7,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import API from '../api/axiosConfig';
 import 'react-toastify/dist/ReactToastify.css';
 import "../styles/PersonalInfoPage.css";
+import { useAuth } from '../contexts/AuthContext';
 
 interface DeleteAccountForm {
   password: string;
@@ -17,6 +18,7 @@ interface DeleteAccountForm {
 
 const DeleteAccount: React.FC = () => {
   const navigate = useNavigate();
+  const { logout } = useAuth();
   const [formData, setFormData] = useState<DeleteAccountForm>({
     password: "",
     idNumberFront: "",
@@ -52,6 +54,11 @@ const DeleteAccount: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (!formData.password || !formData.idNumberFront || !formData.idNumberBack || !formData.confirmText) {
+      toast.error('모든 필드를 입력해주세요.');
+      return;
+    }
+
     if (formData.confirmText !== "회원탈퇴") {
       toast.error('회원탈퇴 확인 문구를 정확히 입력해주세요.');
       return;
@@ -63,26 +70,32 @@ const DeleteAccount: React.FC = () => {
     }
 
     try {
-      await API.delete('/users/me', {
+      const response = await API.delete('/users/me', {
         data: {
           password: formData.password,
           idNumber: `${formData.idNumberFront}-${formData.idNumberBack}`
         }
       });
 
-      localStorage.removeItem('token');
-      toast.success('회원 탈퇴가 완료되었습니다.');
-      navigate('/login');
+      if (response.data.success) {
+        await logout();
+        navigate('/login', { replace: true });
+      } else {
+        toast.error(response.data.message || '회원 탈퇴에 실패했습니다.');
+      }
+
     } catch (error: any) {
       if (error.response?.status === 401) {
-        if (error.response.data.error.includes('주민등록번호')) {
+        const errorMessage = error.response.data.error;
+        if (errorMessage.includes('주민등록번호')) {
           toast.error('주민등록번호가 일치하지 않습니다.');
-        } else {
+        } else if (errorMessage.includes('비밀번호')) {
           toast.error('비밀번호가 일치하지 않습니다.');
+        } else {
+          toast.error('인증에 실패했습니다.');
         }
       } else {
-        toast.error('회원 탈퇴에 실패했습니다.');
-        console.error('Error deleting account:', error);
+        toast.error('회원 탈퇴 중 오류가 발생했습니다.');
       }
     }
   };

@@ -189,72 +189,64 @@ const updateUserInfo = async (req: AuthenticatedRequest, res: Response) => {
 
 // 회원 탈퇴
 const deleteAccount = async (req: AuthenticatedRequest, res: Response) => {
+  const { password, idNumber } = req.body;
+  const userId = req.user?.id;
+
   try {
-    if (!req.user?.id) {
-      return res.status(401).json({ error: "인증이 필요합니다." });
-    }
-
-    const { password, idNumber } = req.body;
-
-    // 현재 사용자 정보 조회
-    const [userRows] = await pool.query(
+    // 1. 사용자 정보 조회
+    const [user] = await pool.query(
       'SELECT * FROM users WHERE id = ?',
-      [req.user.id]
+      [userId]
     );
-    const user = (userRows as any[])[0];
 
-    if (!user) {
-      return res.status(404).json({ error: "사용자를 찾을 수 없습니다." });
+    if (!(user as any[])[0]) {
+      return res.status(404).json({
+        success: false,
+        message: '사용자를 찾을 수 없습니다.'
+      });
     }
 
-    // 비밀번호 확인
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+    const currentUser = (user as any[])[0];
+
+    // 2. 비밀번호 확인
+    const isPasswordValid = await bcrypt.compare(password, currentUser.password);
     if (!isPasswordValid) {
-      return res.status(401).json({ error: "비밀번호가 일치하지 않습니다." });
+      return res.status(401).json({
+        success: false,
+        error: '비밀번호가 일치하지 않습니다.'
+      });
     }
 
-    // 주민등록번호 확인
+    // 3. 주민번호 확인 - 복호화 로직 추가
     try {
-      if (!user.id_number) {
-        return res.status(400).json({ error: "저장된 주민등록번호가 없습니다." });
-      }
-
-      const decryptedIdNumber = decryptIdNumber(user.id_number);
+      const decryptedIdNumber = decryptIdNumber(currentUser.id_number);
       if (decryptedIdNumber !== idNumber) {
-        return res.status(401).json({ error: "주민등록번호가 일치하지 않습니다." });
+        return res.status(401).json({
+          success: false,
+          error: '주민등록번호가 일치하지 않습니다.'
+        });
       }
     } catch (error) {
       console.error('주민등록번호 복호화 중 오류:', error);
-      return res.status(500).json({ error: "주민등록번호 확인 중 오류가 발생했습니다." });
+      return res.status(500).json({
+        success: false,
+        message: '주민등록번호 확인 중 오류가 발생했습니다.'
+      });
     }
 
-    // 사용자 관련 데이터 삭제 (트랜잭션 사용)
-    const connection = await pool.getConnection();
-    try {
-      await connection.beginTransaction();
+    // 4. 회원 삭제
+    await pool.query('DELETE FROM users WHERE id = ?', [userId]);
 
-      // 사용자의 스케줄 삭제
-      await connection.query('DELETE FROM schedules WHERE user_id = ?', [req.user.id]);
-      
-      // 사용자의 프로젝트 삭제
-      await connection.query('DELETE FROM projects WHERE user_id = ?', [req.user.id]);
-      
-      // 사용자 계정 삭제
-      await connection.query('DELETE FROM users WHERE id = ?', [req.user.id]);
+    res.json({
+      success: true,
+      message: '회원 탈퇴가 완료되었습니다.'
+    });
 
-      await connection.commit();
-      res.json({ message: "회원 탈퇴가 완료되었습니다." });
-    } catch (error) {
-      await connection.rollback();
-      throw error;
-    } finally {
-      connection.release();
-    }
   } catch (error) {
-    console.error("회원 탈퇴 중 오류 발생:", error);
-    res.status(500).json({ 
-      error: "서버 오류가 발생했습니다.",
-      details: process.env.NODE_ENV === 'development' ? (error as Error).message : undefined
+    console.error('Delete account error:', error);
+    res.status(500).json({
+      success: false,
+      message: '서버 오류가 발생했습니다.'
     });
   }
 };
