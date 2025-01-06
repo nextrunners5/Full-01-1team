@@ -1,12 +1,19 @@
 import React from 'react'
 import { User, ChevronRight, UserX } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 import '../styles/Mypage.css'
 import Header from '../components/common/Header'
 import Sidebar from '../components/common/Sidebar'
 import Footer from '../components/common/Footer'
 import UserIcon from '../assets/user-icon.png'
 
-export default function Mypage() {
+const Mypage: React.FC = () => {
+  const navigate = useNavigate();
+
+  const handlePersonalInfoClick = () => {
+    navigate('/personal-info-update');
+  };
+
   return (
     <div className="flex-container">
       <Sidebar />
@@ -30,19 +37,27 @@ export default function Mypage() {
             <div className="my-settings-box">
               <h3 className="section-title">개인 설정</h3>
               <div className="settings-list">
-                <div className="settings-item">
-                  <div className="settings-item-left">
-                    <User className="h-4 w-4" />
+                <div 
+                  className="settings-item"
+                  onClick={handlePersonalInfoClick}
+                  style={{ cursor: 'pointer' }}
+                >
+                  <div className="settings-item-content">
+                    <User size={20} />
                     <span>개인정보 수정</span>
                   </div>
-                  <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                  <ChevronRight size={20} />
                 </div>
-                <div className="settings-item withdrawal">
-                  <div className="settings-item-left">
-                    <UserX className="h-4 w-4" />
+                <div 
+                  className="settings-item withdrawal"
+                  onClick={() => navigate('/delete-account')}
+                  style={{ cursor: 'pointer' }}
+                >
+                  <div className="settings-item-content">
+                    <UserX size={20} />
                     <span>회원탈퇴</span>
                   </div>
-                  <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                  <ChevronRight size={20} />
                 </div>
               </div>
             </div>
@@ -53,3 +68,5 @@ export default function Mypage() {
     </div>
   )
 }
+
+export default Mypage;

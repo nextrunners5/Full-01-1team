@@ -23,6 +23,17 @@ pool.getConnection()
 // API 라우트 설정 (모든 라우트가 /api 프리픽스를 가짐)
 app.use('/api', routes);
 
+// 404 에러 핸들링
+app.use((req, res) => {
+  res.status(404).json({ error: "요청하신 경로를 찾을 수 없습니다." });
+});
+
+// 에러 핸들링 미들웨어
+app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+  console.error(err);
+  res.status(500).json({ error: "서버 오류가 발생했습니다." });
+});
+
 const PORT = process.env.PORT || 3500;
 
 app.listen(PORT, () => {
