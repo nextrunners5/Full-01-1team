@@ -45,79 +45,56 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
 
   return (
     <div className="modal-overlay">
-      <div className="project-modal">
+      <div className="modal-content">
         <h3>{initialData ? '프로젝트 수정' : '새 프로젝트'}</h3>
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label htmlFor="projectName">프로젝트명</label>
+            <label>시작 날짜</label>
             <input
-              id="projectName"
-              type="text"
-              value={projectData.name}
-              onChange={(e) => setProjectData({ ...projectData, name: e.target.value })}
+              type="date"
+              value={projectData.startDate}
+              onChange={(e) => setProjectData({ ...projectData, startDate: e.target.value })}
               required
-              placeholder="프로젝트 이름을 입력하세요"
             />
           </div>
 
           <div className="form-group">
-            <label htmlFor="projectDesc">설명</label>
-            <textarea
-              id="projectDesc"
-              value={projectData.description}
-              onChange={(e) => setProjectData({ ...projectData, description: e.target.value })}
-              rows={4}
-              placeholder="프로젝트 설명을 입력하세요"
+            <label>종료 날짜</label>
+            <input
+              type="date"
+              value={projectData.endDate}
+              onChange={(e) => setProjectData({ ...projectData, endDate: e.target.value })}
+              required
             />
           </div>
 
-          <div className="form-row">
-            <div className="form-group">
-              <label htmlFor="startDate">시작일</label>
-              <input
-                id="startDate"
-                type="date"
-                value={projectData.startDate}
-                onChange={(e) => setProjectData({ ...projectData, startDate: e.target.value })}
-                required
-                title="프로젝트 시작일"
-              />
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="endDate">종료일</label>
-              <input
-                id="endDate"
-                type="date"
-                value={projectData.endDate}
-                onChange={(e) => setProjectData({ ...projectData, endDate: e.target.value })}
-                required
-                title="프로젝트 종료일"
-              />
-            </div>
+          <div className="form-group">
+            <label>프로젝트 제목</label>
+            <input
+              type="text"
+              value={projectData.name}
+              onChange={(e) => setProjectData({ ...projectData, name: e.target.value })}
+              placeholder="프로젝트 제목을 입력하세요"
+              required
+            />
           </div>
 
-          {initialData && (
-            <div className="form-group">
-              <label htmlFor="projectStatus">상태</label>
-              <select
-                id="projectStatus"
-                value={projectData.status}
-                onChange={(e) => setProjectData({ ...projectData, status: e.target.value })}
-                title="프로젝트 상태"
-              >
-                <option value="IN_PROGRESS">진행 중</option>
-                <option value="COMPLETED">완료</option>
-              </select>
-            </div>
-          )}
+          <div className="form-group">
+            <label>프로젝트 설명</label>
+            <textarea
+              value={projectData.description}
+              onChange={(e) => setProjectData({ ...projectData, description: e.target.value })}
+              placeholder="프로젝트 설명을 입력하세요"
+              rows={4}
+            />
+          </div>
 
           <div className="modal-actions">
             <button type="button" className="cancel-btn" onClick={onClose}>
               취소
             </button>
             <button type="submit" className="save-btn">
-              {initialData ? '수정' : '저장'}
+              저장
             </button>
           </div>
         </form>
