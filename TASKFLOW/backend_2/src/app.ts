@@ -11,8 +11,8 @@ const corsOptions = {
   origin: [
     process.env.NODE_ENV === 'development' 
       ? 'http://localhost:3000'
-      : 'http://3.34.135.200',
-    'http://3.34.135.200:3000'
+      : 'http://54.180.245.123',
+    'http://54.180.245.123:3000'
   ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
