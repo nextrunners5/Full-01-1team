@@ -25,7 +25,7 @@ router.delete('/users/me', authenticateToken, deleteAccount);
 // Auth routes
 router.use('/signup', signupRouter);
 router.use('/signup/check-email', checkEmailRouter);
-router.post('/auth/login', login);
+router.post('/login', login);
 router.post('/auth/find-email', findEmail);
 router.post('/auth/reset-password', resetPassword);
 router.post('/auth/verify-reset', verifyUserForReset);
@@ -35,5 +35,10 @@ router.use('/schedules', scheduleRoutes);
 
 // Project routes
 router.use('/projects', projectRoutes);
+
+// Health check endpoint
+router.get('/health-check', (req, res) => {
+  res.status(200).json({ status: 'ok', message: 'Server is running' });
+});
 
 export default router; 

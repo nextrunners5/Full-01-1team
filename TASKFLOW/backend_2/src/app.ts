@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import routes from "./routes";
+import authRoutes from "./routes/auth";
 import pool from "./config/database";
 
 const app = express();
@@ -15,11 +16,15 @@ const corsOptions = {
   ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  exposedHeaders: ['Content-Type']
 };
 
 app.use(cors(corsOptions));
 app.use(express.json());
+app.use(express.urlencoded({ 
+  extended: true
+}));
 
 // 데이터베이스 연결 테스트
 pool.getConnection()
@@ -34,6 +39,7 @@ pool.getConnection()
 
 // API 라우트 설정 (모든 라우트가 /api 프리픽스를 가짐)
 app.use('/api', routes);
+app.use('/api/auth', authRoutes);
 
 // 404 에러 핸들링
 app.use((req, res) => {

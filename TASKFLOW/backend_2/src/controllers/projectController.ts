@@ -85,7 +85,7 @@ export const createProject = async (req: Request, res: Response) => {
     }
 
     const { name, description, startDate, endDate } = req.body;
-    
+
     // 요청 데이터 로깅
     console.log('프로젝트 생성 요청 데이터:', {
       name,
@@ -116,8 +116,8 @@ export const createProject = async (req: Request, res: Response) => {
     const [newProject] = await pool.query(
       `SELECT 
         id, 
-        name, 
-        description, 
+        name,
+        description,
         status,
         DATE_FORMAT(start_date, '%Y-%m-%d') as startDate,
         DATE_FORMAT(end_date, '%Y-%m-%d') as endDate,

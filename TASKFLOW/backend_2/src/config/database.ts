@@ -1,36 +1,48 @@
 import mysql from 'mysql2/promise';
-import fs from 'fs';
-import path from 'path';
+import { PoolOptions } from 'mysql2';
 import { dbConfig } from './dbConfig';
 
-const pool = mysql.createPool(dbConfig);
-
-// 데이터베이스 초기화 함수
-const initializeDatabase = async () => {
-  try {
-    // schema.sql 파일 읽기
-    const schemaPath = path.join(__dirname, '../database/schema.sql');
-    const schema = fs.readFileSync(schemaPath, 'utf8');
-
-    // 각 SQL 문을 분리하여 실행
-    const queries = schema
-      .split(';')
-      .filter(query => query.trim())
-      .map(query => query.trim() + ';');
-
-    for (const query of queries) {
-      if (query.length > 1) { // 빈 쿼리 제외
-        await pool.query(query);
-      }
+const pool = mysql.createPool({
+  ...dbConfig,
+  charset: 'utf8mb4',
+  connectionLimit: 10,
+  connectTimeout: 10000,
+  supportBigNumbers: true,
+  bigNumberStrings: true,
+  typeCast: function castField(field: any, next: any) {
+    if (field.type === 'VAR_STRING' || field.type === 'STRING') {
+      return field.string();
     }
+    return next();
+  }
+} as PoolOptions);
 
-    console.log('데이터베이스 테이블이 성공적으로 생성되었습니다.');
+// 연결 테스트 시 character set 확인 추가
+const testConnection = async () => {
+  try {
+    const [charset] = await pool.query('SHOW VARIABLES LIKE "character_set%"');
+    console.log('Character set settings:', charset);
+    
+    const [rows] = await pool.query('SELECT * FROM users WHERE email = ?', ['test2@example.com']);
+    console.log('User data:', rows);
   } catch (error) {
-    console.error('데이터베이스 초기화 중 오류:', error);
+    console.error('Database query failed:', error);
   }
 };
 
-// 서버 시작 시 데이터베이스 초기화
-initializeDatabase();
+// DB 데이터 확인
+const checkUserData = async () => {
+  try {
+    const [users] = await pool.query('SELECT * FROM users');
+    console.log('All users:', users);
+  } catch (error) {
+    console.error('Query failed:', error);
+  }
+};
+
+// 서버 시작 시 연결 테스트 실행
+testConnection();
+
+checkUserData();
 
 export default pool; 

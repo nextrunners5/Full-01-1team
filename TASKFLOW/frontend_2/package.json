@@ -55,6 +55,7 @@
     "@types/react-icons": "^2.2.7",
     "@types/react-router-dom": "^5.3.3",
     "@types/testing-library__react": "^10.0.1",
+    "ts-node": "^10.9.2",
     "typescript": "^4.9.5"
   }
 }

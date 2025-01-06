@@ -9,11 +9,11 @@ router.post("/", async (req: Request, res: Response) => {
   const { email, password, name, birthdate, gender, idNumber } = req.body;
 
   try {
-    // 비밀번호 해싱
+    // 비버깅을 위한 로그 추가
+    console.log('Signup attempt with:', { email, name, birthdate, gender });
+
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
-
-    // 주민번호 암호화
     const encryptedIdNumber = idNumber ? encryptIdNumber(idNumber) : null;
 
     const [result] = await pool.query(
@@ -21,6 +21,8 @@ router.post("/", async (req: Request, res: Response) => {
        VALUES (?, ?, ?, ?, ?, ?)`,
       [email, hashedPassword, name, birthdate, gender, encryptedIdNumber]
     );
+
+    console.log('Insert result:', result);  // 결과 로그 추가
 
     res.status(201).json({ 
       success: true,
