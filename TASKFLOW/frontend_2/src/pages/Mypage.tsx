@@ -5,7 +5,6 @@ import '../styles/Mypage.css';
 import Header from '../components/common/Header';
 import Sidebar from '../components/common/Sidebar';
 import Footer from '../components/common/Footer';
-import UserIcon from '../assets/user-icon.png';
 import API from '../api/axiosConfig';
 import { toast } from 'react-toastify';
 
@@ -49,7 +48,6 @@ const Mypage: React.FC = () => {
           <div className="my-content">
             <div className="my-profile-box">
               <div className="profile-header">
-                <img src={UserIcon} alt="프로필" className="avatar" />
                 <h3>{userInfo?.name || '사용자'}</h3>
                 <p className="email">{userInfo?.email || ''}</p>
               </div>
