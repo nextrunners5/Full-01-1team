@@ -12,7 +12,7 @@ const tokenStorage = {
 };
 
 const API = axios.create({
-  baseURL: 'http://54.180.245.123:3500/api',  // 새로운 EC2 IP
+  baseURL: 'http://54.180.245.123:3500/api',
   withCredentials: true
 });
 

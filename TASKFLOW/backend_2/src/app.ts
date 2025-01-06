@@ -1,8 +1,10 @@
 import express from "express";
 import cors from "cors";
-import routes from "./routes";
-import authRoutes from "./routes/auth";
 import pool from "./config/database";
+import authRoutes from "./routes/auth";
+import userRoutes from "./routes/userRoutes";
+import projectRoutes from "./routes/projectRoutes";
+import scheduleRoutes from "./routes/scheduleRoutes";
 
 const app = express();
 
@@ -12,7 +14,7 @@ const corsOptions = {
     process.env.NODE_ENV === 'development' 
       ? 'http://localhost:3000'
       : 'http://54.180.245.123',
-    'http://54.180.245.123:3000'
+    'http://54.180.245.123'
   ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
@@ -22,9 +24,7 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 app.use(express.json());
-app.use(express.urlencoded({ 
-  extended: true
-}));
+app.use(express.urlencoded({ extended: true }));
 
 // 데이터베이스 연결 테스트
 pool.getConnection()
@@ -37,9 +37,11 @@ pool.getConnection()
     process.exit(1);
   });
 
-// API 라우트 설정 (모든 라우트가 /api 프리픽스를 가짐)
-app.use('/api', routes);
-app.use('/api/auth', authRoutes);
+// API 라우트 설정
+app.use('/api', authRoutes);     // 인증 관련
+app.use('/api', userRoutes);     // 사용자 관련
+app.use('/api', projectRoutes);  // 프로젝트 관련
+app.use('/api', scheduleRoutes); // 일정 관련
 
 // 404 에러 핸들링
 app.use((req, res) => {

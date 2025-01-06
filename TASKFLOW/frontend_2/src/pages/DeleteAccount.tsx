@@ -70,7 +70,7 @@ const DeleteAccount: React.FC = () => {
     }
 
     try {
-      const response = await API.delete('/users/me', {
+      const response = await API.delete('/user', {
         data: {
           password: formData.password,
           idNumber: `${formData.idNumberFront}-${formData.idNumberBack}`

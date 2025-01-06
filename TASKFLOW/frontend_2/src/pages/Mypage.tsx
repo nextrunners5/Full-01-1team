@@ -23,11 +23,15 @@ const Mypage: React.FC = () => {
 
   const getUserInfo = async () => {
     try {
-      const response = await API.get('/users/me');
+      const response = await API.get('/user');
       setUserInfo(response.data);
     } catch (error) {
       console.error('Failed to get user info:', error);
-      toast.error('사용자 정보를 불러오는데 실패했습니다.');
+      if ((error as any).response?.status === 401) {
+        navigate('/login');
+      } else {
+        toast.error('사용자 정보를 불러오는데 실패했습니다.');
+      }
     }
   };
 

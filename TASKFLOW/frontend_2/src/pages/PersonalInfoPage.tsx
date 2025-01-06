@@ -6,6 +6,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import "../styles/PersonalInfoPage.css";
 import { useNavigate } from 'react-router-dom';
+import API from '../api/axiosConfig';
 
 const PersonalInfoPage: React.FC = () => {
   const navigate = useNavigate();
@@ -45,7 +46,16 @@ const PersonalInfoPage: React.FC = () => {
       }
 
       // TODO: API 호출로 개인정보 업데이트
-      // await userApi.updateProfile(formData);
+      await API.put('/user', {
+        name: formData.name,
+        phone: formData.phone,
+        department: formData.department,
+        position: formData.position,
+        ...(formData.newPassword && {
+          currentPassword: formData.currentPassword,
+          newPassword: formData.newPassword
+        })
+      });
       
       toast.success('개인정보가 성공적으로 수정되었습니다.');
     } catch (error) {

@@ -1,4 +1,4 @@
-import { Response } from "express";
+import { Request, Response } from "express";
 import pool from '../config/database';
 import bcrypt from 'bcrypt';
 import { AuthenticatedRequest } from '../middlewares/authMiddleware';
@@ -76,7 +76,7 @@ const getUserInfo = async (req: AuthenticatedRequest, res: Response) => {
 };
 
 // 사용자 정보 수정
-const updateUserInfo = async (req: AuthenticatedRequest, res: Response) => {
+const updateUser = async (req: AuthenticatedRequest, res: Response) => {
   try {
     if (!req.user?.id) {
       return res.status(401).json({ error: "인증이 필요합니다." });
@@ -188,7 +188,7 @@ const updateUserInfo = async (req: AuthenticatedRequest, res: Response) => {
 };
 
 // 회원 탈퇴
-const deleteAccount = async (req: AuthenticatedRequest, res: Response) => {
+const deleteUser = async (req: AuthenticatedRequest, res: Response) => {
   const { password, idNumber } = req.body;
   const userId = req.user?.id;
 
@@ -251,9 +251,9 @@ const deleteAccount = async (req: AuthenticatedRequest, res: Response) => {
   }
 };
 
-// 하나의 export 문으로 통합
+// 하나의 export로 통합
 export {
   getUserInfo,
-  updateUserInfo,
-  deleteAccount
+  updateUser,
+  deleteUser
 }; 

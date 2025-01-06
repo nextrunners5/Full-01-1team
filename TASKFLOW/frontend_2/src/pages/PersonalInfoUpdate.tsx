@@ -70,7 +70,7 @@ const PersonalInfoUpdate: React.FC = () => {
 
   const getUserInfo = async () => {
     try {
-      const response = await API.get('/users/me');
+      const response = await API.get('/user');
       setFormData(prev => ({
         ...prev,
         name: response.data.name || '',
@@ -152,7 +152,7 @@ const PersonalInfoUpdate: React.FC = () => {
         })
       };
 
-      await API.put('/users/me', updateData);
+      await API.put('/user', updateData);
       
       await getUserInfo();
       

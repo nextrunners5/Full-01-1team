@@ -98,7 +98,7 @@ export const scheduleApi = {
         schedules: processedSchedules
       };
     } catch (error) {
-      console.error('Failed to get today schedules:', error);
+      console.error('오늘의 일정 조회 실패:', error);
       throw error;
     }
   },
@@ -125,16 +125,9 @@ export const scheduleApi = {
 
   getScheduleById: async (id: number): Promise<Schedule> => {
     try {
-      const response = await API.get('/schedules');
-      const schedules = response.data;
-      const schedule = schedules.find((s: Schedule) => s.id === id);
-
-      if (!schedule) {
-        throw new Error('일정을 찾을 수 없습니다.');
-      }
-
-      console.log('일정 상세 조회:', schedule);
-      return schedule;
+      const response = await API.get(`/schedules/${id}`);
+      console.log('일정 상세 조회:', response.data);
+      return response.data;
     } catch (error) {
       console.error('일정 상세 조회 실패:', error);
       throw error;
