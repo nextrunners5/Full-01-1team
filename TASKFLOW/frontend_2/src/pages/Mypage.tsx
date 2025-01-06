@@ -1,14 +1,36 @@
-import React from 'react'
-import { User, ChevronRight, UserX } from 'lucide-react'
-import { useNavigate } from 'react-router-dom'
-import '../styles/Mypage.css'
-import Header from '../components/common/Header'
-import Sidebar from '../components/common/Sidebar'
-import Footer from '../components/common/Footer'
-import UserIcon from '../assets/user-icon.png'
+import React, { useState, useEffect } from 'react';
+import { User, ChevronRight, UserX } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import '../styles/Mypage.css';
+import Header from '../components/common/Header';
+import Sidebar from '../components/common/Sidebar';
+import Footer from '../components/common/Footer';
+import UserIcon from '../assets/user-icon.png';
+import API from '../api/axiosConfig';
+import { toast } from 'react-toastify';
+
+interface UserInfo {
+  name: string;
+  email: string;
+}
 
 const Mypage: React.FC = () => {
   const navigate = useNavigate();
+  const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
+
+  useEffect(() => {
+    fetchUserInfo();
+  }, []);
+
+  const fetchUserInfo = async () => {
+    try {
+      const response = await API.get('/users/me');
+      setUserInfo(response.data);
+    } catch (error) {
+      console.error('Failed to fetch user info:', error);
+      toast.error('사용자 정보를 불러오는데 실패했습니다.');
+    }
+  };
 
   const handlePersonalInfoClick = () => {
     navigate('/personal-info-update');
@@ -28,9 +50,8 @@ const Mypage: React.FC = () => {
             <div className="my-profile-box">
               <div className="profile-header">
                 <img src={UserIcon} alt="프로필" className="avatar" />
-                <h3>김민수</h3>
-                <p>프로젝트 매니저</p>
-                <p>항상 최선을 다하는 매니저</p>
+                <h3>{userInfo?.name || '사용자'}</h3>
+                <p className="email">{userInfo?.email || ''}</p>
               </div>
             </div>
 
@@ -66,7 +87,7 @@ const Mypage: React.FC = () => {
         <Footer />
       </div>
     </div>
-  )
-}
+  );
+};
 
 export default Mypage;
