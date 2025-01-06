@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import pool from '../config/database';
 import { AuthenticatedRequest } from '../config/auth';
 import { format } from 'date-fns';
-import ko from 'date-fns/locale/ko';
+import { ko } from 'date-fns/locale';
 
 export const getAllSchedules = async (req: AuthenticatedRequest, res: Response) => {
   try {
