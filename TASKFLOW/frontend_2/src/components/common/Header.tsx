@@ -31,7 +31,7 @@ const Header: React.FC = () => {
           onClick={handleLogout}
           aria-label="로그아웃"
         >
-          <LogOut size={20} />
+          <LogOut size={24} />
         </button>
         <div className="user-profile">
           <button 

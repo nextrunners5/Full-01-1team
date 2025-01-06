@@ -41,38 +41,62 @@
   margin-bottom: 40px;
 }
 
-/* Detail Row */
+/* Detail Row - 레이아웃 개선 */
 .detail-row {
   display: flex;
-  margin-bottom: 15px;
-  align-items: flex-start;
+  margin-bottom: 28px;  /* 행 간격 증가 */
+  align-items: baseline; /* 텍스트 기준선 맞춤 */
+  min-height: 36px;     /* 최소 높이 증가 */
+  position: relative;   /* 상대 위치 설정 */
 }
 
-/* Labels */
+/* Labels - 왼쪽 라벨 스타일 개선 */
 .detail-row label {
-  flex: 0 0 120px;
-  font-weight: bold;
-  color: #555;
+  flex: 0 0 120px;    /* 고정 너비 */
+  font-weight: 600;    /* 약간 더 굵게 */
+  color: #666;        /* 더 부드러운 색상 */
+  font-size: 1.05em;  /* 폰트 크기 조정 */
+  padding-right: 24px; /* 오른쪽 여백 증가 */
+  text-align: left;   /* 왼쪽 정렬 */
 }
 
-/* Detail Values */
+/* Detail Values - 오른쪽 값 스타일 개선 */
 .detail-value {
   flex: 1;
   color: #333;
+  font-size: 1.05em;
+  line-height: 1.5;
+  padding-left: 8px;  /* 왼쪽 여백 추가 */
+  position: relative; /* 상대 위치 설정 */
 }
 
-/* Description */
+/* Description - 설명 영역 개선 */
 .detail-value.description {
-  white-space: pre-wrap; /* Preserve line breaks */
+  margin-top: 4px;    /* 상단 여백 추가 */
+  padding: 16px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  min-height: 80px;
+  line-height: 1.6;   /* 줄 간격 증가 */
 }
 
-/* Status Badge */
+/* 날짜 표시 영역 */
+.detail-value.date {
+  color: #444;        /* 날짜 텍스트 색상 */
+  font-size: 1em;     /* 날짜 폰트 크기 */
+}
+
+/* Status Badge - 상태 뱃지 위치 조정 */
 .status {
-  padding: 4px 8px;
-  border-radius: 12px;
-  color: #fff;
-  font-size: 0.9em;
   display: inline-block;
+  padding: 6px 16px;   /* 좌우 패딩 증가 */
+  border-radius: 20px; /* 더 둥글게 */
+  font-size: 0.95em;
+  font-weight: 500;
+  margin-top: -2px;   /* 미세 조정 */
+  background-color: #e3f2fd;
+  color: #1976d2;
+  border: 1px solid #bbdefb;
 }
 
 /* Status Colors */
