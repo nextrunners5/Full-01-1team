@@ -31,16 +31,10 @@ const FindEmailPage: React.FC = () => {
     setSuccessMessage(null);
 
     try {
-      const response = await axios.post(
-        "https://your-api-endpoint.com/find-email",
-        {
-          name,
-          birthNumber: `${birthNumber1}-${birthNumber2}`,
-        }
-      );
+      const response = await findEmail(name, `${birthNumber1}-${birthNumber2}`);
 
-      if (response.data?.email) {
-        setSuccessMessage(`이메일 찾기 성공: ${response.data.email}`);
+      if (response?.email) {
+        setSuccessMessage(`이메일 찾기 성공: ${response.email}`);
       } else {
         setError("일치하는 이메일이 없습니다.");
       }
@@ -89,7 +83,7 @@ const FindEmailPage: React.FC = () => {
             />
             <span className="hyphen">-</span>
             <input
-              type="text"
+              type="password"
               id="birthNumber2"
               value={birthNumber2}
               onChange={(e) => setBirthNumber2(e.target.value)}
