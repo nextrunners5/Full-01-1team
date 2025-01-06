@@ -20,8 +20,18 @@ const ProjectPageEdit: React.FC = () => {
     endDate: ''
   });
 
+  useEffect(() => {
+    if (!projectId) {
+      navigate('/project');
+      return;
+    }
+    getProject();
+  }, [projectId, navigate]);
+
   const getProject = async () => {
     try {
+      if (!projectId) return;
+      
       const response = await projectApi.getProjectById(parseInt(projectId));
       setFormData({
         name: response.name,
@@ -32,12 +42,9 @@ const ProjectPageEdit: React.FC = () => {
       });
     } catch (error) {
       console.error('Failed to get project:', error);
+      navigate('/project');
     }
   };
-
-  useEffect(() => {
-    getProject();
-  }, [projectId]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
