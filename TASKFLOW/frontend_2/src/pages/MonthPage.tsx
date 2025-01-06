@@ -4,12 +4,16 @@ import format from 'date-fns/format';
 import parse from 'date-fns/parse';
 import startOfWeek from 'date-fns/startOfWeek';
 import getDay from 'date-fns/getDay';
-import axios from 'axios';
+import { scheduleApi, Schedule } from '../services/scheduleApi';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
-import '../styles/Monthly.css'; // CSS 파일명 변경
+import '../styles/Monthly.css';
 import Header from '../components/common/Header';
 import Sidebar from '../components/common/Sidebar';
 import Footer from '../components/common/Footer';
+import ScheduleModal, { ScheduleData } from '../components/modals/ScheduleModal';
+import ScheduleDetailModal from '../components/modals/ScheduleDetailModal';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const locales = {
   "en-US": require("date-fns/locale/en-US"),
@@ -25,10 +29,10 @@ const localizer = dateFnsLocalizer({
 });
 
 interface Event {
-  id: number | null;
+  id: number;
   title: string;
-  start: string | Date;
-  end: string | Date;
+  start: Date;
+  end: Date;
   description: string;
 }
 
@@ -48,40 +52,66 @@ const CustomToolbar: React.FC<CustomToolbarProps> = ({ onNavigate, label, onAddE
 const MonthPageM: React.FC = () => {
   const [events, setEvents] = useState<Event[]>([]);
   const [showModal, setShowModal] = useState(false);
-  const [newEvent, setNewEvent] = useState<Event>({
-    id: null,
-    title: '',
-    start: '',
-    end: '',
-    description: '',
-  });
+  const [newEvent, setNewEvent] = useState<Event | null>(null);
+  const [modalMode, setModalMode] = useState<'detail' | 'edit' | 'create'>('create');
 
   const fetchEvents = async () => {
     try {
-      const response = await axios.get('/api/events');
-      setEvents(response.data);
+      const response = await scheduleApi.getSchedules();
+      const events = response.map((schedule: Schedule) => ({
+        id: schedule.id,
+        title: schedule.title,
+        start: new Date(schedule.start_date),
+        end: new Date(schedule.end_date),
+        description: schedule.description
+      }));
+      setEvents(events);
     } catch (error) {
       console.error('Failed to fetch events:', error);
     }
   };
 
-  const saveEvent = async (event: Omit<Event, 'id'> & { id?: number | null }) => {
+  const saveEvent = async (eventData: any) => {
     try {
-      const response = event.id
-        ? await axios.put(`/api/events/${event.id}`, event)
-        : await axios.post('/api/events', event);
-      return response.data;
+      const scheduleData = {
+        title: eventData.title,
+        description: eventData.description,
+        start_date: eventData.start.toISOString(),
+        end_date: eventData.end.toISOString()
+      };
+
+      if (eventData.id) {
+        const response = await scheduleApi.updateSchedule(eventData.id, scheduleData);
+        return {
+          id: response.id,
+          title: response.title,
+          start: new Date(response.start_date),
+          end: new Date(response.end_date),
+          description: response.description
+        };
+      } else {
+        const response = await scheduleApi.createSchedule(scheduleData);
+        return {
+          id: response.id,
+          title: response.title,
+          start: new Date(response.start_date),
+          end: new Date(response.end_date),
+          description: response.description
+        };
+      }
     } catch (error) {
       console.error('Failed to save event:', error);
       return null;
     }
   };
 
-  const deleteEventFromServer = async (id: number | null) => {
+  const deleteEventFromServer = async (id: number) => {
     try {
-      if (id) await axios.delete(`/api/events/${id}`);
+      await scheduleApi.deleteSchedule(id);
+      return true;
     } catch (error) {
       console.error('Failed to delete event:', error);
+      return false;
     }
   };
 
@@ -93,41 +123,119 @@ const MonthPageM: React.FC = () => {
     };
   }, []);
 
-  const handleAddEvent = async () => {
-    const savedEvent = await saveEvent(newEvent);
-    if (savedEvent) {
-      setEvents((prev) => {
-        const updatedEvents = newEvent.id
-          ? prev.map((e) => (e.id === newEvent.id ? savedEvent : e))
-          : [...prev, savedEvent];
-        return updatedEvents;
-      });
+  const handleSaveEvent = async (scheduleData: ScheduleData): Promise<void> => {
+    try {
+      if (!scheduleData.start || !scheduleData.end) {
+        throw new Error('시작 시간과 종료 시간을 입력해주세요');
+      }
+
+      if (scheduleData.id) {
+        try {
+          const response = await scheduleApi.updateSchedule(scheduleData.id, {
+            title: scheduleData.title,
+            description: scheduleData.description,
+            start_date: scheduleData.start.toISOString(),
+            end_date: scheduleData.end.toISOString()
+          });
+
+          const updatedEvent: Event = {
+            id: response.id,
+            title: response.title,
+            start: new Date(response.start_date),
+            end: new Date(response.end_date),
+            description: response.description || ''
+          };
+
+          setEvents(events.map(event => 
+            event.id === updatedEvent.id ? updatedEvent : event
+          ));
+          toast.success('일정이 성공적으로 수정되었습니다! 🔄');
+        } catch (error) {
+          toast.error('일정 수정에 실패했습니다. 다시 시도해주세요.');
+          throw new Error('일정 수정 실패');
+        }
+      } else {
+        try {
+          const response = await scheduleApi.createSchedule({
+            title: scheduleData.title,
+            description: scheduleData.description,
+            start_date: scheduleData.start.toISOString(),
+            end_date: scheduleData.end.toISOString()
+          });
+
+          const createdEvent: Event = {
+            id: response.id,
+            title: response.title,
+            start: new Date(response.start_date),
+            end: new Date(response.end_date),
+            description: response.description || ''
+          };
+          
+          setEvents([...events, createdEvent]);
+          toast.success('새로운 일정이 추가되었습니다! ✨');
+        } catch (error) {
+          toast.error('일정 생성에 실패했습니다. 다시 시도해주세요.');
+          throw new Error('일정 생성 실패');
+        }
+      }
+      handleCloseModal();
+    } catch (error) {
+      console.error('Error saving event:', error);
+      if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error('일정 저장에 실패했습니다.');
+      }
+      throw error;
     }
-    setShowModal(false);
   };
 
-  const handleDeleteEvent = async () => {
-    if (newEvent.id) {
-      await deleteEventFromServer(newEvent.id);
-      setEvents((prev) => prev.filter((event) => event.id !== newEvent.id));
-      setShowModal(false);
+  const handleDeleteEvent = async (id: number) => {
+    try {
+      await scheduleApi.deleteSchedule(id);
+      setEvents(events.filter(event => event.id !== id));
+      handleCloseModal();
+      toast.success('일정이 삭제되었습니다! 🗑️');
+    } catch (error) {
+      console.error('Error deleting event:', error);
+      toast.error('일정 삭제에 실패했습니다. 다시 시도해주세요.');
+      throw new Error('일정 삭제 실패');
     }
   };
 
   const handleSlotSelect = (slotInfo: { start: Date; end: Date }) => {
+    const selectedDate = new Date(slotInfo.start);
+    selectedDate.setHours(0, 0, 0, 0);
+
     setNewEvent({
-      id: null,
+      id: -1,
       title: '',
-      start: slotInfo.start,
-      end: slotInfo.end,
+      start: selectedDate,
+      end: selectedDate,
       description: '',
     });
     setShowModal(true);
   };
 
-  const handleEventSelect = (event: Event) => {
-    setNewEvent(event);
+  const handleScheduleClick = (schedule: Event) => {
+    setNewEvent(schedule);
+    setModalMode('detail');
     setShowModal(true);
+  };
+
+  const handleEditClick = () => {
+    setModalMode('edit');
+  };
+
+  const handleAddClick = () => {
+    setNewEvent(null);
+    setModalMode('create');
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setNewEvent(null);
   };
 
   return (
@@ -144,12 +252,12 @@ const MonthPageM: React.FC = () => {
             endAccessor="end"
             selectable
             onSelectSlot={handleSlotSelect}
-            onSelectEvent={handleEventSelect}
+            onSelectEvent={handleScheduleClick}
             defaultView="month"
             views={{ month: true }}
             className="M-calendar"
             components={{
-              toolbar: (props: ToolbarProps) => <CustomToolbar {...props} onAddEvent={() => setShowModal(true)} />,
+              toolbar: (props: ToolbarProps) => <CustomToolbar {...props} onAddEvent={handleAddClick} />,
             }}
             messages={{
               next: "다음",
@@ -161,63 +269,42 @@ const MonthPageM: React.FC = () => {
           />
         </div>
         {showModal && (
-          <div className="M-modal-overlay">
-            <div className="M-modal-content">
-              <h3>{newEvent.id ? '일정 수정' : '일정 추가'}</h3>
-              <div className="M-modal-row">
-                <div>
-                  <label>시작 시간</label>
-                  <input
-                    type="datetime-local"
-                    value={newEvent.start ? new Date(newEvent.start).toISOString().slice(0, 16) : ''}
-                    onChange={(e) => setNewEvent({ ...newEvent, start: new Date(e.target.value) })}
-                  />
-                </div>
-                <div>
-                  <label>종료 시간</label>
-                  <input
-                    type="datetime-local"
-                    value={newEvent.end ? new Date(newEvent.end).toISOString().slice(0, 16) : ''}
-                    onChange={(e) => setNewEvent({ ...newEvent, end: new Date(e.target.value) })}
-                  />
-                </div>
-              </div>
-              <div>
-                <label>일정 제목</label>
-                <input
-                  type="text"
-                  value={newEvent.title}
-                  onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })}
-                />
-              </div>
-              <div>
-                <label>일정 설명</label>
-                <textarea
-                  rows={4}
-                  value={newEvent.description}
-                  onChange={(e) => setNewEvent({ ...newEvent, description: e.target.value })}
-                ></textarea>
-              </div>
-              <div className="M-modal-buttons">
-                {newEvent.id && (
-                  <button className="M-modal-delete-btn" onClick={handleDeleteEvent}>
-                    삭제
-                  </button>
-                )}
-                <div className="M-modal-actions">
-                  <button className="M-modal-cancel-btn" onClick={() => setShowModal(false)}>
-                    취소
-                  </button>
-                  <button className="M-modal-save-btn" onClick={handleAddEvent}>
-                    저장
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
+          modalMode === 'detail' && newEvent ? (
+            <ScheduleDetailModal
+              schedule={newEvent}
+              onClose={handleCloseModal}
+              onEdit={handleEditClick}
+              onDelete={() => handleDeleteEvent(newEvent.id)}
+            />
+          ) : (
+            <ScheduleModal
+              onClose={handleCloseModal}
+              onSave={handleSaveEvent}
+              initialData={modalMode === 'edit' && newEvent ? {
+                id: newEvent.id,
+                title: newEvent.title,
+                description: newEvent.description,
+                start: newEvent.start,
+                end: newEvent.end
+              } : null}
+              isOpen={showModal}
+            />
+          )
         )}
         <Footer />
       </div>
+      <ToastContainer
+        position="top-right"
+        autoClose={1500}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
     </div>
   );
 };

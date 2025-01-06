@@ -26,12 +26,19 @@
   padding: 16px;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s ease-in-out;
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  cursor: pointer;
 }
 
 .status-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+}
+
+/* 선택된 상태 카드 스타일 */
+.status-card.active {
+  background-color: #f8f9fa;
+  border: 2px solid #1a73e8;
 }
 
 /* 각 카드별 아이콘 색상 */
@@ -337,4 +344,16 @@
   display: flex;
   gap: 10px;
   align-items: center; /* 버튼들을 수직 중앙 정렬 */
+}
+
+.project-name-link {
+  color: #1a73e8;
+  cursor: pointer;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.project-name-link:hover {
+  color: #1557b0;
+  text-decoration: underline;
 }

@@ -16,6 +16,7 @@
     "react-redux": "^9.2.0",
     "react-router-dom": "^6.28.0",
     "react-scripts": "^5.0.0",
+    "react-toastify": "^11.0.2",
     "redux": "^5.0.1"
   },
   "scripts": {
@@ -47,9 +48,10 @@
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^13.4.0",
     "@types/jest": "^26.0.24",
-    "@types/react": "^18.0.0",
+    "@types/node": "^22.10.5",
+    "@types/react": "^18.3.18",
     "@types/react-big-calendar": "^1.16.0",
-    "@types/react-dom": "^18.0.0",
+    "@types/react-dom": "^18.3.5",
     "@types/react-icons": "^2.2.7",
     "@types/react-router-dom": "^5.3.3",
     "@types/testing-library__react": "^10.0.1",

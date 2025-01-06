@@ -7,7 +7,7 @@ const API = axios.create({
   },
 });
 
-// 요청 인터셉터 추가
+// 요청 인터셉터 - 토큰 추가
 API.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
@@ -21,11 +21,14 @@ API.interceptors.request.use(
   }
 );
 
-// 응답 인터셉터 추가
+// 응답 인터셉터 - 에러 처리
 API.interceptors.response.use(
   (response) => response,
   (error) => {
-    console.error('API Error:', error.response?.data || error);
+    if (error.response?.status === 401) {
+      localStorage.removeItem('token');
+      window.location.href = '/login';
+    }
     return Promise.reject(error);
   }
 );

@@ -1,0 +1,65 @@
+.project-modal {
+  background: white;
+  padding: 24px;
+  border-radius: 8px;
+  width: 500px;
+  max-width: 90vw;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: #666;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.form-row {
+  display: flex;
+  gap: 16px;
+}
+
+.form-row .form-group {
+  flex: 1;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 24px;
+}
+
+.cancel-btn,
+.save-btn {
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.cancel-btn {
+  background: #f8f9fa;
+  border: none;
+}
+
+.save-btn {
+  background: #1a73e8;
+  color: white;
+  border: none;
+}
+
+.save-btn:hover {
+  background: #1557b0;
+} 

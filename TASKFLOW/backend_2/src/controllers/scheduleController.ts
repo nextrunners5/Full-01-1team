@@ -17,18 +17,28 @@ export const getAllSchedules = async (req: AuthenticatedRequest, res: Response) 
 
 export const createSchedule = async (req: AuthenticatedRequest, res: Response) => {
   try {
-    const { title, description, startDate, endDate } = req.body;
+    const { title, description, start_date, end_date } = req.body;
+    
+    // start_date와 end_date가 없으면 에러 반환
+    if (!start_date || !end_date) {
+      return res.status(400).json({ error: "시작 시간과 종료 시간은 필수입니다." });
+    }
+
     const [result] = await pool.query(
-      'INSERT INTO schedules (title, description, start_date, end_date, user_id) VALUES (?, ?, ?, ?, ?)',
-      [title, description, startDate, endDate, req.user?.id]
+      `INSERT INTO schedules 
+       (title, description, start_date, end_date, user_id) 
+       VALUES (?, ?, ?, ?, ?)`,
+      [title, description, new Date(start_date), new Date(end_date), req.user?.id]
     );
+    
     res.status(201).json({ 
       id: (result as any).insertId,
       title,
       description,
-      startDate,
-      endDate,
-      userId: req.user?.id
+      start_date,
+      end_date,
+      userId: req.user?.id,
+      status: 'pending'
     });
   } catch (error) {
     console.error('Error creating schedule:', error);

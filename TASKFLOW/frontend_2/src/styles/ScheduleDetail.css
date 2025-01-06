@@ -1,0 +1,85 @@
+.detail-modal-content {
+  background: white;
+  padding: 24px;
+  border-radius: 8px;
+  width: 500px;
+  max-width: 90vw;
+}
+
+.detail-section {
+  margin: 20px 0;
+}
+
+.detail-row {
+  margin-bottom: 16px;
+}
+
+.detail-row label {
+  display: block;
+  color: #666;
+  margin-bottom: 4px;
+  font-size: 14px;
+}
+
+.detail-value {
+  color: #333;
+  font-size: 16px;
+}
+
+.detail-value.description {
+  white-space: pre-wrap;
+  line-height: 1.5;
+}
+
+.detail-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid #eee;
+}
+
+.left-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.right-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.delete-btn {
+  background: none;
+  border: none;
+  color: #dc3545;
+  cursor: pointer;
+  padding: 8px 16px;
+  font-weight: 500;
+}
+
+.delete-btn:hover {
+  text-decoration: underline;
+}
+
+.close-btn {
+  background: #f8f9fa;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.edit-btn {
+  background: #1a73e8;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.edit-btn:hover {
+  background: #1557b0;
+} 

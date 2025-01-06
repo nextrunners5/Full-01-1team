@@ -1,22 +1,39 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/common/Header';
 import Sidebar from '../components/common/Sidebar';
 import Footer from '../components/common/Footer';
-import ScheduleModal from '../components/modals/ScheduleModal';
+import ScheduleModal, { ScheduleData } from '../components/modals/ScheduleModal';
+import { scheduleApi } from '../services/scheduleApi';
 import '../styles/SchedulePage.css';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 interface Schedule {
+  id: number;
   title: string;
   description: string;
-  startTime: string;
-  endTime: string;
+  start_date: string;
+  end_date: string;
 }
 
 const SchedulePage: React.FC = () => {
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [schedules, setSchedules] = useState<Schedule[]>([]);
+
+  const fetchSchedules = async () => {
+    try {
+      const response = await scheduleApi.getSchedules();
+      setSchedules(response);
+    } catch (error) {
+      console.error('Failed to fetch schedules:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchSchedules();
+  }, []);
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -26,9 +43,35 @@ const SchedulePage: React.FC = () => {
     setIsModalOpen(false);
   };
 
-  const handleSave = (data: Schedule) => {
-    setSchedules([...schedules, data]);
-    handleCloseModal();
+  const handleSave = async (data: ScheduleData): Promise<void> => {
+    try {
+      if (!data.start || !data.end) {
+        throw new Error('시작 시간과 종료 시간을 입력해주세요');
+      }
+
+      try {
+        await scheduleApi.createSchedule({
+          title: data.title,
+          description: data.description,
+          start_date: data.start.toISOString(),
+          end_date: data.end.toISOString()
+        });
+        toast.success('새로운 일정이 추가되었습니다! ✨');
+        handleCloseModal();
+        fetchSchedules();
+      } catch (error) {
+        toast.error('일정 생성에 실패했습니다. 다시 시도해주세요.');
+        throw new Error('일정 생성 실패');
+      }
+    } catch (error) {
+      console.error('Failed to save schedule:', error);
+      if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error('일정 저장에 실패했습니다.');
+      }
+      throw error;
+    }
   };
 
   return (
@@ -58,9 +101,9 @@ const SchedulePage: React.FC = () => {
                 <h3>{schedule.title}</h3>
                 <p>{schedule.description}</p>
                 <div className="schedule-time">
-                  <span>{schedule.startTime}</span>
+                  <span>{schedule.start_date}</span>
                   <span> - </span>
-                  <span>{schedule.endTime}</span>
+                  <span>{schedule.end_date}</span>
                 </div>
               </div>
             ))}
@@ -70,6 +113,7 @@ const SchedulePage: React.FC = () => {
             <ScheduleModal
               onSave={handleSave}
               onClose={handleCloseModal}
+              isOpen={isModalOpen}
             />
           )}
         </div>

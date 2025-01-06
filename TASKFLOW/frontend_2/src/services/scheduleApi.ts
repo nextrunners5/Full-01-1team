@@ -4,14 +4,6 @@ export interface Schedule {
   id: number;
   title: string;
   description: string;
-  start: Date;
-  end: Date;
-}
-
-export interface ScheduleResponse {
-  id: number;
-  title: string;
-  description: string;
   start_date: string;
   end_date: string;
 }
@@ -23,23 +15,23 @@ export interface ScheduleCreate {
   end_date: string;
 }
 
-const scheduleApi = {
-  getSchedules: async (): Promise<ScheduleResponse[]> => {
+export const scheduleApi = {
+  getSchedules: async (): Promise<Schedule[]> => {
     const response = await API.get('/schedules');
     return response.data;
   },
 
-  getDailySchedules: async (date: string): Promise<ScheduleResponse[]> => {
-    const response = await API.get(`/schedules/daily/${date}`);
+  getTodaySchedules: async (): Promise<Schedule[]> => {
+    const response = await API.get('/schedules/today');
     return response.data;
   },
 
-  createSchedule: async (schedule: ScheduleCreate): Promise<ScheduleResponse> => {
+  createSchedule: async (schedule: ScheduleCreate): Promise<Schedule> => {
     const response = await API.post('/schedules', schedule);
     return response.data;
   },
 
-  updateSchedule: async (id: number, schedule: Partial<ScheduleCreate>): Promise<ScheduleResponse> => {
+  updateSchedule: async (id: number, schedule: Partial<ScheduleCreate>): Promise<Schedule> => {
     const response = await API.put(`/schedules/${id}`, schedule);
     return response.data;
   },
@@ -47,6 +39,4 @@ const scheduleApi = {
   deleteSchedule: async (id: number): Promise<void> => {
     await API.delete(`/schedules/${id}`);
   }
-};
-
-export default scheduleApi; 
+}; 

@@ -1,0 +1,33 @@
+/* 기존 스타일에 추가 */
+.project-card {
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.project-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.project-status {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.project-status.ongoing {
+  background-color: #e3f2fd;
+  color: #1976d2;
+}
+
+.project-status.completed {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.project-status.pending {
+  background-color: #fff3e0;
+  color: #f57c00;
+} 
