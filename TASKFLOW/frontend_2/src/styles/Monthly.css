@@ -21,7 +21,7 @@
   overflow: hidden;
   min-height: 800px; /* 기존 950px에서 축소 */
   margin-bottom: 80px; /* 기존 100px에서 축소 */
-  margin-left: -100px;
+  margin-left: -115px;
   margin-right: -90px;
   margin-top: 70px;
 }
@@ -84,7 +84,7 @@ body.monthly-page {
   text-align: left;
   width: 100%;
   margin-top: 20px;
-  transform: translateX(-80px);
+  transform: translateX(-100px);
 }
 
 /* Toolbar styles */

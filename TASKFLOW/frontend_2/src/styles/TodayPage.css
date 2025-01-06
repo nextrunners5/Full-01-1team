@@ -113,7 +113,7 @@
   color: #1a73e8;
   font-weight: bold;
   margin: 0;
-  margin-left: 200px;
+  margin-left: 175px;
   margin-top: -650px;
 }
 
@@ -132,7 +132,7 @@
   transition: background-color 0.2s;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   margin-top: -650px;
-  margin-right:  -100px;
+  margin-right:  -125px;
 }
 
 .add-schedule-btn:hover {
