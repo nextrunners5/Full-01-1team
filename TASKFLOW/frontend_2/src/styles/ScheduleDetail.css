@@ -11,14 +11,15 @@
 }
 
 .detail-row {
-  margin-bottom: 16px;
+  margin-bottom: 20px;
 }
 
 .detail-row label {
   display: block;
   color: #666;
-  margin-bottom: 4px;
+  margin-bottom: 8px;
   font-size: 14px;
+  font-weight: 500;
 }
 
 .detail-value {
@@ -29,6 +30,13 @@
 .detail-value.description {
   white-space: pre-wrap;
   line-height: 1.5;
+  background-color: #f8f9fa;
+  padding: 12px;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #333;
+  min-height: 60px;
+  margin-top: 4px;
 }
 
 .detail-actions {

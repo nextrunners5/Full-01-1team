@@ -39,8 +39,14 @@ export interface ScheduleData {
 
 export const scheduleApi = {
   getSchedules: async (): Promise<Schedule[]> => {
-    const response = await API.get('/schedules');
-    return response.data;
+    try {
+      const response = await API.get('/schedules');
+      console.log('일정 목록 조회 응답:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('일정 목록 조회 실패:', error);
+      throw error;
+    }
   },
 
   getTodaySchedules: async (): Promise<TodaySchedule> => {
@@ -98,8 +104,14 @@ export const scheduleApi = {
   },
 
   createSchedule: async (schedule: ScheduleCreate): Promise<Schedule> => {
-    const response = await API.post('/schedules', schedule);
-    return response.data;
+    try {
+      const response = await API.post('/schedules', schedule);
+      console.log('일정 생성 응답:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('일정 생성 실패:', error);
+      throw error;
+    }
   },
 
   updateSchedule: async (id: number, schedule: Partial<ScheduleCreate>): Promise<Schedule> => {
@@ -109,5 +121,23 @@ export const scheduleApi = {
 
   deleteSchedule: async (id: number): Promise<void> => {
     await API.delete(`/schedules/${id}`);
+  },
+
+  getScheduleById: async (id: number): Promise<Schedule> => {
+    try {
+      const response = await API.get('/schedules');
+      const schedules = response.data;
+      const schedule = schedules.find((s: Schedule) => s.id === id);
+
+      if (!schedule) {
+        throw new Error('일정을 찾을 수 없습니다.');
+      }
+
+      console.log('일정 상세 조회:', schedule);
+      return schedule;
+    } catch (error) {
+      console.error('일정 상세 조회 실패:', error);
+      throw error;
+    }
   }
 }; 

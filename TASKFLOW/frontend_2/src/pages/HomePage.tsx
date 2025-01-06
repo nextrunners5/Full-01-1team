@@ -150,7 +150,7 @@ const HomePage: FC = () => {
     setShowModal(true);
   };
 
-  const handleCalendarEventClick = (event: CalendarEvent) => {
+  const handleCalendarEventClick = async (event: CalendarEvent) => {
     if (event.isProject) {
       // 프로젝트인 경우
       const project = projectList.find(p => p.id === event.id);
@@ -161,30 +161,70 @@ const HomePage: FC = () => {
       }
     } else {
       // 일정인 경우
-      const scheduleDetail: Schedule = {
-        id: event.id,
-        title: event.title,
-        description: '',
-        start_date: event.start.toISOString(),
-        end_date: event.end.toISOString()
-      };
-      setSelectedSchedule(scheduleDetail);
-      setModalMode('detail');
-      setShowModal(true);
+      try {
+        // 전체 일정 목록에서 해당 일정의 상세 정보 찾기
+        const allSchedules = await scheduleApi.getSchedules();
+        const scheduleDetail = allSchedules.find(s => s.id === event.id);
+
+        if (scheduleDetail) {
+          setSelectedSchedule({
+            id: scheduleDetail.id,
+            title: scheduleDetail.title,
+            description: scheduleDetail.description, // 실제 description 사용
+            start_date: scheduleDetail.start_date,
+            end_date: scheduleDetail.end_date
+          });
+        } else {
+          // 일정을 찾지 못한 경우 기본 정보 사용
+          setSelectedSchedule({
+            id: event.id,
+            title: event.title,
+            description: '', // 찾지 못한 경우에만 빈 문자열
+            start_date: event.start.toISOString(),
+            end_date: event.end.toISOString()
+          });
+        }
+        
+        setModalMode('detail');
+        setShowModal(true);
+      } catch (error) {
+        console.error('일정 상세 정보 조회 실패:', error);
+        toast.error('일정 정보를 불러오는데 실패했습니다.');
+      }
     }
   };
 
-  const handleTodayScheduleClick = (schedule: TodaySchedule['schedules'][0]) => {
-    const scheduleDetail: Schedule = {
-      id: schedule.id,
-      title: schedule.title,
-      description: '',
-      start_date: schedule.start_date,
-      end_date: schedule.end_date
-    };
-    setSelectedSchedule(scheduleDetail);
-    setModalMode('detail');
-    setShowModal(true);
+  const handleScheduleClick = async (schedule: TodaySchedule['schedules'][0]) => {
+    try {
+      // 전체 일정 목록에서 해당 일정의 상세 정보 찾기
+      const allSchedules = await scheduleApi.getSchedules();
+      const scheduleDetail = allSchedules.find(s => s.id === schedule.id);
+
+      if (scheduleDetail) {
+        setSelectedSchedule({
+          id: scheduleDetail.id,
+          title: scheduleDetail.title,
+          description: scheduleDetail.description, // 실제 description 사용
+          start_date: scheduleDetail.start_date,
+          end_date: scheduleDetail.end_date
+        });
+      } else {
+        // 일정을 찾지 못한 경우 기본 정보 사용
+        setSelectedSchedule({
+          id: schedule.id,
+          title: schedule.title,
+          description: '', // 찾지 못한 경우에만 빈 문자열
+          start_date: schedule.start_date,
+          end_date: schedule.end_date
+        });
+      }
+      
+      setModalMode('detail');
+      setShowModal(true);
+    } catch (error) {
+      console.error('일정 상세 정보 조회 실패:', error);
+      toast.error('일정 정보를 불러오는데 실패했습니다.');
+    }
   };
 
   const handleEditClick = () => {
@@ -217,19 +257,35 @@ const HomePage: FC = () => {
         toast.success('새로운 일정이 추가되었습니다! ✨');
       }
 
-      // 일정 목록 새로고침
+      // 일정 목록과 프로젝트 목록 새로고침
       const [todaySchedules, allSchedules] = await Promise.all([
         scheduleApi.getTodaySchedules(),
         scheduleApi.getSchedules()
       ]);
 
-      setTodayInfo(todaySchedules);
-      setEvents(allSchedules.map(schedule => ({
+      // 일정 이벤트 생성
+      const scheduleEvents = allSchedules.map(schedule => ({
         id: schedule.id,
         title: schedule.title,
         start: new Date(schedule.start_date),
-        end: new Date(schedule.end_date)
-      })));
+        end: new Date(schedule.end_date),
+        isProject: false
+      }));
+
+      // 프로젝트 이벤트 생성 (기존 프로젝트 목록 사용)
+      const projectEvents = projectList
+        .filter(project => project.status !== 'COMPLETED')
+        .map(project => ({
+          id: project.id,
+          title: `[Project] ${project.name}`,
+          start: new Date(project.startDate),
+          end: new Date(project.endDate),
+          isProject: true
+        }));
+
+      // 일정과 프로젝트 이벤트 합치기
+      setEvents([...scheduleEvents, ...projectEvents]);
+      setTodayInfo(todaySchedules);
 
       handleCloseModal();
     } catch (error) {
@@ -248,13 +304,29 @@ const HomePage: FC = () => {
         scheduleApi.getSchedules()
       ]);
 
-      setTodayInfo(todaySchedules);
-      setEvents(allSchedules.map(schedule => ({
+      // 일정 이벤트 생성
+      const scheduleEvents = allSchedules.map(schedule => ({
         id: schedule.id,
         title: schedule.title,
         start: new Date(schedule.start_date),
-        end: new Date(schedule.end_date)
-      })));
+        end: new Date(schedule.end_date),
+        isProject: false
+      }));
+
+      // 프로젝트 이벤트 생성 (기존 프로젝트 목록 사용)
+      const projectEvents = projectList
+        .filter(project => project.status !== 'COMPLETED')
+        .map(project => ({
+          id: project.id,
+          title: `[Project] ${project.name}`,
+          start: new Date(project.startDate),
+          end: new Date(project.endDate),
+          isProject: true
+        }));
+
+      // 일정과 프로젝트 이벤트 합치기
+      setEvents([...scheduleEvents, ...projectEvents]);
+      setTodayInfo(todaySchedules);
 
       setShowModal(false);
       toast.success('일정이 삭제되었습니다! 🗑️');
@@ -287,42 +359,27 @@ const HomePage: FC = () => {
 
   const handleAddProject = async (projectData: ProjectData): Promise<void> => {
     try {
+      // 입력값 검증
+      if (!projectData.name || !projectData.startDate || !projectData.endDate) {
+        throw new Error('필수 입력값이 누락되었습니다.');
+      }
+
       const projectPayload = {
         name: projectData.name,
-        description: projectData.description,
+        description: projectData.description || '',  // 설명이 없을 경우 빈 문자열
         startDate: projectData.startDate,
         endDate: projectData.endDate,
         status: 'IN_PROGRESS'  // 새 프로젝트는 항상 진행 중
       };
 
-      await projectApi.createProject(projectPayload);
-      
-      // 프로젝트 목록과 달력 이벤트 업데이트
-      const [schedules, projects] = await Promise.all([
-        scheduleApi.getSchedules(),
-        projectApi.getAllProjects()
-      ]);
+      console.log('프로젝트 생성 요청 데이터:', projectPayload); // 요청 데이터 로깅
 
-      const scheduleEvents = schedules.map(schedule => ({
-        id: schedule.id,
-        title: schedule.title,
-        start: new Date(schedule.start_date),
-        end: new Date(schedule.end_date),
-        isProject: false
-      }));
+      const response = await projectApi.createProject(projectPayload);
+      console.log('프로젝트 생성 응답:', response); // 응답 데이터 로깅
 
-      const projectEvents = projects
-        .filter((project: Project) => project.status !== 'COMPLETED')
-        .map((project: Project) => ({
-          id: project.id,
-          title: `[Project] ${project.name}`,
-          start: new Date(project.startDate),
-          end: new Date(project.endDate),
-          isProject: true
-        }));
-
-      setEvents([...scheduleEvents, ...projectEvents]);
-      setProjectList(projects);
+      // 프로젝트 목록 새로고침
+      const updatedProjects = await projectApi.getAllProjects();
+      setProjectList(updatedProjects);
       
       setShowProjectCreateModal(false);
       toast.success('새 프로젝트가 생성되었습니다! ✨');
@@ -472,7 +529,7 @@ const HomePage: FC = () => {
                     {todayInfo?.schedules.map((schedule) => (
                       <li 
                         key={`${schedule.time}-${schedule.title}`}
-                        onClick={() => handleTodayScheduleClick(schedule)}
+                        onClick={() => handleScheduleClick(schedule)}
                       >
                         <span className="schedule-time">{schedule.time}</span>
                         <span className="schedule-title">{schedule.title}</span>

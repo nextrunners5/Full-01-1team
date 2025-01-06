@@ -9,6 +9,14 @@ export interface Project {
   endDate: string;
 }
 
+export interface ProjectData {
+  name: string;
+  description: string;
+  startDate: string;
+  endDate: string;
+  status: string;
+}
+
 export const projectApi = {
   getAllProjects: async () => {
     try {
@@ -21,15 +29,18 @@ export const projectApi = {
     }
   },
 
-  createProject: async (projectData: Omit<Project, 'id'>) => {
+  createProject: async (projectData: ProjectData): Promise<Project> => {
     try {
       console.log('API 요청 데이터:', projectData);
+
       const response = await API.post('/projects', projectData);
-      console.log('API 응답:', response.data);
+      
+      console.log('API 응답 데이터:', response.data);
+      
       return response.data;
-    } catch (error: any) {
-      console.error('API 에러:', error.response?.data || error);
-      throw new Error(error.response?.data?.message || '프로젝트 생성에 실패했습니다.');
+    } catch (error) {
+      console.error('프로젝트 생성 API 오류:', error);
+      throw error;
     }
   },
 

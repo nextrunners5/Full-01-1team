@@ -11,12 +11,21 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import '../styles/TodayPage.css';
 
+interface CalendarEvent {
+  id: number;
+  title: string;
+  start: Date;
+  end: Date;
+  isProject?: boolean;
+}
+
 const TodayPage: React.FC = () => {
   const [todayInfo, setTodayInfo] = useState<TodaySchedule | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [selectedSchedule, setSelectedSchedule] = useState<Schedule | null>(null);
   const [modalMode, setModalMode] = useState<'detail' | 'edit' | 'create'>('create');
+  const [events, setEvents] = useState<CalendarEvent[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -41,17 +50,37 @@ const TodayPage: React.FC = () => {
     setShowModal(true);
   };
 
-  const handleScheduleClick = (schedule: TodaySchedule['schedules'][0]) => {
-    const scheduleDetail: Schedule = {
-      id: schedule.id,
-      title: schedule.title,
-      description: '',
-      start_date: schedule.start_date,
-      end_date: schedule.end_date
-    };
-    setSelectedSchedule(scheduleDetail);
-    setModalMode('detail');
-    setShowModal(true);
+  const handleScheduleClick = async (schedule: TodaySchedule['schedules'][0]) => {
+    try {
+      // 전체 일정 목록에서 해당 일정의 상세 정보 찾기
+      const allSchedules = await scheduleApi.getSchedules();
+      const scheduleDetail = allSchedules.find(s => s.id === schedule.id);
+
+      if (scheduleDetail) {
+        setSelectedSchedule({
+          id: scheduleDetail.id,
+          title: scheduleDetail.title,
+          description: scheduleDetail.description,
+          start_date: scheduleDetail.start_date,
+          end_date: scheduleDetail.end_date
+        });
+      } else {
+        // 일정을 찾지 못한 경우 기본 정보 사용
+        setSelectedSchedule({
+          id: schedule.id,
+          title: schedule.title,
+          description: '', // 찾지 못한 경우에만 빈 문자열
+          start_date: schedule.start_date,
+          end_date: schedule.end_date
+        });
+      }
+      
+      setModalMode('detail');
+      setShowModal(true);
+    } catch (error) {
+      console.error('일정 상세 정보 조회 실패:', error);
+      toast.error('일정 정보를 불러오는데 실패했습니다.');
+    }
   };
 
   const handleEditClick = () => {
@@ -76,17 +105,40 @@ const TodayPage: React.FC = () => {
         end_date: scheduleData.end.toISOString()
       };
 
+      let updatedSchedule: Schedule;
       if (scheduleData.id) {
-        await scheduleApi.updateSchedule(scheduleData.id, payload);
+        updatedSchedule = await scheduleApi.updateSchedule(scheduleData.id, payload);
         toast.success('일정이 수정되었습니다! 🔄');
       } else {
-        await scheduleApi.createSchedule(payload);
+        updatedSchedule = await scheduleApi.createSchedule(payload);
         toast.success('새로운 일정이 추가되었습니다! ✨');
       }
 
       // 일정 목록 새로고침
       const todaySchedules = await scheduleApi.getTodaySchedules();
       setTodayInfo(todaySchedules);
+
+      // 달력 이벤트 업데이트
+      if (scheduleData.id) {
+        setEvents(prevEvents => prevEvents.map(event => 
+          event.id === scheduleData.id ? {
+            id: updatedSchedule.id,
+            title: updatedSchedule.title,
+            start: new Date(updatedSchedule.start_date),
+            end: new Date(updatedSchedule.end_date),
+            isProject: false
+          } : event
+        ));
+      } else {
+        setEvents(prevEvents => [...prevEvents, {
+          id: updatedSchedule.id,
+          title: updatedSchedule.title,
+          start: new Date(updatedSchedule.start_date),
+          end: new Date(updatedSchedule.end_date),
+          isProject: false
+        }]);
+      }
+
       handleCloseModal();
     } catch (error) {
       console.error('Error saving schedule:', error);
@@ -101,6 +153,9 @@ const TodayPage: React.FC = () => {
       // 일정 목록 새로고침
       const todaySchedules = await scheduleApi.getTodaySchedules();
       setTodayInfo(todaySchedules);
+
+      // 달력에서 해당 일정 제거
+      setEvents(prevEvents => prevEvents.filter(event => event.id !== scheduleId));
       
       setShowModal(false);
       toast.success('일정이 삭제되었습니다! 🗑️');
