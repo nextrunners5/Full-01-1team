@@ -1,0 +1,23 @@
+{
+  "development": {
+    "username": "root",
+    "password": "rlatngus7!",
+    "database": "mysqldb",
+    "host": "test-mysql.c9aacka00jcg.ap-northeast-2.rds.amazonaws.com",
+    "dialect": "mysql"
+  },
+  "test": {
+    "username": "root",
+    "password": "rlatngus7!",
+    "database": "mysqldb_test",
+    "host": "test-mysql.c9aacka00jcg.ap-northeast-2.rds.amazonaws.com",
+    "dialect": "mysql"
+  },
+  "production": {
+    "username": "root",
+    "password": "rlatngus7!",
+    "database": "mysqldb_prod",
+    "host": "test-mysql.c9aacka00jcg.ap-northeast-2.rds.amazonaws.com",
+    "dialect": "mysql"
+  }
+}

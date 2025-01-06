@@ -1,0 +1,140 @@
+.login-container {
+  width: 400px;
+  margin: 100px auto;
+  padding: 40px;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  height: 300px;
+}
+
+.logo {
+  text-align: center;
+  color: #0056FF;
+  margin-bottom: 60px;
+  font-size: 40px;
+  margin-top: 100px;
+}
+
+.login-title {
+  text-align: center;
+  color: #333;
+  margin-bottom: -50px;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.input-group label {
+  font-size: 14px;
+  color: #666;
+  margin-top: 4px;
+}
+
+.input-group input {
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 14px;
+  margin-bottom: 0px;
+}
+
+.password-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.eye-icon {
+  position: absolute;
+  right: 12px;
+  cursor: pointer;
+}
+
+.login-btn {
+  padding: 12px;
+  background-color: #0056FF;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 30px;
+}
+
+.login-btn:hover {
+  background-color: #0045CC;
+}
+
+.options {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.options a {
+  color: #666;
+  text-decoration: none;
+  margin: 0 10px;
+}
+
+.options a:hover {
+  color: #0056FF;
+}
+
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  width: 300px;
+  text-align: center;
+}
+
+.modal-top {
+  margin-top: -200px;
+}
+
+.modal-title {
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.modal-message {
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.modal-button {
+  padding: 8px 20px;
+  background-color: #0056FF;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.modal-button:hover {
+  background-color: #0045CC;
+}

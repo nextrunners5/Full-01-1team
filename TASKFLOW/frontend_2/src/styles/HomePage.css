@@ -1,5 +1,9 @@
+.MAI-body {
+  width: 300%;
+  background-color: #f9fafb;
+}
 /* 전체 앱 컨테이너 스타일 */
-.app-container {
+.MAI-app-container {
   display: flex;
   height: 100vh;
   font-family: Arial, sans-serif;
@@ -7,157 +11,322 @@
 }
 
 /* 메인 컨테이너 스타일 */
-.main-container {
+.MAI-main-container {
   flex-grow: 1;
   display: flex;
   flex-direction: column;
-  padding-bottom: 40px; /* 푸터 높이에 맞춰 패딩 추가 */
+  padding-bottom: 60px;
+  overflow: visible;
 }
 
-
 /* 메인 콘텐츠 스타일 */
-.content {
+.MAI-content {
   flex-grow: 1;
-  padding: 16px;
+  padding: 80px 0;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* 반응형 그리드 */
-  grid-auto-rows: auto;
-  gap: 16px;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: auto auto;
+  grid-gap: 20px;
+  width: 150%;
+  margin: 0;
+  box-sizing: border-box;
+  margin-left: -38px;
+  overflow: visible;
+  padding-bottom: 60px;
 }
 
 /* 각각의 섹션 스타일 */
-.to-do-list, .today, .project-status, .calendar {
+.MAI-today-date, .MAI-today, .MAI-project-status {
   background: #ffffff;
-  padding: 16px;
-  border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+  height: 300px;
+  overflow-y: auto;
+}
+
+/* 달력 섹션 스타일 */
+.MAI-calendar {
+  grid-column: 1 / -1;
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+  height: auto;
+  margin-top: 20px;
+}
+
+.MAI-calendar-container {
+  height: 800px;
+  margin-top: 20px;
+  margin-left: 0px;
+}
+
+/* 달력 내부 스타일 조정 */
+.MAI-rbc-calendar {
+  width: 100%;
+  height: 100%;
+}
+
+.MAI-rbc-month-view {
+  min-height: 700px;
 }
 
 /* 섹션 제목 스타일 */
-.to-do-list h3, .today h3, .project-status h3, .calendar h3 {
+.MAI-today h3, .MAI-project-status h3, .MAI-calendar h3 {
   color: #007bff;
+  font-size: 20px;
   margin-bottom: 10px;
+  margin-top: 10px;
 }
 
 /* 리스트 스타일 */
-.to-do-list ul, .today ul, .project-status ul {
+.MAI-today ul, .MAI-project-status ul {
   list-style: none;
   padding: 0;
-}
-
-.to-do-list ul li, .today ul li, .project-status ul li {
-  margin-bottom: 8px;
-  font-size: 14px;
-}
-
-.to-do-list input {
-  margin-right: 8px;
+  margin: 0;
 }
 
 /* TODAY 섹션 스타일 */
-.today .date {
-  font-size: 24px;
-  font-weight: bold;
-  color: #333;
+.MAI-today .MAI-date {
+  display: none;
 }
 
-.today ul {
+.MAI-today ul {
   list-style-type: disc;
   padding-left: 20px;
+  margin-top: 25px;
 }
 
-/* PROJECT STATUS 스타일 */
-.project-status ul li {
-  display: flex;
-  justify-content: space-between;
+.MAI-today ul li {
   align-items: center;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
   font-size: 14px;
 }
 
-.project-status .status {
-  font-size: 12px;
-  color: #28a745;
-  text-align: right;
-  flex-shrink: 0;
+/* PROJECT STATUS 스타일 */
+.MAI-project-status {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-/* 달력 스타일 */
-.calendar {
-  grid-column: 1 / -1; /* 전체 열을 차지하도록 설정 */
-  background: #ffffff;
-  padding: 8px; /* 내부 여백 줄이기 */
-  border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  height: 600px; /* 전체 컨테이너 높이 설정 */
-  overflow: hidden; /* 내용이 넘칠 경우 숨김 처리 */
-}
-
-.calendar h3 {
+.MAI-project-status h3 {
+  color: #1a73e8;
+  font-size: 20px;
   margin-bottom: 20px;
-  margin-top: 0;
-  text-align: left;
-  font-size: 18px;
-  position: relative; /* 상대 위치 조정을 위해 추가 */
-  left: 10px; /* 오른쪽으로 10px 이동 */
-  top: 5px; /* 아래로 5px 이동 */
 }
 
-.toolbar-container {
+.MAI-project-item {
+  padding: 12px 15px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  transition: transform 0.2s;
+  cursor: pointer;
+}
+
+.MAI-project-item:hover {
+  transform: translateX(5px);
+  background-color: #f0f0f0;
+}
+
+.MAI-project-info {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px;
-  margin-bottom: 10px;
 }
 
-.toolbar-center {
+.MAI-project-details {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  flex: 1;
-  margin-left: 100px;
+  flex-direction: column;
+  gap: 4px;
 }
 
-.current-month {
-  font-size: 20px;
+.MAI-project-title {
+  font-size: 14px;
+  color: #333;
+  font-weight: 500;
+}
+
+.MAI-project-period {
+  font-size: 12px;
+  color: #666;
+}
+
+/* 캘린더 툴바 스타일 */
+.MAI-toolbar-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+}
+
+.MAI-current-month {
+  font-size: 25px;
   font-weight: bold;
-  margin: 0 0px;
   color: #007bff;
 }
 
-.navigate-btn {
+.MAI-navigate-btn {
   background: none;
   border: none;
   cursor: pointer;
   font-size: 18px;
   font-weight: bold;
-  margin: 0 5px;
   color: #007bff;
 }
 
-.view-switcher {
-  display: flex;
-  gap: 3px;
-  margin-right: 0px;
-}
-
-.view-btn {
+.MAI-view-btn {
   background-color: #007bff;
-  color: #fff;
+  color: white;
   border: none;
+  padding: 6px 12px;
   border-radius: 5px;
-  cursor: pointer;
   font-size: 14px;
-  transition: background-color 0.3s;
+  cursor: pointer;
+  margin-left: 5px;
 }
 
-.view-btn:hover {
+.MAI-view-btn:hover {
   background-color: #0056b3;
 }
 
-/* 캘린더 컨테이너 */
-.calendar-container {
-  height: 500px;
-  margin: 20px;
+/* 반응형 스타일 */
+@media screen and (min-width: 1200px) {
+  .MAI-content {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* 상태 뱃지 스타일 */
+.MAI-status {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.MAI-status.in_progress {
+  background-color: #e3f2fd;
+  color: #1976d2;
+}
+
+.MAI-status.completed {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+/* 모달 스타일 */
+.MAI-detail-modal-content {
+  background: white;
+  padding: 24px;
+  border-radius: 8px;
+  width: 600px;
+  max-width: 90vw;
+}
+
+.MAI-detail-section {
+  margin: 20px 0;
+}
+
+.MAI-detail-row {
+  margin-bottom: 20px;
+}
+
+.MAI-detail-row label {
+  display: block;
+  color: #666;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.MAI-detail-value {
+  color: #333;
+  font-size: 16px;
+}
+
+.MAI-detail-value.description {
+  white-space: pre-wrap;
+  line-height: 1.5;
+  background: #f8f9fa;
+  padding: 12px;
+  border-radius: 4px;
+}
+
+/* 프로젝트 헤더 스타일 */
+.MAI-project-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.MAI-add-project-btn {
+  background-color: #1100FF;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.MAI-add-project-btn:hover {
+  background-color: #0056b3;
+}
+
+/* 오늘 날짜 섹션 스타일 */
+.MAI-today-date {
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+  height: 300px;
+}
+
+.MAI-today-date h3 {
+  color: #1a73e8;
+  font-size: 20px;
+  margin-bottom: 20px;
+}
+
+.MAI-today-date .MAI-date {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+}
+
+/* 공통 헤더 스타일 */
+.MAI-today-header, .MAI-project-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+/* 공통 추가 버튼 스타일 */
+.MAI-add-schedule-btn, .MAI-add-project-btn {
+  background-color: #1100FF;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 28px;
+  height: 34px;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.MAI-add-schedule-btn:hover, .MAI-add-project-btn:hover {
+  background-color: #0056b3;
 }

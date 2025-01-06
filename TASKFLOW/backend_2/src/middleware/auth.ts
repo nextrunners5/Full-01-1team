@@ -1,0 +1,1 @@
+// src/middleware/auth.ts 삭제 

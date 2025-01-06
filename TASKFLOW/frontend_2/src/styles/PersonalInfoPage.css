@@ -1,0 +1,310 @@
+/* 전체 레이아웃 */
+.Update-flex-container {
+  display: flex;
+  width: 600px;
+  margin-left: 300px;
+  background-color: #F4F5FB;
+}
+
+.Update-main-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  background-color: #fff;
+  margin: 20px auto;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 40px;
+}
+
+/* 제목 스타일 */
+.personal-info-content h2 {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+/* 폼 스타일 */
+.personal-info-form {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.Update-form-group {
+  margin-bottom: 24px;
+}
+
+.Update-form-group label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.Update-form-group input {
+  width: 100%;
+  padding: 12px;
+  font-size: 14px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-sizing: border-box;
+  background-color: #fff;
+}
+
+/* 비활성화된 입력 필드 */
+.Update-form-group input:disabled {
+  background-color: #f5f5f5;
+  color: #999;
+  border: 1px solid #ddd;
+  cursor: not-allowed;
+}
+
+/* 비밀번호 입력 필드 */
+.password-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-input-wrapper input {
+  width: 100%;
+  padding-right: 40px; /* 아이콘 공간 확보 */
+}
+
+.password-toggle-btn {
+  position: absolute;
+  right: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #666;
+}
+
+.password-toggle-btn:hover {
+  color: #333;
+}
+
+/* 주민등록번호 입력 */
+.DEL-id-number-input {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.DEL-id-number-input input {
+  flex: 1;
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: #fff;
+}
+
+.DEL-id-number-input input:focus {
+  border-color: #1100FF;
+  outline: none;
+}
+
+.DEL-id-number-separator {
+  font-weight: bold;
+  color: #666;
+}
+
+/* 도움말 텍스트 */
+.help-text {
+  margin-top: 4px;
+  font-size: 12px;
+  color: #666;
+}
+
+/* 버튼 그룹 */
+.Update-button-group {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+  margin-top: 32px;
+}
+
+.Update-cancel-btn {
+  padding: 12px 24px;
+  font-size: 14px;
+  background-color: #f5f5f5;
+  color: #333;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.Update-cancel-btn:hover {
+  background-color: #e0e0e0;
+}
+
+.Update-save-btn {
+  padding: 12px 24px;
+  font-size: 14px;
+  background-color: #1100FF;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.Update-save-btn:hover {
+  background-color: #0056b3;
+}
+
+/* 에러 메시지 */
+.error-message {
+  color: #dc3545;
+  font-size: 14px;
+  margin-top: 4px;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .Update-main-container {
+    padding: 20px;
+  }
+
+  .Update-button-group {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .Update-cancel-btn, .Update-save-btn {
+    width: 100%;
+  }
+}
+
+.disabled-input:focus {
+  outline: none;
+  border-color: #ddd;
+}
+/* 경고 박스 스타일 */
+.warning-box {
+  background-color: #fff3cd;
+  border: 1px solid #ffeeba;
+  border-radius: 8px; /* 더 둥근 모서리 */
+  padding: 20px; /* 여유 있는 내부 여백 */
+  margin-bottom: 30px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 약간의 그림자 */
+}
+
+.warning-box h3 {
+  color: #856404;
+  margin-bottom: 12px;
+  font-size: 20px; /* 더 큰 글씨 */
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 8px; /* 아이콘과 텍스트 간격 */
+  margin-top: 2px;
+}
+
+.warning-box ul {
+  margin: 0;
+  padding-left: 20px;
+  font-size: 14px;
+}
+
+.warning-box li {
+  color: #856404;
+  margin-bottom: 8px; /* 더 넓은 간격 */
+  line-height: 1.5; /* 가독성을 위한 줄 간격 */
+}
+
+/* 회원탈퇴 버튼 */
+.DEL-delete-btn {
+  background-color: #1a73e8;
+  border: none;
+  color: white;
+  padding: 14px 28px;
+  border-radius: 8px; /* 더 둥근 모서리 */
+  font-size: 16px; /* 큰 버튼 텍스트 */
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 그림자 추가 */
+}
+
+.DEL-delete-btn:hover {
+  color: #1a73e8;
+  background-color: white;
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2); /* 더 강한 그림자 */
+  transform: translateY(-2px); /* 약간 올라가는 효과 */
+}
+
+/* 취소 버튼 */
+.DEL-cancel-btn {
+  background-color: #f5f5f5;
+  border: 1px solid #ddd;
+  color: #333;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.cancel-btn:hover {
+  background-color: #e0e0e0;
+  border-color: #ccc;
+}
+
+/* 버튼 그룹 */
+.Delete-button-group {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+  margin-top: 35px;
+}
+
+/* 입력 필드 */
+.Update-form-group input {
+  width: 100%;
+  padding: 12px;
+  font-size: 14px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-sizing: border-box;
+  background-color: #fff;
+}
+
+.Update-form-group input:focus {
+  border-color: #1100FF;
+  outline: none;
+  box-shadow: 0 0 5px rgba(17, 0, 255, 0.2); /* 포커스 시 강조 */
+}
+
+
+.id-number-separator {
+  font-size: 16px;
+  color: #666;
+  font-weight: bold;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .warning-box {
+    padding: 15px;
+  }
+
+  .DEL-delete-btn,
+  .cancel-btn {
+    padding: 12px 20px;
+    font-size: 14px;
+    width: 100%; /* 버튼을 화면 폭에 맞게 조정 */
+  }
+
+  .Delete-button-group {
+    flex-direction: column;
+    gap: 12px;
+  }
+}

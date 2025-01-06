@@ -36,3 +36,14 @@
     transform: rotate(360deg);
   }
 }
+
+/* 추가된 스타일 */
+.layout {
+  display: flex;
+  flex-direction: column; /* 세로 정렬 */
+  min-height: 100vh; /* 화면 전체 높이 */
+}
+
+.main {
+  flex: 1; /* 메인 콘텐츠가 푸터 위로 공간을 채우도록 설정 */
+}

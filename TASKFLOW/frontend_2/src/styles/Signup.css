@@ -1,0 +1,232 @@
+/* 전체 컨테이너 */
+.signup-container {
+    width: 450px;
+    margin: 50px auto;
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    font-family: 'Arial', sans-serif;
+}
+
+/* 제목 스타일 */
+.signup-title {
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.signup-subtitle {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 14px;
+    color: #666;
+}
+
+/* 입력 필드 */
+.signup-form {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.input-field {
+    width: 100%;
+    padding: 12px;
+    font-size: 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    outline: none;
+    background-color: #fff;
+}
+
+.input-field:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 4px rgba(37, 99, 235, 0.3);
+}
+
+/* 이메일 입력과 중복확인 버튼 컨테이너 */
+.email-container {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 5px;
+    height: 45px;
+    margin-top: 10px;
+}
+
+.verify-button {
+    padding: 8px 15px;
+    background-color: #2563eb;
+    color: #fff;
+    font-size: 14px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    height: 45px;
+    width: 95px;
+}
+
+.verify-button:hover {
+    background-color: #1d4ed8;
+}
+
+/* 필드 라벨 텍스트 굵기 조정 */
+label {
+    font-weight: 600;
+    margin-top: 5px;
+}
+
+/* 성별 선택 */
+.inline-radio-group {
+    display: flex; /* 라디오 버튼과 텍스트를 한 줄에 정렬 */
+    flex-direction: row; /* 가로 배치 */
+    align-items: center; /* 세로 중앙 정렬 */
+    gap: 50px; /* 라디오 버튼과 텍스트 간격 */
+    margin-bottom: 16px; /* 하단 요소와 간격 */
+}
+
+.inline-radio-group label {
+    margin: 0; /* 기본 여백 제거 */
+    display: flex; /* 텍스트와 라디오 버튼을 함께 정렬 */
+    align-items: center; /* 라디오 버튼과 텍스트 중앙 정렬 */
+    gap: 5px; /* 라디오 버튼과 텍스트 간격 */
+    font-weight: normal;
+}
+
+.inline-radio-group input[type="radio"] {
+    margin: 0; /* 기본 여백 제거 */
+    accent-color: #555; /* 라디오 버튼 색상 */
+}
+
+/* 주민등록번호 섹션 */
+.id-number-section {
+    margin-bottom: 16px; /* 아래 요소와 간격 */
+}
+
+.id-number-container {
+    display: flex; /* 입력 필드와 대시를 가로로 정렬 */
+    align-items: center; /* 세로 중앙 정렬 */
+    gap: 8px; /* 입력 필드와 대시 사이 간격 */
+    margin-top: 8px; /* 라벨과 입력 필드 간 간격 */
+}
+
+.id-number-input {
+    width: 320px; /* 기존 100px에서 120px로 증가 */
+    padding: 12px;
+    font-size: 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    outline: none;
+    background-color: #fff;
+}
+
+.id-number-input:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 4px rgba(37, 99, 235, 0.3);
+}
+
+.id-number-dash {
+    font-size: 16px; /* 대시(-) 크기 */
+    color: #333; /* 대시(-) 색상 */
+}
+
+/* 체크박스 그룹 */
+.checkbox-group {
+    display: flex; /* 가로 정렬 */
+    align-items: center; /* 세로 중앙 정렬 */
+    gap: 8px; /* 체크박스와 텍스트 간 간격 */
+    font-size: 30px; /* 텍스트 크기 */
+    color: #555; /* 텍스트 색상 */
+    margin-bottom: 8px; /* 아래 요소와 간격 */
+    margin-top: -30px;
+}
+
+.checkbox-group input[type="checkbox"] {
+    margin-bottom: -13px; /* 기본 여백 제거 */
+    accent-color: #2563eb; /* 체크박스 색상 */
+    width: 16px; /* 체크박스 크기 */
+    height: 16px; /* 체크박스 크기 */
+}
+
+.checkbox-group label {
+    display: flex; /* 텍스트를 가로로 배치 */
+    align-items: center; /* 텍스트와 체크박스 중앙 정렬 */
+    cursor: pointer; /* 커서를 클릭 가능하도록 변경 */
+    margin-top: 20px;
+    font-size: 15px;
+}
+
+.link {
+    text-decoration: none;
+    color: #2563eb; /* 링크 색상 */
+}
+
+.link:hover {
+    text-decoration: underline; /* 호버 시 밑줄 추가 */
+}
+
+/* 버튼 */
+.button {
+    width: 100%;
+    padding: 12px;
+    background-color: #2563eb;
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 30px;
+}
+
+.button:hover {
+    background-color: #1d4ed8;
+}
+
+/* 생년월일 필드 */
+.input-date {
+    padding: 12px;
+    font-size: 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    outline: none;
+    background-color: #fff;
+}
+
+.input-date:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 4px rgba(37, 99, 235, 0.3);
+}
+
+/* 반응형 디자인 */
+@media (max-width: 500px) {
+    .signup-container {
+        width: 90%;
+        padding: 20px;
+    }
+
+    .email-container {
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .verify-button {
+        width: 100%;
+    }
+
+    .signup-form .id-number-container {
+        flex-direction: column; /* 작은 화면에서는 한 줄에 하나씩 */
+        gap: 8px;
+    }
+
+    .signup-form input[name="idNumberFront"],
+    .signup-form input[name="idNumberBack"] {
+        width: 100%; /* 작은 화면에서 입력 필드 전체 너비로 확장 */
+    }
+}

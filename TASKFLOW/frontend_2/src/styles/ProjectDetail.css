@@ -1,0 +1,225 @@
+/* 모달 오버레이 */
+.PJT-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* Ensure it sits above other elements */
+}
+
+/* Modal Content */
+.detail-modal-content {
+  background-color: #fff;
+  width: 600px;
+  max-width: 90%;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 24px;
+  position: relative;
+  animation: fadeIn 0.3s ease-out;
+  margin-left: 300px;
+}
+
+/* Modal Header */
+.detail-modal-content h3 {
+  margin-top: 0;
+  margin-bottom: 40px;
+  font-size: 1.2em;
+  color: #333;
+  text-align: left;
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 10px;
+}
+
+/* Detail Section */
+.detail-section {
+  margin-bottom: 40px;
+}
+
+/* Detail Row - 레이아웃 개선 */
+.detail-row {
+  display: flex;
+  margin-bottom: 28px;  /* 행 간격 증가 */
+  align-items: baseline; /* 텍스트 기준선 맞춤 */
+  min-height: 36px;     /* 최소 높이 증가 */
+  position: relative;   /* 상대 위치 설정 */
+}
+
+/* Labels - 왼쪽 라벨 스타일 개선 */
+.detail-row label {
+  flex: 0 0 120px;    /* 고정 너비 */
+  font-weight: 600;    /* 약간 더 굵게 */
+  color: #666;        /* 더 부드러운 색상 */
+  font-size: 1.05em;  /* 폰트 크기 조정 */
+  padding-right: 24px; /* 오른쪽 여백 증가 */
+  text-align: left;   /* 왼쪽 정렬 */
+}
+
+/* Detail Values - 오른쪽 값 스타일 개선 */
+.detail-value {
+  flex: 1;
+  color: #333;
+  font-size: 1.05em;
+  line-height: 1.5;
+  padding-left: 8px;  /* 왼쪽 여백 추가 */
+  position: relative; /* 상대 위치 설정 */
+}
+
+/* Description - 설명 영역 개선 */
+.detail-value.description {
+  margin-top: 4px;    /* 상단 여백 추가 */
+  padding: 16px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  min-height: 80px;
+  line-height: 1.6;   /* 줄 간격 증가 */
+}
+
+/* 날짜 표시 영역 */
+.detail-value.date {
+  color: #444;        /* 날짜 텍스트 색상 */
+  font-size: 1em;     /* 날짜 폰트 크기 */
+}
+
+/* Status Badge - 상태 뱃지 위치 조정 */
+.status {
+  display: inline-block;
+  padding: 6px 16px;   /* 좌우 패딩 증가 */
+  border-radius: 20px; /* 더 둥글게 */
+  font-size: 0.95em;
+  font-weight: 500;
+  margin-top: -2px;   /* 미세 조정 */
+  background-color: #e3f2fd;
+  color: #1976d2;
+  border: 1px solid #bbdefb;
+}
+
+/* Status Colors */
+.status.in_progress {
+  background-color: #e3f2fd;
+  color: #1976d2;
+  border: 1px solid #bbdefb;
+}
+
+.status.completed {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  border: 1px solid #c8e6c9;
+}
+
+.status.other {
+  background-color: #9e9e9e; /* Gray for other statuses */
+}
+
+/* Members List */
+.members-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* Member Badge */
+.member-badge {
+  background-color: #e0f7fa;
+  color: #006064;
+  padding: 6px 12px;
+  border-radius: 16px;
+  font-size: 0.85em;
+}
+
+/* Action Buttons */
+.detail-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Button Groups */
+.left-actions,
+.right-actions {
+  display: flex;
+  gap: 10px;
+}
+
+/* Buttons */
+button {
+  
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.95em;
+  transition: background-color 0.2s ease;
+}
+
+/* Delete Button */
+.delete-btn {
+  background-color: #d06159; /* Red */
+  color: #fff;
+  height: 40px;
+  width: 80px;
+  margin-top: 30px;
+}
+
+.delete-btn:hover {
+  background-color: #d32f2f;
+}
+
+/* Close Button */
+.close-btn {
+  background-color: #d1d1d1; /* Gray */
+  color: #828282;
+  height: 40px;
+  width: 80px;
+  margin-top: 30px;
+}
+
+.close-btn:hover {
+  background-color: #757575;
+}
+
+/* Edit Button */
+.edit-btn {
+  background-color: #1a73e8; /* Blue */
+  color: #fff;
+  height: 40px;
+  width: 80px;
+  margin-top: 30px;
+}
+
+.edit-btn:hover {
+  background-color: #1976d2;
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+  .detail-modal-content {
+    padding: 16px;
+  }
+
+  .detail-row label {
+    flex: 0 0 100px;
+    font-size: 0.95em;
+  }
+
+  button {
+    padding: 6px 12px;
+    font-size: 0.85em;
+  }
+}
