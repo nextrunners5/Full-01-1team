@@ -97,18 +97,20 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
             </div>
           </div>
 
-          <div className="form-group">
-            <label htmlFor="projectStatus">상태</label>
-            <select
-              id="projectStatus"
-              value={projectData.status}
-              onChange={(e) => setProjectData({ ...projectData, status: e.target.value })}
-              title="프로젝트 상태"
-            >
-              <option value="IN_PROGRESS">진행 중</option>
-              <option value="COMPLETED">완료</option>
-            </select>
-          </div>
+          {initialData && (
+            <div className="form-group">
+              <label htmlFor="projectStatus">상태</label>
+              <select
+                id="projectStatus"
+                value={projectData.status}
+                onChange={(e) => setProjectData({ ...projectData, status: e.target.value })}
+                title="프로젝트 상태"
+              >
+                <option value="IN_PROGRESS">진행 중</option>
+                <option value="COMPLETED">완료</option>
+              </select>
+            </div>
+          )}
 
           <div className="modal-actions">
             <button type="button" className="cancel-btn" onClick={onClose}>

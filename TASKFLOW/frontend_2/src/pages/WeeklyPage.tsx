@@ -7,8 +7,8 @@ import '../styles/Weekly.css'; // CSS 파일 경로 변경
 import Header from '../components/common/Header';
 import Sidebar from '../components/common/Sidebar';
 import Footer from '../components/common/Footer';
-import { scheduleApi, Schedule } from '../services/scheduleApi';
-import ScheduleModal, { ScheduleData } from '../components/modals/ScheduleModal';
+import { scheduleApi, Schedule, ScheduleData } from '../services/scheduleApi';
+import ScheduleModal from '../components/modals/ScheduleModal';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import ScheduleDetailModal from '../components/modals/ScheduleDetailModal';

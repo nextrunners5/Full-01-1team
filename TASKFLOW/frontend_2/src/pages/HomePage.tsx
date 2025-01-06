@@ -18,11 +18,14 @@ import Header from '../components/common/Header';
 import Sidebar from '../components/common/Sidebar';
 import Footer from '../components/common/Footer';
 import { useNavigate } from 'react-router-dom';
-import { scheduleApi, Schedule, TodaySchedule } from '../services/scheduleApi';
-import ScheduleModal, { ScheduleData } from '../components/modals/ScheduleModal';
+import { scheduleApi, Schedule, TodaySchedule, ScheduleData } from '../services/scheduleApi';
+import ScheduleModal from '../components/modals/ScheduleModal';
 import ScheduleDetailModal from '../components/modals/ScheduleDetailModal';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { projectApi, Project } from '../services/projectApi';
+import ProjectDetailModal from '../components/modals/ProjectDetailModal';
+import ProjectModal, { ProjectData } from '../components/modals/ProjectModal';
 
 const locales = {
   'en-US': require('date-fns/locale/en-US'),
@@ -45,11 +48,7 @@ interface CalendarEvent {
 }
 
 // 프로젝트 상태 타입
-interface ProjectStatus {
-  id: number;
-  name: string;
-  status: string;
-}
+interface ProjectStatus extends Project {}
 
 // 커스텀 툴바(옵션)
 const CustomToolbar: FC<ToolbarProps> = (props) => {
@@ -84,6 +83,12 @@ const HomePage: FC = () => {
   const [showModal, setShowModal] = useState(false);
   const [selectedSchedule, setSelectedSchedule] = useState<Schedule | null>(null);
   const [modalMode, setModalMode] = useState<'detail' | 'edit' | 'create'>('create');
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [showProjectModal, setShowProjectModal] = useState(false);
+  const [showProjectCreateModal, setShowProjectCreateModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [projectToDelete, setProjectToDelete] = useState<number | null>(null);
+  const [projectModalMode, setProjectModalMode] = useState<'detail' | 'edit' | 'create'>('create');
 
   // 날짜/요일 표시에 사용할 값
   const currentDate = new Date();
@@ -104,15 +109,16 @@ const HomePage: FC = () => {
         // 달력 이벤트 가져오기
         const response = await scheduleApi.getSchedules();
         const fetchedEvents = response.map(schedule => ({
+          id: schedule.id,
           title: schedule.title,
           start: new Date(schedule.start_date),
           end: new Date(schedule.end_date)
         }));
         setEvents(fetchedEvents);
 
-        // 프로젝트 상태 가져오기
-        const projectResponse = await axios.get('/api/projects');
-        setProjectList(projectResponse.data);
+        // 프로젝트 가져오기 (projectApi 사용)
+        const projects = await projectApi.getAllProjects();
+        setProjectList(projects);
       } catch (error) {
         console.error('Failed to fetch data:', error);
         toast.error('데이터를 불러오는데 실패했습니다.');
@@ -124,35 +130,37 @@ const HomePage: FC = () => {
     fetchData();
   }, []);
 
-  // 달력 빈 영역 클릭 시 Monthly 페이지로 이동
-  const handleCalendarClick = (event: React.MouseEvent) => {
-    if (!(event.target instanceof HTMLButtonElement)) {
-      navigate('/Schedule/Monthly');
-    }
-  };
-
   const handleAddClick = () => {
     setSelectedSchedule(null);
     setModalMode('create');
     setShowModal(true);
   };
 
-  const handleScheduleClick = (schedule: TodaySchedule['schedules'][0]) => {
-    const scheduleDetail: Schedule = {
-      id: schedule.id,
-      title: schedule.title,
-      description: '',  // 기본값
-      start_date: schedule.start_date,
-      end_date: schedule.end_date
-    };
-    setSelectedSchedule(scheduleDetail);
+  const handleScheduleClick = (schedule: TodaySchedule['schedules'][0] | CalendarEvent) => {
+    // 달력 이벤트인 경우와 오늘의 일정인 경우를 구분
+    if ('time' in schedule) {
+      // 오늘의 일정인 경우
+      const scheduleDetail: Schedule = {
+        id: schedule.id,
+        title: schedule.title,
+        description: '',
+        start_date: schedule.start_date,
+        end_date: schedule.end_date
+      };
+      setSelectedSchedule(scheduleDetail);
+    } else {
+      // 달력 이벤트인 경우
+      const scheduleDetail: Schedule = {
+        id: (schedule as any).id, // id가 있다면 사용
+        title: schedule.title,
+        description: '',
+        start_date: schedule.start.toISOString(),
+        end_date: schedule.end.toISOString()
+      };
+      setSelectedSchedule(scheduleDetail);
+    }
+    
     setModalMode('detail');
-    setShowModal(true);
-  };
-
-  const handleSlotSelect = (slotInfo: { start: Date; end: Date }) => {
-    setSelectedSchedule(null);
-    setModalMode('create');
     setShowModal(true);
   };
 
@@ -171,25 +179,22 @@ const HomePage: FC = () => {
         throw new Error('시작 시간과 종료 시간을 입력해주세요');
       }
 
+      const payload = {
+        title: scheduleData.title,
+        description: scheduleData.description,
+        start_date: scheduleData.start.toISOString(),
+        end_date: scheduleData.end.toISOString()
+      };
+
       if (scheduleData.id) {
-        await scheduleApi.updateSchedule(scheduleData.id, {
-          title: scheduleData.title,
-          description: scheduleData.description,
-          start_date: scheduleData.start.toISOString(),
-          end_date: scheduleData.end.toISOString()
-        });
+        await scheduleApi.updateSchedule(scheduleData.id, payload);
         toast.success('일정이 수정되었습니다! 🔄');
       } else {
-        await scheduleApi.createSchedule({
-          title: scheduleData.title,
-          description: scheduleData.description,
-          start_date: scheduleData.start.toISOString(),
-          end_date: scheduleData.end.toISOString()
-        });
+        await scheduleApi.createSchedule(payload);
         toast.success('새로운 일정이 추가되었습니다! ✨');
       }
 
-      // 일정 목록과 달력 이벤트 모두 새로고침
+      // 일정 목록 새로고침
       const [todaySchedules, allSchedules] = await Promise.all([
         scheduleApi.getTodaySchedules(),
         scheduleApi.getSchedules()
@@ -197,6 +202,7 @@ const HomePage: FC = () => {
 
       setTodayInfo(todaySchedules);
       setEvents(allSchedules.map(schedule => ({
+        id: schedule.id,
         title: schedule.title,
         start: new Date(schedule.start_date),
         end: new Date(schedule.end_date)
@@ -209,11 +215,11 @@ const HomePage: FC = () => {
     }
   };
 
-  const handleDeleteSchedule = async (id: number) => {
+  const handleDeleteSchedule = async (scheduleId: number) => {
     try {
-      await scheduleApi.deleteSchedule(id);
+      await scheduleApi.deleteSchedule(scheduleId);
       
-      // 일정 목록과 달력 이벤트 모두 새로고침
+      // 일정 목록 새로고침
       const [todaySchedules, allSchedules] = await Promise.all([
         scheduleApi.getTodaySchedules(),
         scheduleApi.getSchedules()
@@ -221,17 +227,114 @@ const HomePage: FC = () => {
 
       setTodayInfo(todaySchedules);
       setEvents(allSchedules.map(schedule => ({
+        id: schedule.id,
         title: schedule.title,
         start: new Date(schedule.start_date),
         end: new Date(schedule.end_date)
       })));
 
-      handleCloseModal();
+      setShowModal(false);
       toast.success('일정이 삭제되었습니다! 🗑️');
     } catch (error) {
-      console.error('Error deleting schedule:', error);
-      toast.error('일정 삭제에 실패했습니다. 다시 시도해주세요.');
+      console.error('일정 삭제 중 오류 발생:', error);
+      toast.error('일정 삭제에 실패했습니다.');
     }
+  };
+
+  const handleProjectClick = (project: Project) => {
+    setSelectedProject(project);
+    setShowProjectModal(true);
+  };
+
+  const handleDeleteProject = async (id: number) => {
+    try {
+      await projectApi.deleteProject(id);
+      
+      // 프로젝트 목록 새로고침
+      const updatedProjects = await projectApi.getAllProjects();
+      setProjectList(updatedProjects);
+      
+      setShowProjectModal(false);
+      toast.success('프로젝트가 삭제되었습니다! 🗑️');
+    } catch (error) {
+      console.error('Error deleting project:', error);
+      toast.error('프로젝트 삭제에 실패했습니다. 다시 시도해주세요.');
+    }
+  };
+
+  const handleAddProject = async (projectData: ProjectData): Promise<void> => {
+    try {
+      const projectPayload = {
+        name: projectData.name,
+        description: projectData.description,
+        startDate: projectData.startDate,
+        endDate: projectData.endDate,
+        status: 'IN_PROGRESS'  // 새 프로젝트는 항상 진행 중
+      };
+
+      await projectApi.createProject(projectPayload);
+      const updatedProjects = await projectApi.getAllProjects();
+      setProjectList(updatedProjects);
+      
+      setShowProjectCreateModal(false);
+      toast.success('새 프로젝트가 생성되었습니다! ✨');
+    } catch (error) {
+      console.error('Error creating project:', error);
+      toast.error('프로젝트 생성에 실패했습니다. 다시 시도해주세요.');
+    }
+  };
+
+  const handleUpdateProject = async (projectData: ProjectData): Promise<void> => {
+    try {
+      const projectPayload = {
+        name: projectData.name,
+        description: projectData.description,
+        startDate: projectData.startDate,
+        endDate: projectData.endDate,
+        status: projectData.status
+      };
+
+      if (selectedProject?.id) {
+        await projectApi.updateProject(selectedProject.id, projectPayload);
+        const updatedProjects = await projectApi.getAllProjects();
+        setProjectList(updatedProjects);
+        
+        setShowProjectModal(false);
+        setProjectModalMode('detail');
+        toast.success('프로젝트가 수정되었습니다! 🔄');
+      }
+    } catch (error) {
+      console.error('Error updating project:', error);
+      toast.error('프로젝트 수정에 실패했습니다. 다시 시도해주세요.');
+    }
+  };
+
+  const handleDeleteClick = (id: number) => {
+    setProjectToDelete(id);
+    setShowDeleteModal(true);
+    setShowProjectModal(false); // 상세 모달 닫기
+  };
+
+  const confirmDelete = async () => {
+    if (projectToDelete) {
+      try {
+        await projectApi.deleteProject(projectToDelete);
+        
+        // 프로젝트 목록 새로고침
+        const updatedProjects = await projectApi.getAllProjects();
+        setProjectList(updatedProjects);
+        
+        setShowDeleteModal(false);
+        toast.success('프로젝트가 삭제되었습니다! 🗑️');
+      } catch (error) {
+        console.error('Error deleting project:', error);
+        toast.error('프로젝트 삭제에 실패했습니다. 다시 시도해주세요.');
+      }
+    }
+  };
+
+  const handleProjectEditClick = () => {
+    setProjectModalMode('edit');
   };
 
   // ---------------------
@@ -243,7 +346,15 @@ const HomePage: FC = () => {
       <div className="main-container">
         <Header />
         <main className="content">
-          {/* TODAY */}
+          {/* TODAY'S DATE */}
+          <section className="today-date" aria-label="Today's date">
+            <h3>오늘</h3>
+            <p className="date">
+              {todayInfo?.date} ({todayInfo?.dayOfWeek})
+            </p>
+          </section>
+
+          {/* TODAY'S SCHEDULE */}
           <section className="today" aria-label="Today schedule">
             <div className="today-header">
               <h3>오늘의 일정</h3>
@@ -254,41 +365,54 @@ const HomePage: FC = () => {
             {isLoading ? (
               <div className="loading">로딩 중...</div>
             ) : (
-              <>
-                <p className="date">
-                  {todayInfo?.date} ({todayInfo?.dayOfWeek})
-                </p>
-                <div className="schedule-list">
-                  {todayInfo?.schedules.length === 0 ? (
-                    <div className="no-schedule">오늘 예정된 일정이 없습니다.</div>
-                  ) : (
-                    <ul>
-                      {todayInfo?.schedules.map((schedule) => (
-                        <li 
-                          key={`${schedule.time}-${schedule.title}`}
-                          onClick={() => handleScheduleClick(schedule)}
-                        >
-                          <span className="schedule-time">{schedule.time}</span>
-                          <span className="schedule-title">{schedule.title}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
-              </>
+              <div className="schedule-list">
+                {todayInfo?.schedules.length === 0 ? (
+                  <div className="no-schedule">예정된 일정이 없습니다.</div>
+                ) : (
+                  <ul>
+                    {todayInfo?.schedules.map((schedule) => (
+                      <li 
+                        key={`${schedule.time}-${schedule.title}`}
+                        onClick={() => handleScheduleClick(schedule)}
+                      >
+                        <span className="schedule-time">{schedule.time}</span>
+                        <span className="schedule-title">{schedule.title}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
             )}
           </section>
 
           {/* PROJECT STATUS */}
           <section className="project-status" aria-label="Project status">
-            <h3>PROJECT STATUS</h3>
+            <div className="project-header">
+              <h3>진행 중인 프로젝트</h3>
+              <button className="add-project-btn" onClick={() => setShowProjectCreateModal(true)}>
+                +
+              </button>
+            </div>
             <ul>
-              {projectList.map((project) => (
-                <li key={project.id}>
-                  {project.name}{' '}
-                  <span className="status">{project.status}</span>
-                </li>
-              ))}
+              {projectList
+                .filter(project => project.status === 'IN_PROGRESS')
+                .map((project) => (
+                  <li 
+                    key={project.id} 
+                    className="project-item"
+                    onClick={() => handleProjectClick(project)}
+                  >
+                    <div className="project-info">
+                      <div className="project-details">
+                        <span className="project-title">{project.name}</span>
+                        <span className="project-period">
+                          {new Date(project.startDate).toLocaleDateString('ko-KR')} ~ 
+                          {new Date(project.endDate).toLocaleDateString('ko-KR')}
+                        </span>
+                      </div>
+                    </div>
+                  </li>
+                ))}
             </ul>
           </section>
 
@@ -303,8 +427,6 @@ const HomePage: FC = () => {
               views={['month']}
               className="calendar-container"
               components={{ toolbar: CustomToolbar }}
-              selectable={true}
-              onSelectSlot={handleSlotSelect}
               onSelectEvent={handleScheduleClick}
               messages={{
                 next: "다음",
@@ -326,12 +448,16 @@ const HomePage: FC = () => {
                 id: selectedSchedule.id,
                 title: selectedSchedule.title,
                 description: selectedSchedule.description || '',
-                start: selectedSchedule.start_date ? new Date(selectedSchedule.start_date) : new Date(),
-                end: selectedSchedule.end_date ? new Date(selectedSchedule.end_date) : new Date()
+                start: new Date(selectedSchedule.start_date),
+                end: new Date(selectedSchedule.end_date)
               }}
               onClose={handleCloseModal}
               onEdit={handleEditClick}
-              onDelete={() => handleDeleteSchedule(selectedSchedule.id)}
+              onDelete={() => {
+                if (selectedSchedule?.id) {
+                  handleDeleteSchedule(selectedSchedule.id);
+                }
+              }}
             />
           ) : (
             <ScheduleModal
@@ -348,6 +474,69 @@ const HomePage: FC = () => {
             />
           )
         )}
+
+        {showProjectModal && selectedProject && (
+          projectModalMode === 'detail' ? (
+            <ProjectDetailModal
+              project={{
+                id: selectedProject.id,
+                title: selectedProject.name,
+                description: selectedProject.description,
+                start_date: selectedProject.startDate,
+                end_date: selectedProject.endDate,
+                status: selectedProject.status === 'IN_PROGRESS' ? '진행 중' : selectedProject.status,
+                members: []
+              }}
+              onClose={() => setShowProjectModal(false)}
+              onEdit={handleProjectEditClick}
+              onDelete={() => handleDeleteClick(selectedProject.id)}
+            />
+          ) : (
+            <ProjectModal
+              onClose={() => {
+                setShowProjectModal(false);
+                setProjectModalMode('detail');
+              }}
+              onSave={handleUpdateProject}
+              initialData={{
+                id: selectedProject.id,
+                name: selectedProject.name,
+                description: selectedProject.description,
+                startDate: selectedProject.startDate,
+                endDate: selectedProject.endDate,
+                status: selectedProject.status
+              }}
+              isOpen={showProjectModal}
+            />
+          )
+        )}
+
+        {showProjectCreateModal && (
+          <ProjectModal
+            onClose={() => setShowProjectCreateModal(false)}
+            onSave={handleAddProject}
+            initialData={null}
+            isOpen={showProjectCreateModal}
+          />
+        )}
+
+        {showDeleteModal && (
+          <div className="modal-overlay">
+            <div className="modal-content">
+              <h3>프로젝트 삭제</h3>
+              <p>선택한 프로젝트를 삭제하시겠습니까?</p>
+              <div className="modal-buttons">
+                <button onClick={() => setShowDeleteModal(false)} className="cancel-button">
+                  취소
+                </button>
+                <button onClick={confirmDelete} className="confirm-button">
+                  삭제
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
         <ToastContainer
           position="top-right"
           autoClose={1500}

@@ -1,6 +1,8 @@
 import { Request, Response } from 'express';
 import pool from '../config/database';
 import { AuthenticatedRequest } from '../config/auth';
+import { format } from 'date-fns';
+import ko from 'date-fns/locale/ko';
 
 export const getAllSchedules = async (req: AuthenticatedRequest, res: Response) => {
   try {
@@ -83,5 +85,71 @@ export const deleteSchedule = async (req: AuthenticatedRequest, res: Response) =
   } catch (error) {
     console.error('Error deleting schedule:', error);
     res.status(500).json({ error: "일정 삭제에 실패했습니다." });
+  }
+};
+
+export const getTodaySchedules = async (req: AuthenticatedRequest, res: Response) => {
+  try {
+    if (!req.user?.id) {
+      return res.status(401).json({ message: '인증이 필요합니다.' });
+    }
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    console.log('User ID:', req.user.id);
+    console.log('Today:', today);
+
+    const [rows] = await pool.query(
+      `SELECT 
+        id, title, 
+        DATE_FORMAT(start_date, '%Y-%m-%d %H:%i') as start_date,
+        DATE_FORMAT(end_date, '%Y-%m-%d %H:%i') as end_date,
+        DATE_FORMAT(
+          CASE 
+            WHEN DATE(start_date) < DATE(?) THEN ?
+            ELSE start_date 
+          END, 
+          '%H:%i'
+        ) as time
+      FROM schedules 
+      WHERE user_id = ? 
+      AND (
+        DATE(start_date) <= DATE(?) 
+        AND DATE(end_date) >= DATE(?)
+      )
+      ORDER BY 
+        CASE 
+          WHEN DATE(start_date) < DATE(?) THEN 0
+          ELSE 1 
+        END,
+        start_date ASC`,
+      [today, today, req.user.id, today, today, today]
+    );
+
+    console.log('Query result:', rows);
+
+    const schedules = rows as any[];
+    const formattedDate = format(today, 'yyyy. MM. dd');
+    const dayOfWeek = format(today, 'EEEE', { locale: ko });
+
+    const processedSchedules = schedules.map(schedule => {
+      if (new Date(schedule.start_date) < today) {
+        return {
+          ...schedule,
+          time: '진행 중'
+        };
+      }
+      return schedule;
+    });
+
+    res.json({
+      date: formattedDate,
+      dayOfWeek,
+      schedules: processedSchedules
+    });
+  } catch (error) {
+    console.error('Error getting today schedules:', error);
+    res.status(500).json({ message: '오늘의 일정을 불러오는데 실패했습니다.' });
   }
 }; 

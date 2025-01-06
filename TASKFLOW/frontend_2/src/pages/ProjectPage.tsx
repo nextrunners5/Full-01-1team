@@ -115,16 +115,50 @@ const ProjectPage: React.FC = () => {
   const statusCounts = getStatusCounts();
 
   const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('ko-KR', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit'
-    }).replace(/\.$/, '');
+    if (!dateString) return '-';
+    try {
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) return '-';
+      return date.toLocaleDateString('ko-KR', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+      }).replace(/\.$/, '');
+    } catch (error) {
+      console.error('Date formatting error:', error);
+      return '-';
+    }
   };
 
-  const getStatusText = (status: string) => {
-    return status === 'IN_PROGRESS' ? '진행 중' : '완료';
+  const getStatusClass = (status?: string) => {
+    if (!status) return '';
+    return status.toLowerCase();
+  };
+
+  const getStatusText = (status?: string) => {
+    switch(status) {
+      case 'IN_PROGRESS':
+        return '진행 중';
+      case 'COMPLETED':
+        return '완료';
+      case '진행 중':
+        return '진행 중';
+      case '완료':
+        return '완료';
+      default:
+        return status || '상태 없음';
+    }
+  };
+
+  const convertStatus = (status: string) => {
+    switch(status) {
+      case 'IN_PROGRESS':
+        return '진행 중';
+      case 'COMPLETED':
+        return '완료';
+      default:
+        return status;
+    }
   };
 
   const filteredProjects = projects.filter(project => {
@@ -195,18 +229,18 @@ const ProjectPage: React.FC = () => {
         description: projectData.description,
         startDate: projectData.startDate,
         endDate: projectData.endDate,
-        status: projectData.status
+        status: projectData.id ? projectData.status : 'IN_PROGRESS'
       };
 
       if (projectData.id) {
         await projectApi.updateProject(projectData.id, projectPayload);
-        setProjects(projects.map(p => 
-          p.id === projectData.id ? { ...p, ...projectPayload } : p
-        ));
+        const updatedProjects = await projectApi.getAllProjects();
+        setProjects(updatedProjects);
         toast.success('프로젝트가 수정되었습니다! 🔄');
       } else {
         const response = await projectApi.createProject(projectPayload);
-        setProjects([...projects, response]);
+        const updatedProjects = await projectApi.getAllProjects();
+        setProjects(updatedProjects);
         toast.success('새 프로젝트가 생성되었습니다! ✨');
       }
       handleCloseModal();
@@ -362,8 +396,8 @@ const ProjectPage: React.FC = () => {
                       </span>
                     </td>
                     <td>
-                      <span className={`status ${project.status.toLowerCase()}`}>
-                        {getStatusText(project.status)}
+                      <span className={`status ${getStatusClass(project.status)}`}>
+                        {convertStatus(project.status)}
                       </span>
                     </td>
                     <td>{formatDate(project.startDate)}</td>

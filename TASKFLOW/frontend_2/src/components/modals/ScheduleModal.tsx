@@ -1,15 +1,8 @@
 import React, { useState } from 'react';
+import { ScheduleData } from '../../services/scheduleApi';
 import '../../styles/Monthly.css';
 
-export interface ScheduleData {
-  id?: number | null;
-  title: string;
-  description: string;
-  start: Date | null;
-  end: Date | null;
-}
-
-export interface ScheduleModalProps {
+interface ScheduleModalProps {
   onClose: () => void;
   onSave: (data: ScheduleData) => Promise<void>;
   onDelete?: (id: number) => Promise<void>;

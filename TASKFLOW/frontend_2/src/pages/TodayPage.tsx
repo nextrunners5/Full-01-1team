@@ -4,160 +4,52 @@ import React, { useState, useEffect } from 'react';
 import Header from '../components/common/Header';
 import Sidebar from '../components/common/Sidebar';
 import Footer from '../components/common/Footer';
-import { scheduleApi, Schedule } from '../services/scheduleApi';
-import ScheduleModal, { ScheduleData } from '../components/modals/ScheduleModal';
+import { scheduleApi, Schedule, TodaySchedule, ScheduleData } from '../services/scheduleApi';
+import ScheduleModal from '../components/modals/ScheduleModal';
+import ScheduleDetailModal from '../components/modals/ScheduleDetailModal';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import '../styles/Today.css';
-import ScheduleDetailModal from '../components/modals/ScheduleDetailModal';
-
-interface TodaySchedule {
-  id: number;
-  title: string;
-  description: string;
-  start: Date;
-  end: Date;
-}
+import '../styles/TodayPage.css';
 
 const TodayPage: React.FC = () => {
-  const [todaySchedules, setTodaySchedules] = useState<TodaySchedule[]>([]);
+  const [todayInfo, setTodayInfo] = useState<TodaySchedule | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
-  const [selectedSchedule, setSelectedSchedule] = useState<TodaySchedule | null>(null);
+  const [selectedSchedule, setSelectedSchedule] = useState<Schedule | null>(null);
   const [modalMode, setModalMode] = useState<'detail' | 'edit' | 'create'>('create');
 
-  const fetchTodaySchedules = async () => {
-    try {
-      const response = await scheduleApi.getSchedules();
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      
-      const tomorrow = new Date(today);
-      tomorrow.setDate(tomorrow.getDate() + 1);
-
-      const todayEvents = response
-        .map((schedule: Schedule) => ({
-          id: schedule.id,
-          title: schedule.title,
-          description: schedule.description,
-          start: new Date(schedule.start_date),
-          end: new Date(schedule.end_date)
-        }))
-        .filter(schedule => {
-          const scheduleDate = new Date(schedule.start);
-          scheduleDate.setHours(0, 0, 0, 0);
-          return scheduleDate.getTime() === today.getTime();
-        })
-        .sort((a, b) => a.start.getTime() - b.start.getTime());
-
-      setTodaySchedules(todayEvents);
-    } catch (error) {
-      console.error('Failed to fetch today schedules:', error);
-    }
-  };
-
   useEffect(() => {
-    fetchTodaySchedules();
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
+        const todaySchedules = await scheduleApi.getTodaySchedules();
+        setTodayInfo(todaySchedules);
+      } catch (error) {
+        console.error('Failed to fetch data:', error);
+        toast.error('데이터를 불러오는데 실패했습니다.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
   }, []);
 
-  const formatTime = (date: Date) => {
-    return date.toLocaleTimeString('ko-KR', {
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: true
-    });
-  };
-
-  const handleSaveSchedule = async (scheduleData: ScheduleData): Promise<void> => {
-    try {
-      if (!scheduleData.start || !scheduleData.end) {
-        throw new Error('시작 시간과 종료 시간을 입력해주세요');
-      }
-
-      if (scheduleData.id) {
-        // 수정
-        try {
-          const response = await scheduleApi.updateSchedule(scheduleData.id, {
-            title: scheduleData.title,
-            description: scheduleData.description,
-            start_date: scheduleData.start.toISOString(),
-            end_date: scheduleData.end.toISOString()
-          });
-
-          const updatedSchedule: TodaySchedule = {
-            id: response.id,
-            title: response.title,
-            start: new Date(response.start_date),
-            end: new Date(response.end_date),
-            description: response.description || ''
-          };
-
-          setTodaySchedules(prev => 
-            prev.map(schedule => 
-              schedule.id === updatedSchedule.id ? updatedSchedule : schedule
-            )
-          );
-          toast.success('일정이 성공적으로 수정되었습니다! 🔄');
-        } catch (error) {
-          toast.error('일정 수정에 실패했습니다. 다시 시도해주세요.');
-          throw new Error('일정 수정 실패');
-        }
-      } else {
-        // 생성
-        try {
-          const response = await scheduleApi.createSchedule({
-            title: scheduleData.title,
-            description: scheduleData.description,
-            start_date: scheduleData.start.toISOString(),
-            end_date: scheduleData.end.toISOString()
-          });
-
-          const newSchedule: TodaySchedule = {
-            id: response.id,
-            title: response.title,
-            start: new Date(response.start_date),
-            end: new Date(response.end_date),
-            description: response.description || ''
-          };
-          
-          setTodaySchedules(prev => [...prev, newSchedule].sort((a, b) => a.start.getTime() - b.start.getTime()));
-          toast.success('새로운 일정이 추가되었습니다! ✨');
-        } catch (error) {
-          toast.error('일정 생성에 실패했습니다. 다시 시도해주세요.');
-          throw new Error('일정 생성 실패');
-        }
-      }
-      handleCloseModal();
-    } catch (error) {
-      console.error('Error saving schedule:', error);
-      if (error instanceof Error) {
-        toast.error(error.message);
-      } else {
-        toast.error('일정 저장에 실패했습니다.');
-      }
-      throw error;
-    }
-  };
-
-  const handleDeleteSchedule = async (id: number) => {
-    try {
-      await scheduleApi.deleteSchedule(id);
-      setTodaySchedules(prev => prev.filter(schedule => schedule.id !== id));
-      handleCloseModal();
-      toast.success('일정이 삭제되었습니다! 🗑️');
-    } catch (error) {
-      console.error('Error deleting schedule:', error);
-      toast.error('일정 삭제에 실패했습니다. 다시 시도해주세요.');
-      throw new Error('일정 삭제 실패');
-    }
-  };
-
-  const handleCloseModal = () => {
-    setShowModal(false);
+  const handleAddClick = () => {
     setSelectedSchedule(null);
+    setModalMode('create');
+    setShowModal(true);
   };
 
-  const handleScheduleClick = (schedule: TodaySchedule) => {
-    setSelectedSchedule(schedule);
+  const handleScheduleClick = (schedule: TodaySchedule['schedules'][0]) => {
+    const scheduleDetail: Schedule = {
+      id: schedule.id,
+      title: schedule.title,
+      description: '',
+      start_date: schedule.start_date,
+      end_date: schedule.end_date
+    };
+    setSelectedSchedule(scheduleDetail);
     setModalMode('detail');
     setShowModal(true);
   };
@@ -166,74 +58,134 @@ const TodayPage: React.FC = () => {
     setModalMode('edit');
   };
 
-  const handleAddClick = () => {
+  const handleCloseModal = () => {
+    setShowModal(false);
     setSelectedSchedule(null);
-    setModalMode('create');
-    setShowModal(true);
+  };
+
+  const handleSaveSchedule = async (scheduleData: ScheduleData): Promise<void> => {
+    try {
+      if (!scheduleData.start || !scheduleData.end) {
+        throw new Error('시작 시간과 종료 시간을 입력해주세요');
+      }
+
+      const payload = {
+        title: scheduleData.title,
+        description: scheduleData.description,
+        start_date: scheduleData.start.toISOString(),
+        end_date: scheduleData.end.toISOString()
+      };
+
+      if (scheduleData.id) {
+        await scheduleApi.updateSchedule(scheduleData.id, payload);
+        toast.success('일정이 수정되었습니다! 🔄');
+      } else {
+        await scheduleApi.createSchedule(payload);
+        toast.success('새로운 일정이 추가되었습니다! ✨');
+      }
+
+      // 일정 목록 새로고침
+      const todaySchedules = await scheduleApi.getTodaySchedules();
+      setTodayInfo(todaySchedules);
+      handleCloseModal();
+    } catch (error) {
+      console.error('Error saving schedule:', error);
+      toast.error('일정 저장에 실패했습니다. 다시 시도해주세요.');
+    }
+  };
+
+  const handleDeleteSchedule = async (scheduleId: number) => {
+    try {
+      await scheduleApi.deleteSchedule(scheduleId);
+      const todaySchedules = await scheduleApi.getTodaySchedules();
+      setTodayInfo(todaySchedules);
+      setShowModal(false);
+      toast.success('일정이 삭제되었습니다! 🗑️');
+    } catch (error) {
+      console.error('일정 삭제 중 오류 발생:', error);
+      toast.error('일정 삭제에 실패했습니다.');
+    }
   };
 
   return (
-    <div className="today-page">
+    <div className="app-container">
       <Sidebar />
-      <div className="main-content">
+      <div className="main-container">
         <Header />
-        <div className="today-container">
-          <div className="today-header">
-            <h2 className="today-title">오늘의 일정</h2>
-            <button className="add-schedule-btn" onClick={handleAddClick}>
-              + 새 일정
-            </button>
-          </div>
-          <div className="today-date">
-            {new Date().toLocaleDateString('ko-KR', {
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric',
-              weekday: 'long'
-            })}
-          </div>
-          
-          <div className="schedule-list">
-            {todaySchedules.length === 0 ? (
-              <div className="no-schedule">오늘 예정된 일정이 없습니다.</div>
+        <main className="today-content">
+          <section className="today-schedule">
+            <div className="today-header">
+              <h2>오늘의 일정</h2>
+              <button className="add-schedule-btn" onClick={handleAddClick}>
+                +
+              </button>
+            </div>
+            <div className="date-info">
+              <h3>{todayInfo?.date}</h3>
+              <p>{todayInfo?.dayOfWeek}</p>
+            </div>
+            {isLoading ? (
+              <div className="loading">로딩 중...</div>
             ) : (
-              todaySchedules.map(schedule => (
-                <div 
-                  key={schedule.id} 
-                  className="schedule-card"
-                  onClick={() => handleScheduleClick(schedule)}
-                >
-                  <div className="schedule-time">
-                    {formatTime(schedule.start)} - {formatTime(schedule.end)}
-                  </div>
-                  <div className="schedule-content">
-                    <h3 className="schedule-title">{schedule.title}</h3>
-                  </div>
-                </div>
-              ))
+              <div className="schedule-list">
+                {todayInfo?.schedules.length === 0 ? (
+                  <div className="no-schedule">오늘 예정된 일정이 없습니다.</div>
+                ) : (
+                  <ul>
+                    {todayInfo?.schedules.map((schedule) => (
+                      <li 
+                        key={`${schedule.time}-${schedule.title}`}
+                        onClick={() => handleScheduleClick(schedule)}
+                        className="schedule-item"
+                      >
+                        <span className="schedule-time">{schedule.time}</span>
+                        <span className="schedule-title">{schedule.title}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
             )}
-          </div>
-        </div>
+          </section>
+        </main>
         <Footer />
       </div>
-
+      
+      {/* 모달 추가 */}
       {showModal && (
-        modalMode === 'detail' ? (
+        modalMode === 'detail' && selectedSchedule ? (
           <ScheduleDetailModal
-            schedule={selectedSchedule!}
+            schedule={{
+              id: selectedSchedule.id,
+              title: selectedSchedule.title,
+              description: selectedSchedule.description || '',
+              start: new Date(selectedSchedule.start_date),
+              end: new Date(selectedSchedule.end_date)
+            }}
             onClose={handleCloseModal}
             onEdit={handleEditClick}
-            onDelete={() => handleDeleteSchedule(selectedSchedule!.id)}
+            onDelete={() => {
+              if (selectedSchedule?.id) {
+                handleDeleteSchedule(selectedSchedule.id);
+              }
+            }}
           />
         ) : (
           <ScheduleModal
             onClose={handleCloseModal}
             onSave={handleSaveSchedule}
-            initialData={modalMode === 'edit' ? selectedSchedule : null}
+            initialData={modalMode === 'edit' && selectedSchedule ? {
+              id: selectedSchedule.id,
+              title: selectedSchedule.title,
+              description: selectedSchedule.description,
+              start: new Date(selectedSchedule.start_date),
+              end: new Date(selectedSchedule.end_date)
+            } : null}
             isOpen={showModal}
           />
         )
       )}
+
       <ToastContainer
         position="top-right"
         autoClose={1500}

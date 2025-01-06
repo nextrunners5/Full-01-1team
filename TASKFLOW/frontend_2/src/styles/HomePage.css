@@ -20,35 +20,36 @@
   flex-grow: 1;
   padding: 80px 0;
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: auto auto;
   grid-gap: 20px;
   width: 150%;
   margin: 0;
   box-sizing: border-box;
   margin-left: -38px;
-  overflow: visible; /* 콘텐츠 영역도 overflow 제거 */
-  padding-bottom: 60px; /* 하단 패딩 추가 */
+  overflow: visible;
+  padding-bottom: 60px;
 }
 
 /* 각각의 섹션 스타일 */
-.today, .project-status {
+.today-date, .today, .project-status {
   background: #ffffff;
-  padding: 5px 20px;
+  padding: 20px;
   border-radius: 10px;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
   height: 300px;
+  overflow-y: auto;
 }
 
-/* 달력 스타일 */
+/* 달력 섹션 스타일 */
 .calendar {
-  grid-column: span 2;
+  grid-column: 1 / -1;
   background: #ffffff;
-  padding: 16px;
+  padding: 20px;
   border-radius: 10px;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
   height: auto;
-  overflow: visible; /* overflow hidden 제거 */
-  margin-bottom: 40px; /* 하단 여백 추가 */
+  margin-top: 20px;
 }
 
 .calendar-container {
@@ -82,10 +83,7 @@
 
 /* TODAY 섹션 스타일 */
 .today .date {
-  font-size: 24px;
-  font-weight: bold;
-  color: #333;
-  margin-bottom: 12px;
+  display: none;
 }
 
 .today ul {
@@ -101,19 +99,53 @@
 }
 
 /* PROJECT STATUS 스타일 */
-.project-status ul li {
+.project-status {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.project-status h3 {
+  color: #1a73e8;
+  font-size: 20px;
+  margin-bottom: 20px;
+}
+
+.project-item {
+  padding: 12px 15px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  transition: transform 0.2s;
+  cursor: pointer;
+}
+
+.project-item:hover {
+  transform: translateX(5px);
+  background-color: #f0f0f0;
+}
+
+.project-info {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 12px;
-  font-size: 14px;
 }
 
-.project-status .status {
+.project-details {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.project-title {
+  font-size: 14px;
+  color: #333;
+  font-weight: 500;
+}
+
+.project-period {
   font-size: 12px;
-  color: #28a745;
-  text-align: right;
-  flex-shrink: 0;
+  color: #666;
 }
 
 /* 캘린더 툴바 스타일 */
@@ -157,6 +189,138 @@
 /* 반응형 스타일 */
 @media screen and (min-width: 1200px) {
   .content {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
   }
+}
+
+/* 상태 뱃지 스타일 - ProjectDetail과 동일하게 */
+.status {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.status.in_progress {
+  background-color: #e3f2fd;
+  color: #1976d2;
+}
+
+.status.completed {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+/* 모달 스타일도 ProjectDetail과 동일하게 */
+.detail-modal-content {
+  background: white;
+  padding: 24px;
+  border-radius: 8px;
+  width: 600px;
+  max-width: 90vw;
+}
+
+.detail-section {
+  margin: 20px 0;
+}
+
+.detail-row {
+  margin-bottom: 20px;
+}
+
+.detail-row label {
+  display: block;
+  color: #666;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.detail-value {
+  color: #333;
+  font-size: 16px;
+}
+
+.detail-value.description {
+  white-space: pre-wrap;
+  line-height: 1.5;
+  background: #f8f9fa;
+  padding: 12px;
+  border-radius: 4px;
+}
+
+/* 프로젝트 헤더 스타일 */
+.project-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.add-project-btn {
+  background-color: #1100FF;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.add-project-btn:hover {
+  background-color: #0056b3;
+}
+
+/* 오늘 날짜 섹션 스타일 */
+.today-date {
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+  height: 300px;
+}
+
+.today-date h3 {
+  color: #1a73e8;
+  font-size: 20px;
+  margin-bottom: 20px;
+}
+
+.today-date .date {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+}
+
+/* 공통 헤더 스타일 */
+.today-header, .project-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+/* 공통 추가 버튼 스타일 */
+.add-schedule-btn, .add-project-btn {
+  background-color: #1100FF;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.add-schedule-btn:hover, .add-project-btn:hover {
+  background-color: #0056b3;
 }

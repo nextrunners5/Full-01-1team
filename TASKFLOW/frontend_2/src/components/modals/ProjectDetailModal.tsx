@@ -30,9 +30,20 @@ const ProjectDetailModal: React.FC<ProjectDetailProps> = ({
     });
   };
 
+  const getStatusText = (status: string) => {
+    switch(status) {
+      case 'IN_PROGRESS':
+        return '진행 중';
+      case 'COMPLETED':
+        return '완료';
+      default:
+        return status;
+    }
+  };
+
   return (
     <div className="modal-overlay">
-      <div className="project-detail-modal">
+      <div className="detail-modal-content">
         <h3>프로젝트 상세</h3>
         
         <div className="detail-section">
@@ -40,18 +51,28 @@ const ProjectDetailModal: React.FC<ProjectDetailProps> = ({
             <label>프로젝트명</label>
             <div className="detail-value">{project.title}</div>
           </div>
-
+          
           <div className="detail-row">
             <label>상태</label>
-            <div className={`status-badge ${project.status.toLowerCase()}`}>
-              {project.status}
+            <div className="detail-value">
+              <span className={`status ${project.status.toLowerCase()}`}>
+                {getStatusText(project.status)}
+              </span>
             </div>
           </div>
-          
+
           <div className="detail-row">
             <label>기간</label>
             <div className="detail-value">
-              {formatDate(project.start_date)} - {formatDate(project.end_date)}
+              {new Date(project.start_date).toLocaleDateString('ko-KR', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+              })} - {new Date(project.end_date).toLocaleDateString('ko-KR', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+              })}
             </div>
           </div>
 
@@ -68,12 +89,14 @@ const ProjectDetailModal: React.FC<ProjectDetailProps> = ({
             </div>
           )}
 
-          <div className="detail-row">
-            <label>프로젝트 설명</label>
-            <div className="detail-value description">
-              {project.description}
+          {project.description && (
+            <div className="detail-row">
+              <label>프로젝트 설명</label>
+              <div className="detail-value description">
+                {project.description}
+              </div>
             </div>
-          </div>
+          )}
         </div>
 
         <div className="detail-actions">

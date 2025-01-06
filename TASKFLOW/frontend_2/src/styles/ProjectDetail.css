@@ -48,7 +48,8 @@
   font-weight: 500;
 }
 
-.status-badge.ongoing {
+.status-badge.ongoing,
+.status-badge.in_progress {
   background-color: #e3f2fd;
   color: #1976d2;
 }
@@ -75,6 +76,28 @@
   border-radius: 16px;
   font-size: 14px;
   color: #495057;
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 500;
+  background-color: #f8f9fa;
+}
+
+.status.in_progress {
+  background-color: #e3f2fd;
+  color: #1976d2;
+  border: 1px solid #bbdefb;
+}
+
+.status.completed {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  border: 1px solid #c8e6c9;
 }
 
 /* 기존 버튼 스타일은 재사용 */ 

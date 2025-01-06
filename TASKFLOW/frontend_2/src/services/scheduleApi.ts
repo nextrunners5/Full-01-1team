@@ -27,6 +27,14 @@ export interface ScheduleCreate {
   end_date: string;
 }
 
+export interface ScheduleData {
+  id?: number | null;
+  title: string;
+  description: string;
+  start: Date | null;
+  end: Date | null;
+}
+
 export const scheduleApi = {
   getSchedules: async (): Promise<Schedule[]> => {
     const response = await API.get('/schedules');
