@@ -173,7 +173,7 @@ body.monthly-page {
   justify-content: center;
   align-items: center;
   z-index: 1000;
-
+  margin-left: -100px;
 }
 
 /* Modal Content */

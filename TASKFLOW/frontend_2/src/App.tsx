@@ -20,6 +20,8 @@ import Footer from "./components/common/Footer";
 import TermsPage from "./pages/TermsPage";
 import { AuthProvider } from './contexts/AuthContext';
 import ProtectedRoute from './components/auth/ProtectedRoute';
+import PersonalInfoUpdate from './pages/PersonalInfoUpdate';
+import DeleteAccount from './pages/DeleteAccount';
 
 const App: React.FC = () => (
   <AuthProvider>
@@ -76,11 +78,12 @@ const App: React.FC = () => (
             <Mypage />
           </ProtectedRoute>
         } />
-        <Route path="/personalinfo/update" element={
+        <Route path="/personal-info-update" element={
           <ProtectedRoute>
-            <PersonalInfoPage />
+            <PersonalInfoUpdate />
           </ProtectedRoute>
         } />
+        <Route path="/delete-account" element={<DeleteAccount />} />
       </Routes>
     </Router>
   </AuthProvider>

@@ -25,6 +25,8 @@
 .today-header h2 {
   font-size: 24px;
   color: #1a73e8;
+  margin-left: 670px;
+  margin-bottom: -50px;
 }
 
 .date-info {
@@ -34,8 +36,8 @@
 .date-info h3 {
   font-size: 35px;
   color: #333;
-  margin-bottom: 5px;
-  margin-top: 20px;
+  margin-bottom: 0px;
+  margin-top: 0px;
 }
 
 .date-info p {
@@ -132,7 +134,8 @@
   transition: background-color 0.2s;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   margin-top: -650px;
-  margin-right:  -125px;
+  margin-right:  380px;
+  margin-bottom: -50px;
 }
 
 .add-schedule-btn:hover {

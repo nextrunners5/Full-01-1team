@@ -71,14 +71,12 @@ const ScheduleDetailModal: React.FC<ScheduleDetailProps> = ({
             </div>
           </div>
 
-          {schedule.description && (
-            <div className="detail-row">
-              <label>설명</label>
-              <div className="detail-value description">
-                {schedule.description}
-              </div>
+          <div className="detail-row">
+            <label>일정 설명</label>
+            <div className="detail-value description">
+              {schedule.description || '설명이 없습니다.'}
             </div>
-          )}
+          </div>
         </div>
 
         <div className="detail-actions">

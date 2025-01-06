@@ -19,8 +19,14 @@ import bcrypt from 'bcrypt';
 import pool from '../config/database';
 import signupRouter from './signupRouter';
 import checkEmailRouter from './checkEmail';
+import { getUserInfo, updateUserInfo, deleteAccount } from '../controllers/userController';
 
 const router = Router();
+
+// User routes - 최상단에 배치
+router.get('/users/me', authenticateToken, getUserInfo);
+router.put('/users/me', authenticateToken, updateUserInfo);
+router.delete('/users/me', authenticateToken, deleteAccount);
 
 // Auth routes
 router.use('/signup', signupRouter);

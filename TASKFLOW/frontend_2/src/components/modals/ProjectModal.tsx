@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../../styles/ProjectModal.css';
 
 interface ProjectModalProps {
   onClose: () => void;
   onSave: (data: ProjectData) => Promise<void>;
-  initialData?: ProjectData | null;
+  initialData: ProjectData | null;
   isOpen: boolean;
 }
 
@@ -23,19 +23,43 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
   initialData,
   isOpen
 }) => {
-  const [projectData, setProjectData] = useState<ProjectData>(
-    initialData || {
-      name: '',
-      description: '',
-      startDate: '',
-      endDate: '',
-      status: 'IN_PROGRESS'
+  const defaultProjectData: ProjectData = {
+    name: '',
+    description: '',
+    startDate: '',
+    endDate: '',
+    status: 'IN_PROGRESS'
+  };
+
+  const [projectData, setProjectData] = useState<ProjectData>(initialData || defaultProjectData);
+
+  useEffect(() => {
+    if (isOpen) {
+      setProjectData(initialData || defaultProjectData);
     }
-  );
+  }, [isOpen, initialData]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
+      if (!projectData.name.trim()) {
+        alert('프로젝트 제목을 입력해주세요.');
+        return;
+      }
+      if (!projectData.startDate) {
+        alert('시작 날짜를 선택해주세요.');
+        return;
+      }
+      if (!projectData.endDate) {
+        alert('종료 날짜를 선택해주세요.');
+        return;
+      }
+
+      if (new Date(projectData.startDate) > new Date(projectData.endDate)) {
+        alert('시작일은 종료일보다 늦을 수 없습니다.');
+        return;
+      }
+
       await onSave(projectData);
       onClose();
     } catch (error) {

@@ -1,3 +1,5 @@
+// TodayPage.tsx
+
 import React, { useState, useEffect } from 'react';
 import Header from '../components/common/Header';
 import Sidebar from '../components/common/Sidebar';
@@ -115,7 +117,7 @@ const TodayPage: React.FC = () => {
         <Header />
 
         {/* TODAY Header Section */}
-        <div className="today-header-container">
+        <div className="today-header">
           <h2 className="today-title">TODAY</h2>
           <button className="add-schedule-btn" onClick={handleAddClick}>
             +
