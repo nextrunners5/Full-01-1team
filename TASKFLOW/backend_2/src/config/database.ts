@@ -1,16 +1,9 @@
 import mysql from 'mysql2/promise';
 import fs from 'fs';
 import path from 'path';
+import { dbConfig } from './dbConfig';
 
-const pool = mysql.createPool({
-  host: "test-mysql.c9aacka00jcg.ap-northeast-2.rds.amazonaws.com",
-  user: "root",
-  password: "rlatngus7!",
-  database: "mysqldb",
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0
-});
+const pool = mysql.createPool(dbConfig);
 
 // 데이터베이스 초기화 함수
 const initializeDatabase = async () => {

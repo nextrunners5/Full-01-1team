@@ -3,6 +3,16 @@ import pool from '../config/database';
 import { responseHandler } from '../utils/responseHandler';
 import { logger } from '../utils/logger';
 
+interface Project {
+  id: number;
+  name: string;
+  description: string;
+  status: string;
+  startDate: Date;
+  endDate: Date;
+  userId: number;
+}
+
 export const getAllProjects = async (req: Request, res: Response) => {
   try {
     if (!req.user?.id) {

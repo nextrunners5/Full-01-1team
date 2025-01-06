@@ -5,7 +5,8 @@ import {
   getProjectById,
   createProject,
   updateProject,
-  deleteProject
+  deleteProject,
+  deleteMultipleProjects
 } from '../controllers/projectController';
 
 const router = Router();
@@ -15,5 +16,6 @@ router.get('/:id', authenticateToken, getProjectById);
 router.post('/', authenticateToken, createProject);
 router.put('/:id', authenticateToken, updateProject);
 router.delete('/:id', authenticateToken, deleteProject);
+router.post('/delete-multiple', authenticateToken, deleteMultipleProjects);
 
 export default router; 

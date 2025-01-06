@@ -33,56 +33,16 @@ const App: React.FC = () => (
         <Route path="/login/resetpassword" element={<ResetPassword />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/terms" element={<TermsPage />} />
-        <Route path="/home" element={
-          <ProtectedRoute>
-            <HomePage />
-          </ProtectedRoute>
-        } />
-        <Route path="/schedule" element={
-          <ProtectedRoute>
-            <SchedulePage />
-          </ProtectedRoute>
-        } />
-        <Route path="/schedule/monthly" element={
-          <ProtectedRoute>
-            <MonthPage />
-          </ProtectedRoute>
-        } />
-        <Route path="/schedule/weekly" element={
-          <ProtectedRoute>
-            <WeeklyPage />
-          </ProtectedRoute>
-        } />
-        <Route path="/schedule/Today" element={
-          <ProtectedRoute>
-            <TodayPage />
-          </ProtectedRoute>
-        } />
-        <Route path="/project" element={
-          <ProtectedRoute>
-            <ProjectPage />
-          </ProtectedRoute>
-        } />
-        <Route path="/project/create" element={
-          <ProtectedRoute>
-            <ProjectCreatePage />
-          </ProtectedRoute>
-        } />
-        <Route path="/project/edit/:projectId" element={
-          <ProtectedRoute>
-            <ProjectPageEdit />
-          </ProtectedRoute>
-        } />
-        <Route path="/mypage" element={
-          <ProtectedRoute>
-            <Mypage />
-          </ProtectedRoute>
-        } />
-        <Route path="/personal-info-update" element={
-          <ProtectedRoute>
-            <PersonalInfoUpdate />
-          </ProtectedRoute>
-        } />
+        <Route path="/home" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
+        <Route path="/schedule" element={<ProtectedRoute><SchedulePage /></ProtectedRoute>} />
+        <Route path="/schedule/monthly" element={<ProtectedRoute><MonthPage /></ProtectedRoute>} />
+        <Route path="/schedule/weekly" element={<ProtectedRoute><WeeklyPage /></ProtectedRoute>} />
+        <Route path="/schedule/Today" element={<ProtectedRoute><TodayPage /></ProtectedRoute>} />
+        <Route path="/project" element={<ProtectedRoute><ProjectPage /></ProtectedRoute>} />
+        <Route path="/project/create" element={<ProtectedRoute><ProjectCreatePage /></ProtectedRoute>} />
+        <Route path="/project/edit/:projectId" element={<ProtectedRoute><ProjectPageEdit /></ProtectedRoute>} />
+        <Route path="/mypage" element={<ProtectedRoute><Mypage /></ProtectedRoute>} />
+        <Route path="/personal-info-update" element={<ProtectedRoute><PersonalInfoUpdate /></ProtectedRoute>} />
         <Route path="/delete-account" element={<DeleteAccount />} />
       </Routes>
     </Router>

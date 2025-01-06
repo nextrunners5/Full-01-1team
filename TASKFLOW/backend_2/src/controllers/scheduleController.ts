@@ -4,6 +4,15 @@ import { AuthenticatedRequest } from '../config/auth';
 import { format } from 'date-fns';
 import { ko } from 'date-fns/locale';
 
+interface Schedule {
+  id: number;
+  title: string;
+  description?: string;
+  startDate: Date;
+  endDate: Date;
+  userId: number;
+}
+
 export const getAllSchedules = async (req: AuthenticatedRequest, res: Response) => {
   try {
     const [rows] = await pool.query(

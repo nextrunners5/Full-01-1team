@@ -6,7 +6,19 @@ import pool from "./config/database";
 const app = express();
 
 // 미들웨어 설정
-app.use(cors());
+const corsOptions = {
+  origin: [
+    process.env.NODE_ENV === 'development' 
+      ? 'http://localhost:3000'
+      : 'http://3.34.135.200',
+    'http://3.34.135.200:3000'
+  ],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 
 // 데이터베이스 연결 테스트
